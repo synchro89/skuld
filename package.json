@@ -1,0 +1,50 @@
+{
+    "name": "WhatShouldIWatch",
+    "version": "1.0.0",
+    "description": "A platform to find your next favorite movie. Written in Electron and React, therefore, it offers a clean and fast interface.",
+    "main": "index.js",
+    "repository": "https://github.com/LaksCastro/what-should-i-watch",
+    "author": "LaksCastro",
+    "license": "MIT",
+    "private": false,
+    "scripts": {
+        "prettier": "prettier --write **/*.{js,jsx,json}",
+        "lint": "eslint **/*.{js,jsx}",
+        "format": "yarn prettier && yarn lint --fix",
+        "commit": "git-cz"
+    },
+    "husky": {
+        "hooks": {
+            "pre-commit": "lint-staged",
+            "commit-msg": "commitlint -E HUSKY_GIT_PARAMS"
+        }
+    },
+    "lint-staged": {
+        "**/*.{js,jsx}": [
+            "yarn format",
+            "git add ."
+        ]
+    },
+    "devDependencies": {
+        "@commitlint/cli": "^8.3.5",
+        "@commitlint/config-conventional": "^8.3.4",
+        "@craco/craco": "^5.6.3",
+        "commitizen": "^4.0.3",
+        "cz-conventional-changelog": "3.1.0",
+        "eslint": "^6.8.0",
+        "eslint-config-airbnb": "^18.0.1",
+        "eslint-import-resolver-alias": "^1.1.2",
+        "eslint-plugin-import": "^2.20.0",
+        "eslint-plugin-jsx-a11y": "^6.2.3",
+        "eslint-plugin-react": "^7.18.0",
+        "eslint-plugin-react-hooks": "^2.3.0",
+        "husky": "^4.2.1",
+        "lint-staged": "^10.0.6",
+        "prettier": "^1.19.1"
+    },
+    "config": {
+        "commitizen": {
+            "path": "./node_modules/cz-conventional-changelog"
+        }
+    }
+}
