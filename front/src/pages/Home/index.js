@@ -18,8 +18,6 @@ function Home() {
 
   const [total, setTotal] = useState(null);
 
-  const Container = useRef(null);
-
   const [page, setPage] = useState(2);
   const contentsPerPage = 10;
   const [offset, setOffset] = useState(20);
@@ -87,51 +85,53 @@ function Home() {
   }, [hamburger]);
   return (
     <S.Viewport>
+      <S.HeaderFullScreen className={header ? 'visible' : 'hidden'}>
+        <S.GenreWrapper>
+          <S.GenreSlideWrapper
+            options={{ containScroll: true, dragFree: true }}
+          >
+            <S.GenreContainer>
+              <S.GenreSlide>
+                <S.GenreSlideContainer>1</S.GenreSlideContainer>
+              </S.GenreSlide>
+              <S.GenreSlide>
+                <S.GenreSlideContainer>2</S.GenreSlideContainer>
+              </S.GenreSlide>
+              <S.GenreSlide>
+                <S.GenreSlideContainer>3</S.GenreSlideContainer>
+              </S.GenreSlide>
+              <S.GenreSlide>
+                <S.GenreSlideContainer>1</S.GenreSlideContainer>
+              </S.GenreSlide>
+              <S.GenreSlide>
+                <S.GenreSlideContainer>2</S.GenreSlideContainer>
+              </S.GenreSlide>
+              <S.GenreSlide>
+                <S.GenreSlideContainer>3</S.GenreSlideContainer>
+              </S.GenreSlide>
+              <S.GenreSlide>
+                <S.GenreSlideContainer>1</S.GenreSlideContainer>
+              </S.GenreSlide>
+              <S.GenreSlide>
+                <S.GenreSlideContainer>2</S.GenreSlideContainer>
+              </S.GenreSlide>
+              <S.GenreSlide>
+                <S.GenreSlideContainer>3</S.GenreSlideContainer>
+              </S.GenreSlide>
+              <S.GenreSlide>
+                <S.GenreSlideContainer>1</S.GenreSlideContainer>
+              </S.GenreSlide>
+              <S.GenreSlide>
+                <S.GenreSlideContainer>2</S.GenreSlideContainer>
+              </S.GenreSlide>
+              <S.GenreSlide>
+                <S.GenreSlideContainer>3</S.GenreSlideContainer>
+              </S.GenreSlide>
+            </S.GenreContainer>
+          </S.GenreSlideWrapper>
+        </S.GenreWrapper>
+      </S.HeaderFullScreen>
       <S.Wrapper>
-        <S.HeaderFullScreen className={header ? 'visible' : 'hidden'}>
-          <S.GenreWrapper>
-            <S.GenreSlideWrapper options={{ containScroll: false }}>
-              <S.GenreContainer>
-                <S.GenreSlide>
-                  <S.GenreSlideContainer>1</S.GenreSlideContainer>
-                </S.GenreSlide>
-                <S.GenreSlide>
-                  <S.GenreSlideContainer>2</S.GenreSlideContainer>
-                </S.GenreSlide>
-                <S.GenreSlide>
-                  <S.GenreSlideContainer>3</S.GenreSlideContainer>
-                </S.GenreSlide>
-                <S.GenreSlide>
-                  <S.GenreSlideContainer>1</S.GenreSlideContainer>
-                </S.GenreSlide>
-                <S.GenreSlide>
-                  <S.GenreSlideContainer>2</S.GenreSlideContainer>
-                </S.GenreSlide>
-                <S.GenreSlide>
-                  <S.GenreSlideContainer>3</S.GenreSlideContainer>
-                </S.GenreSlide>
-                <S.GenreSlide>
-                  <S.GenreSlideContainer>1</S.GenreSlideContainer>
-                </S.GenreSlide>
-                <S.GenreSlide>
-                  <S.GenreSlideContainer>2</S.GenreSlideContainer>
-                </S.GenreSlide>
-                <S.GenreSlide>
-                  <S.GenreSlideContainer>3</S.GenreSlideContainer>
-                </S.GenreSlide>
-                <S.GenreSlide>
-                  <S.GenreSlideContainer>1</S.GenreSlideContainer>
-                </S.GenreSlide>
-                <S.GenreSlide>
-                  <S.GenreSlideContainer>2</S.GenreSlideContainer>
-                </S.GenreSlide>
-                <S.GenreSlide>
-                  <S.GenreSlideContainer>3</S.GenreSlideContainer>
-                </S.GenreSlide>
-              </S.GenreContainer>
-            </S.GenreSlideWrapper>
-          </S.GenreWrapper>
-        </S.HeaderFullScreen>
         <Headroom
           wrapperStyle={{ width: '100%' }}
           style={{ width: '100%', height: '3.75rem' }}
@@ -151,7 +151,7 @@ function Home() {
             </S.HeaderContainer>
           </S.HeaderWrapper>
         </Headroom>
-        <S.Container ref={Container}>
+        <S.Container>
           <S.InfiniteScrollComponent
             dataLength={data ? data.length : 0} //This is important field to render the next data
             next={() => loadContent(contentsPerPage, offset)}
@@ -206,64 +206,68 @@ function Home() {
                 })}
           </S.InfiniteScrollComponent>
         </S.Container>
-        <S.MenuViewport className={menu.visible ? 'visible' : 'hidden'}>
-          <S.MenuWrapper>
-            <S.MenuHeaderContainer
-              onClick={() => {
-                setMenu({ visible: false, data: null });
-                setClickAway({
-                  visible: false,
-                  onClick: () => {},
-                });
-              }}
-            >
-              <S.MenuHeader>
-                <S.MenuHeaderLabel>
-                  {menu.data && menu.data.title}
-                </S.MenuHeaderLabel>
-                <Icon color="#fff" name="chevron-left" />
-              </S.MenuHeader>
-            </S.MenuHeaderContainer>
-            <S.MenuContainer>
-              <S.MenuArticle>
-                <S.MenuItemWrapper>
-                  <Icon name="chevron-left" />
-                  <S.MenuItemLabel>Complete</S.MenuItemLabel>
-                </S.MenuItemWrapper>
-                <S.MenuItemWrapper>
-                  <Icon name="sun" />
-                  <S.MenuItemLabel>On Hold</S.MenuItemLabel>
-                </S.MenuItemWrapper>
-                <S.MenuItemWrapper>
-                  <Icon name="chevron-left" />
-                  <S.MenuItemLabel>Dropped</S.MenuItemLabel>
-                </S.MenuItemWrapper>
-                <S.MenuItemWrapper>
-                  <Icon name="chevron-left" />
-                  <S.MenuItemLabel>Current</S.MenuItemLabel>
-                </S.MenuItemWrapper>
-              </S.MenuArticle>
-              <S.MenuDivisor />
-              <S.MenuArticle>
-                <S.MenuItemWrapper onClick={() => copyToClip(menu.data.title)}>
-                  <Icon name="chevron-left" />
-                  <S.MenuItemLabel>Copy Name</S.MenuItemLabel>
-                </S.MenuItemWrapper>
-              </S.MenuArticle>
-            </S.MenuContainer>
-          </S.MenuWrapper>
-        </S.MenuViewport>
-        <S.ClickAway
-          onClick={() => {
-            clickAway.onClick();
-            setClickAway({
-              visible: false,
-              onClick: () => {},
-            });
-          }}
-          className={clickAway.visible ? 'visible' : 'hidden'}
-        />
       </S.Wrapper>
+      <S.MenuViewport className={menu.visible ? 'visible' : 'hidden'}>
+        <S.MenuWrapper>
+          <S.MenuHeaderContainer
+            onClick={() => {
+              setMenu({ visible: false, data: null });
+              setClickAway({
+                visible: false,
+                onClick: () => {},
+              });
+            }}
+          >
+            <S.MenuHeader>
+              <S.MenuHeaderLabel>
+                {menu.data && menu.data.title}
+              </S.MenuHeaderLabel>
+              <Icon color="#fff" name="chevron-left" />
+            </S.MenuHeader>
+          </S.MenuHeaderContainer>
+          <S.MenuContainer>
+            <S.MenuArticle>
+              <S.MenuItemWrapper>
+                <Icon name="chevron-left" />
+                <S.MenuItemLabel>Complete</S.MenuItemLabel>
+              </S.MenuItemWrapper>
+              <S.MenuItemWrapper>
+                <Icon name="sun" />
+                <S.MenuItemLabel>On Hold</S.MenuItemLabel>
+              </S.MenuItemWrapper>
+              <S.MenuItemWrapper>
+                <Icon name="chevron-left" />
+                <S.MenuItemLabel>Dropped</S.MenuItemLabel>
+              </S.MenuItemWrapper>
+              <S.MenuItemWrapper>
+                <Icon name="chevron-left" />
+                <S.MenuItemLabel>Current</S.MenuItemLabel>
+              </S.MenuItemWrapper>
+            </S.MenuArticle>
+            <S.MenuDivisor />
+            <S.MenuArticle>
+              <S.MenuItemWrapper onClick={() => copyToClip(menu.data.title)}>
+                <Icon name="chevron-left" />
+                <S.MenuItemLabel>Copy Name</S.MenuItemLabel>
+              </S.MenuItemWrapper>
+              <S.MenuItemWrapper onClick={() => copyToClip(menu.data.title)}>
+                <Icon name="search" />
+                <S.MenuItemLabel>Search on Google</S.MenuItemLabel>
+              </S.MenuItemWrapper>
+            </S.MenuArticle>
+          </S.MenuContainer>
+        </S.MenuWrapper>
+      </S.MenuViewport>
+      <S.ClickAway
+        onClick={() => {
+          clickAway.onClick();
+          setClickAway({
+            visible: false,
+            onClick: () => {},
+          });
+        }}
+        className={clickAway.visible ? 'visible' : 'hidden'}
+      />
     </S.Viewport>
   );
 }

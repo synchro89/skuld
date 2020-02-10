@@ -7,7 +7,7 @@ export const HeaderFullScreen = styled.div`
   bottom: 0;
 
   left: 0;
-  right: 0;
+  width: 100%;
 
   transition: all 0.2s ease-in-out;
 
@@ -28,12 +28,13 @@ export const GenreWrapper = styled.div``;
 export const GenreSlideWrapper = styled(EmblaSlide)``;
 export const GenreContainer = styled.div`
   display: flex;
-  width: 100%;
+  min-width: 100%;
 `;
 export const GenreSlide = styled.div`
   flex: 0 0 200px;
   height: 200px;
   border-radius: 6px;
+  padding: 6px;
 `;
 export const GenreSlideContainer = styled.div`
   width: 100%;
