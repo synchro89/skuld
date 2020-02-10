@@ -2,7 +2,7 @@ import styled from 'styled-components';
 
 import InfiniteScroll from 'react-infinite-scroll-component';
 
-export const Wrapper = styled.div`
+export const Viewport = styled.div`
   display: flex;
   justify-content: center;
 
@@ -11,10 +11,33 @@ export const Wrapper = styled.div`
 
   min-height: 100vh;
 `;
+export const Wrapper = styled.div`
+  width: 100%;
+
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+`;
 export const Container = styled.main`
+  padding: 2rem 0;
   width: 100%;
   max-width: 1250px;
-  padding: 2rem 0;
+`;
+
+export const HeaderWrapper = styled.div`
+  height: 100%;
+  width: 100%;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  background: #fff;
+`;
+export const HeaderContainer = styled.div`
+  width: 100%;
+  max-width: 1250px;
+  padding: 6px 1rem;
 `;
 
 export const InfiniteScrollComponent = styled(InfiniteScroll)`
@@ -119,10 +142,6 @@ export const MenuItemWrapper = styled.section`
   &:hover {
     background: #f9f9f9;
   }
-`;
-export const MenuItemIcon = styled.div`
-  background: red;
-  padding: 8px;
 `;
 export const MenuItemLabel = styled.p`
   padding: 8px;
