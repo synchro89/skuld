@@ -26,6 +26,7 @@
         "axios": "^0.19.2",
         "boxicons": "^2.0.4",
         "connected-react-router": "^6.6.1",
+        "embla-carousel-react": "^1.2.16",
         "history": "^4.10.1",
         "kitsu-json-api": "^1.1.7",
         "lodash": "^4.17.15",

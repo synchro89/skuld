@@ -24,27 +24,25 @@ function Home() {
   const contentsPerPage = 10;
   const [offset, setOffset] = useState(20);
 
+  const [clickAway, setClickAway] = useState({
+    visible: false,
+    onClick: () => {},
+  });
+
+  const [hamburger, setHamburger] = useState(null);
+
   const [menu, setMenu] = useState({ visible: false, data: null });
   function nextPage() {
     setPage(page + 1);
     setOffset(page * contentsPerPage);
   }
 
-  const [header, setHeader] = useState({
-    visible: true,
-    data: null,
-  });
+  const [header, setHeader] = useState(false);
 
   async function loadContent(limit, skip) {
     try {
       const response = await kitsu
         .query('anime') // anime category
-        // .filter([
-        //   {
-        //     key: 'status',
-        //     value: ['upcoming'],
-        //   },
-        // ])
         .paginationLimit(limit) // set limit
         .paginationOffset(skip) // set offset
         .sort(['user_count']) // sort by follower count and following count
@@ -70,10 +68,70 @@ function Home() {
   useEffect(() => {
     loadContent(20, 0);
     addHeaderListeners();
-  }, [Container]);
+  }, []);
+  useEffect(() => {
+    if (hamburger) {
+      hamburger.on('open', () => {
+        setHeader(true);
+        setClickAway({
+          visible: true,
+          onClick: () => {
+            hamburger.close();
+          },
+        });
+      });
+      hamburger.on('close', () => {
+        setHeader(false);
+      });
+    }
+  }, [hamburger]);
   return (
     <S.Viewport>
       <S.Wrapper>
+        <S.HeaderFullScreen className={header ? 'visible' : 'hidden'}>
+          <S.GenreWrapper>
+            <S.GenreSlideWrapper options={{ containScroll: false }}>
+              <S.GenreContainer>
+                <S.GenreSlide>
+                  <S.GenreSlideContainer>1</S.GenreSlideContainer>
+                </S.GenreSlide>
+                <S.GenreSlide>
+                  <S.GenreSlideContainer>2</S.GenreSlideContainer>
+                </S.GenreSlide>
+                <S.GenreSlide>
+                  <S.GenreSlideContainer>3</S.GenreSlideContainer>
+                </S.GenreSlide>
+                <S.GenreSlide>
+                  <S.GenreSlideContainer>1</S.GenreSlideContainer>
+                </S.GenreSlide>
+                <S.GenreSlide>
+                  <S.GenreSlideContainer>2</S.GenreSlideContainer>
+                </S.GenreSlide>
+                <S.GenreSlide>
+                  <S.GenreSlideContainer>3</S.GenreSlideContainer>
+                </S.GenreSlide>
+                <S.GenreSlide>
+                  <S.GenreSlideContainer>1</S.GenreSlideContainer>
+                </S.GenreSlide>
+                <S.GenreSlide>
+                  <S.GenreSlideContainer>2</S.GenreSlideContainer>
+                </S.GenreSlide>
+                <S.GenreSlide>
+                  <S.GenreSlideContainer>3</S.GenreSlideContainer>
+                </S.GenreSlide>
+                <S.GenreSlide>
+                  <S.GenreSlideContainer>1</S.GenreSlideContainer>
+                </S.GenreSlide>
+                <S.GenreSlide>
+                  <S.GenreSlideContainer>2</S.GenreSlideContainer>
+                </S.GenreSlide>
+                <S.GenreSlide>
+                  <S.GenreSlideContainer>3</S.GenreSlideContainer>
+                </S.GenreSlide>
+              </S.GenreContainer>
+            </S.GenreSlideWrapper>
+          </S.GenreWrapper>
+        </S.HeaderFullScreen>
         <Headroom
           wrapperStyle={{ width: '100%' }}
           style={{ width: '100%', height: '3.75rem' }}
@@ -81,6 +139,7 @@ function Home() {
           <S.HeaderWrapper>
             <S.HeaderContainer>
               <MenuHamburger
+                menuRef={setHamburger}
                 config={{
                   size: 40,
                   lineWidth: 2,
@@ -122,15 +181,24 @@ function Home() {
                   };
                   return (
                     <Card
-                      onClick={() =>
+                      onClick={() => {
                         setMenu({
                           visible: true,
                           data: {
                             id: item.id,
                             title,
                           },
-                        })
-                      }
+                        });
+                        setClickAway({
+                          visible: true,
+                          onClick: () => {
+                            setMenu({
+                              visible: false,
+                              data: null,
+                            });
+                          },
+                        });
+                      }}
                       key={item.id}
                       data={data}
                     />
@@ -141,7 +209,13 @@ function Home() {
         <S.MenuViewport className={menu.visible ? 'visible' : 'hidden'}>
           <S.MenuWrapper>
             <S.MenuHeaderContainer
-              onClick={() => setMenu({ visible: false, data: null })}
+              onClick={() => {
+                setMenu({ visible: false, data: null });
+                setClickAway({
+                  visible: false,
+                  onClick: () => {},
+                });
+              }}
             >
               <S.MenuHeader>
                 <S.MenuHeaderLabel>
@@ -179,9 +253,15 @@ function Home() {
             </S.MenuContainer>
           </S.MenuWrapper>
         </S.MenuViewport>
-        <S.MenuClickAway
-          onClick={() => setMenu({ visible: false, data: null })}
-          className={menu.visible ? 'visible' : 'hidden'}
+        <S.ClickAway
+          onClick={() => {
+            clickAway.onClick();
+            setClickAway({
+              visible: false,
+              onClick: () => {},
+            });
+          }}
+          className={clickAway.visible ? 'visible' : 'hidden'}
         />
       </S.Wrapper>
     </S.Viewport>

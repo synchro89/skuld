@@ -1,6 +1,45 @@
 import styled from 'styled-components';
-
+import EmblaSlide from 'embla-carousel-react';
 import InfiniteScroll from 'react-infinite-scroll-component';
+
+export const HeaderFullScreen = styled.div`
+  position: fixed;
+  bottom: 0;
+
+  left: 0;
+  right: 0;
+
+  transition: all 0.2s ease-in-out;
+
+  background: red;
+
+  z-index: 30;
+  &.visible {
+    transform: translateY(0);
+    opacity: 1;
+  }
+  &.hidden {
+    transform: translateY(100%);
+    opacity: 0;
+  }
+`;
+
+export const GenreWrapper = styled.div``;
+export const GenreSlideWrapper = styled(EmblaSlide)``;
+export const GenreContainer = styled.div`
+  display: flex;
+  width: 100%;
+`;
+export const GenreSlide = styled.div`
+  flex: 0 0 200px;
+  height: 200px;
+  border-radius: 6px;
+`;
+export const GenreSlideContainer = styled.div`
+  width: 100%;
+  height: 100%;
+  background: blue;
+`;
 
 export const Viewport = styled.div`
   display: flex;
@@ -49,7 +88,7 @@ export const InfiniteScrollComponent = styled(InfiniteScroll)`
   justify-content: center;
 `;
 
-export const MenuClickAway = styled.div`
+export const ClickAway = styled.div`
   position: fixed;
   top: 0;
   bottom: 0;
