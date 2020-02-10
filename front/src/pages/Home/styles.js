@@ -1,9 +1,135 @@
 import styled from 'styled-components';
 
-export const StyledContainer = styled.div`
-  align-items: center;
+import InfiniteScroll from 'react-infinite-scroll-component';
+
+export const Wrapper = styled.div`
   display: flex;
-  flex-direction: column;
-  height: 100vh;
   justify-content: center;
+
+  width: 100%;
+  background: #f8f8f9;
+
+  min-height: 100vh;
+`;
+export const Container = styled.main`
+  width: 100%;
+  max-width: 1250px;
+  padding: 2rem 0;
+`;
+
+export const InfiniteScrollComponent = styled(InfiniteScroll)`
+  width: 100%;
+  display: grid;
+  grid-template-columns: repeat(auto-fit, 155px);
+  grid-gap: 8px;
+  padding: 8px;
+  justify-content: center;
+`;
+
+export const MenuClickAway = styled.div`
+  position: fixed;
+  top: 0;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  background: rgba(0, 0, 0, 0.5);
+  z-index: 20;
+  transition: all 0.2s ease-in-out;
+  &.visible {
+    visibility: visible;
+    opacity: 1;
+  }
+  &.hidden {
+    visibility: hidden;
+    opacity: 0;
+  }
+`;
+export const MenuViewport = styled.div`
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  background: #fff;
+
+  z-index: 30;
+
+  display: flex;
+  justify-content: center;
+
+  transition: all 0.2s ease-in-out;
+
+  &.visible {
+    transform: translateY(0);
+    opacity: 1;
+  }
+  &.hidden {
+    transform: translateY(100%);
+    opacity: 0;
+  }
+`;
+export const MenuWrapper = styled.div`
+  width: 100%;
+  display: flex;
+  align-items: center;
+  flex-direction: column;
+  -webkit-touch-callout: none;
+  -webkit-user-select: none;
+  -khtml-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+  user-select: none;
+`;
+
+export const MenuHeaderContainer = styled.div`
+  width: 100%;
+  display: flex;
+  background: #3f51b5;
+  justify-content: center;
+`;
+
+export const MenuHeaderLabel = styled.div`
+  color: #fff;
+  display: block;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+`;
+
+export const MenuHeader = styled.div`
+  padding: 1rem 2rem;
+  max-width: 550px;
+  width: 100%;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+`;
+export const MenuContainer = styled.div`
+  width: 100%;
+  max-width: 550px;
+`;
+export const MenuArticle = styled.article`
+  padding: 0.65rem 0;
+`;
+export const MenuItemWrapper = styled.section`
+  display: flex;
+  align-items: center;
+  padding: 0.5rem 2rem;
+  transition: all 0.2s ease-in-out;
+  border-radius: 4px;
+  &:hover {
+    background: #f9f9f9;
+  }
+`;
+export const MenuItemIcon = styled.div`
+  background: red;
+  padding: 8px;
+`;
+export const MenuItemLabel = styled.p`
+  padding: 8px;
+  margin-left: 8px;
+`;
+export const MenuDivisor = styled.div`
+  width: 100%;
+  height: 1px;
+  background: #f4f4f4;
 `;

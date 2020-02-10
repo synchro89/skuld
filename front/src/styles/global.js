@@ -1,7 +1,5 @@
 import { createGlobalStyle } from 'styled-components';
 
-import colors from './colors';
-
 const GlobalStyle = createGlobalStyle`
   /* Default */
   * {
@@ -9,17 +7,13 @@ const GlobalStyle = createGlobalStyle`
     margin: 0;
     outline: 0;
     padding: 0;
+    outline: none;
+    font-size: 1em;
+    font-family: 'Ubuntu', sans-serif;
   }
   body {
-    background-color: ${colors.background};
-    text-rendering: optimizeLegibility !important;
-    -webkit-font-smoothing: antialiased !important;
-  }
-  body, input, textarea {
-    font-family: 'Ubuntu', sans-serif !important;
-  }
-  a, button {
-    outline: none;
+    text-rendering: optimizeLegibility;
+    -webkit-font-smoothing: antialiased;
   }
 
   /* Toast Notification */
@@ -29,7 +23,7 @@ const GlobalStyle = createGlobalStyle`
   .toast-notification-warning {
     display:flex;
     .toast-notification-body {
-      padding: 30px;
+      padding: 12px 30px;
       font-size: 14px;
 
       &:before {
@@ -40,25 +34,25 @@ const GlobalStyle = createGlobalStyle`
     }
   }
   .toast-notification-error {
-    background-color: ${colors.error};
+    background-color: darkred;
     .toast-notification-body:before {
       content: 'Error message:';
     }
   }
   .toast-notification-info {
-    background-color: ${colors.info};
+    background-color: deepskyblue;
     .toast-notification-body:before {
       content: 'Info message:';
     }
   }
   .toast-notification-success {
-    background-color: ${colors.success};
+    background-color: greenyellow;
     .toast-notification-body:before {
       content: 'Success message:';
     }
   }
   .toast-notification-warning {
-    background-color: ${colors.warning};
+    background-color: gold;
     .toast-notification-body:before {
       content: 'Warning message:';
     }
