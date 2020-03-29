@@ -1,5 +1,10 @@
-import React from 'react';
-import ReactDOM from 'react-dom';
-import App from './App';
+import * as OfflinePluginRuntime from 'offline-plugin/runtime';
 
-ReactDOM.render(<App />, document.getElementById('root'));
+import './fonts/libre-baskerville-v5-latin-regular.woff';
+import './fonts/libre-baskerville-v5-latin-regular.woff2';
+
+import './index.html';
+import './index.scss';
+import './scripts/script';
+
+OfflinePluginRuntime.install();
