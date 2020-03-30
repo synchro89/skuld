@@ -1,11 +1,16 @@
 require('dotenv/config');
+
 const express = require('express');
 const app = express();
+
+require("./routes")(app);
+
+app.listen(process.env.PORT || 8080);
 
 // Create a tunnel to test backend
 if (process.env.DEVELOPMENT) {
   const ngrok = require('ngrok');
-  (async function() {
+  (async function () {
     try {
       const url = await ngrok.connect({
         proto: 'http',
