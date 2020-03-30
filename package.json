@@ -1,7 +1,7 @@
 {
-    "name": "WhatShouldIWatch",
+    "name": "skuld",
     "version": "1.0.0",
-    "description": "A platform to find your next favorite movie. Written in Electron and React, therefore, it offers a clean and fast interface.",
+    "description": "Simple UI, to explore and find your next favorite Anime",
     "main": "index.js",
     "repository": "https://github.com/LaksCastro/what-should-i-watch",
     "author": "LaksCastro",
@@ -38,7 +38,5 @@
             "path": "./node_modules/cz-conventional-changelog"
         }
     },
-    "dependencies": {
-        "react-headroom": "^3.0.0"
-    }
+    "dependencies": {}
 }
