@@ -3,7 +3,13 @@ require('dotenv/config');
 const express = require('express');
 const app = express();
 
+const cors = require("cors");
+
 require("./routes")(app);
+require("./database");
+
+app.use(cors());
+app.use(express.json());
 
 app.listen(process.env.PORT || 8080);
 
