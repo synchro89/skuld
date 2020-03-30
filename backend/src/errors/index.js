@@ -1,11 +1,16 @@
 const path = require('path');
 const { readdirSync } = require('fs');
 
-const modelErrors = {};
+const entityErrors = {};
 
 readdirSync(path.join(__dirname))
+    .filter(fileName => fileName !== "index.js")
     .forEach(fileName => {
         const fullPath = path.join(__dirname, fileName)
-        console.log(fileName);
-        // require(fullPath);
+
+        const [name] = fileName.split(".");
+
+        entityErrors[name] = require(fullPath);
     });
+
+module.exports = entityErrors;
