@@ -7,4 +7,3 @@ mongo.connect(DB_URL, {
     useUnifiedTopology: true,
     useFindAndModify: false
 });
-
