@@ -6,12 +6,12 @@ const formidableMiddleware = require('express-formidable');
 
 const cors = require("cors");
 
-require("./routes")(app);
-require("./database");
-
 app.use(cors());
 app.use(express.json());
 app.use(formidableMiddleware());
+
+require("./routes")(app);
+require("./database");
 
 app.listen(process.env.PORT || 8080);
 

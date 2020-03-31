@@ -1,4 +1,6 @@
-const { Schema } = require("mongoose");
+const mongo = require("mongoose");
+
+const { Schema } = mongo;
 
 const FileSchema = require("./FileSchema");
 
