@@ -2,6 +2,8 @@ const User = require("../models/UserSchema");
 
 const cloudinary = require("../cloudinary");
 
+const fs = require('fs')
+
 const path = require("path");
 
 const sharp = require("sharp");
@@ -32,7 +34,7 @@ const UserController = {
             let newPhotoPath = path.normalize(path.join(__dirname, "..", "temp", newName));
 
             const outputBuffer = await sharp(photo.path)
-                .resize(200, 200, {
+                .resize(250, 250, {
                     fit: sharp.fit.inside,
                     withoutEnlargement: true
                 })
@@ -40,6 +42,21 @@ const UserController = {
                 .toFile(newPhotoPath);
 
             response.outputBuffer = outputBuffer;
+
+            await cloudinary.uploader.upload(newPhotoPath, function (error, result) {
+                if (error) throw new Error(error);
+
+                fs.unlink(newPhotoPath, (error) => {
+                    if (error)
+                        throw new Error(error);
+                });
+
+                response.cloudinaryResponse = {
+                    result,
+                    error
+                }
+            });
+
         }
         res.json(response);
     },
