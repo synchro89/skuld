@@ -33,7 +33,7 @@ const UserController = {
 
             let newPhotoPath = path.normalize(path.join(__dirname, "..", "temp", newName));
 
-            const outputBuffer = await sharp(photo.path)
+            const newImage = await sharp(photo.path)
                 .resize(250, 250, {
                     fit: sharp.fit.inside,
                     withoutEnlargement: true
@@ -41,7 +41,7 @@ const UserController = {
                 .toFormat('webp')
                 .toFile(newPhotoPath);
 
-            response.outputBuffer = outputBuffer;
+            response.newImage = newImage;
 
             await cloudinary.uploader.upload(newPhotoPath, function (error, result) {
                 if (error) throw new Error(error);
