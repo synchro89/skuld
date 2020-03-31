@@ -1,5 +1,7 @@
 const User = require("../models/UserSchema");
 
+const cloudinary = require("../cloudinary");
+
 const path = require("path");
 
 const sharp = require("sharp");
@@ -27,13 +29,15 @@ const UserController = {
                 (part, i, fullName) => i === fullName.length - 1 ? "webp" : part
             ).join(".");
 
+            let newPhotoPath = path.normalize(path.join(__dirname, "..", "temp", newName));
+
             const outputBuffer = await sharp(photo.path)
                 .resize(200, 200, {
                     fit: sharp.fit.inside,
                     withoutEnlargement: true
                 })
                 .toFormat('webp')
-                .toFile(path.join(__dirname, newName));
+                .toFile(newPhotoPath);
 
             response.outputBuffer = outputBuffer;
         }
