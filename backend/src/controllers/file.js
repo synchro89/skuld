@@ -10,7 +10,16 @@ const FileController = {
     Get: function (req, res) {
     },
     Store: function (req, res) {
-        console.log(req.body);
+        const formidable = require('formidable');
+        const form = new formidable.IncomingForm();
+        form.parse(req, function (err, fields, files) {
+            console.log(err);
+            console.log(fields);
+            console.log(files);
+            res.json({
+                text: 'File uploaded'
+            });
+        });
     },
     Update: function (req, res) {
     },
