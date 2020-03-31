@@ -1,8 +1,16 @@
 const { Schema } = require("mongoose");
 
+const FileSchema = require("./FileSchema");
+
 const UserSchema = new Schema(
     {
-        name: String,
+        name: {
+            type: String,
+            unique: true
+        },
+        photo: {
+            type: FileSchema,
+        }
     },
     {
         timestamps: true

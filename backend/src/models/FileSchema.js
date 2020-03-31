@@ -8,7 +8,7 @@ const FileSchema = new Schema(
         },
         url: {
             type: String,
-            required: true
+            required: true,
         }
     },
     {
