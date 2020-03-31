@@ -1,8 +1,8 @@
 const routes = require('express').Router();
 
-const UserController = require("../controllers/users");
+const FileController = require("../controllers/file");
 
-routes.get("/", UserController.Index);
-routes.post("/", UserController.Store);
+routes.get("/", FileController.Index);
+routes.post("/", FileController.Store);
 
-module.exports = (app) => app.use("/users", routes);
+module.exports = (app) => app.use("/uploads", routes);

@@ -10,6 +10,7 @@ const FileController = {
     Get: function (req, res) {
     },
     Store: function (req, res) {
+        console.log(req.body);
     },
     Update: function (req, res) {
     },
