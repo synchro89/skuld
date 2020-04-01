@@ -24,7 +24,12 @@ const UserController = {
         let skip = null;
 
         skip = calcSkip(page, limit).skip;
-        const currentResults = await UserSchema.find().skip(skip).limit(limit);
+        const currentResults = await UserSchema.find()
+            .skip(skip)
+            .limit(limit)
+            .sort([
+                ["createdAt", "-1"]
+            ]);
 
         if (!currentResults.length) {
             const { notFoundPagination: notFound } = userResponses;
@@ -34,7 +39,12 @@ const UserController = {
         }
 
         skip = calcSkip(page + 1, limit).skip;
-        const nextResults = await UserSchema.find().skip(skip).limit(limit);
+        const nextResults = await UserSchema.find()
+            .skip(skip)
+            .limit(limit)
+            .sort([
+                ["createdAt", "-1"]
+            ]);
 
         const metadata = {
             hasMore: nextResults.length > 0,
@@ -47,6 +57,7 @@ const UserController = {
         }
 
         const { successPagination } = userResponses;
+
         return res.json(generate(successPagination, {
             data
         }));
