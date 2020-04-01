@@ -22,14 +22,12 @@ const UserController = {
         try {
             const {
                 fields: { name },
-                files
+                files: { photo = null }
             } = req;
-
-            const { photo } = files;
 
             let userData = {
                 name,
-                photo: null
+                photo
             }
 
             if (!!await UserSchema.findOne({ name })) {
@@ -46,47 +44,12 @@ const UserController = {
                 const { successCreated } = userResponses;
                 return res.json(generate(successCreated, { data: user }));
             } else {
-                let newName = photo.name.split(".").map(
-                    (part, i, fullName) => i === fullName.length - 1 ? "webp" : part
-                ).join(".");
+                userData.photo = await uploadFile(photo);
 
-                let newPhotoPath = path.normalize(path.join(__dirname, "..", "temp", newName));
+                const user = await UserSchema.create(userData);
 
-                await sharp(photo.path)
-                    .resize(250, 250, {
-                        fit: sharp.fit.inside,
-                        withoutEnlargement: true
-                    })
-                    .toFormat('webp')
-                    .toFile(newPhotoPath);
-
-                await cloudinary.uploader.upload(newPhotoPath, async (error, result) => {
-                    if (error) throw new Error(error);
-
-                    fs.unlink(newPhotoPath, (error) => {
-                        if (error)
-                            throw new Error(error);
-                    });
-
-                    const {
-                        public_id,
-                        format: ext,
-                        secure_url: url,
-                        original_filename: name
-                    } = result;
-
-                    userData.photo = {
-                        name,
-                        ext,
-                        url,
-                        public_id
-                    }
-
-                    const user = await UserSchema.create(userData);
-
-                    const { successCreated } = userResponses;
-                    return res.json(generate(successCreated, { data: user }));
-                });
+                const { successCreated } = userResponses;
+                return res.json(generate(successCreated, { data: user }));
             }
         } catch (error) {
             const { unknownError } = userResponses;
@@ -96,9 +59,68 @@ const UserController = {
         }
     },
     Update: function (req, res) {
+        try {
+
+
+        } catch (error) {
+
+        }
     },
     Delete: function (req, res) {
     },
+}
+
+async function uploadFile(photo, currentPublicID = false) {
+    let newName = photo.name.split(".").map(
+        (part, i, fullName) => i === fullName.length - 1 ? "webp" : part
+    ).join(".");
+
+    let newPhotoPath = path.normalize(path.join(__dirname, "..", "temp", newName));
+
+    await sharp(photo.path)
+        .resize(250, 250, {
+            fit: sharp.fit.inside,
+            withoutEnlargement: true
+        })
+        .toFormat('webp')
+        .toFile(newPhotoPath);
+
+    let fileUploaded = {};
+
+    const options = currentPublicID ? {
+        public_id: currentPublicID
+    } : {};
+
+    const callback = async (error, result) => {
+        if (error) throw new Error(error);
+
+        fs.unlink(newPhotoPath, (error) => {
+            if (error)
+                throw new Error(error);
+        });
+
+        const {
+            public_id,
+            format: ext,
+            secure_url: url,
+            original_filename: name
+        } = result;
+
+        fileUploaded = {
+            public_id,
+            ext,
+            url,
+            name
+        }
+    }
+
+    const args = currentPublicID ?
+        [newPhotoPath, options, callback] :
+        [newPhotoPath, callback]
+
+    await cloudinary.uploader.upload(...args)
+
+    return fileUploaded;
 }
 
 module.exports = UserController;
