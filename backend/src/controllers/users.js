@@ -9,18 +9,44 @@ const sharp = require("sharp");
 const { user: userResponses } = require("../responses");
 const { generate } = userResponses;
 
+const { calcSkip } = require("../utils");
+
 const UserSchema = require("../models/UserSchema");
 
 const UserController = {
     Index: async function (req, res) {
-        const { page } = req.query;
 
-        const limit = 10;
-        const skip = (page - 1) * limit;
+        const { page, limit = 2 } = req.query;
 
-        const results = await UserSchema.find().skip(skip).limit(limit);
+        let skip = null;
 
-        return res.json(results);
+        skip = calcSkip(page, limit).skip;
+        const currentResults = await UserSchema.find().skip(skip).limit(limit);
+
+        if (!currentResults.length) {
+            const { notFoundPagination: notFound } = userResponses;
+            return res.status(notFound.status).json(generate(notFound, {
+                error: true
+            }));
+        }
+
+        skip = calcSkip(page + 1, limit).skip;
+        const nextResults = await UserSchema.find().skip(skip).limit(limit);
+
+        const metadata = {
+            hasMore: nextResults.length > 0,
+            howMany: nextResults.length
+        }
+
+        const data = {
+            results: currentResults,
+            metadata
+        }
+
+        const { successPagination } = userResponses;
+        return res.json(generate(successPagination, {
+            data
+        }));
     },
     Get: function (req, res) {
     },
@@ -180,5 +206,6 @@ async function uploadFile(photo, currentPublicID = false) {
 async function deleteFile(currentPublicID) {
     await uploader.destroy(currentPublicID);
 }
+
 
 module.exports = UserController;

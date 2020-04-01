@@ -37,6 +37,18 @@ const userResponses = {
         model: "UserSchema",
         status: 204
     },
+    notFoundPagination: {
+        message: "No more results on this page",
+        code: "user/pagination-not-found",
+        model: "UserSchema",
+        status: 400
+    },
+    successPagination: {
+        message: "Success fetch results on this page",
+        code: "user/pagination-with-success",
+        model: "UserSchema",
+        status: 200
+    },
     generate
 }
 
