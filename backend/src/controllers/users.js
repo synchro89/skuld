@@ -116,9 +116,6 @@ async function uploadFile(photo, currentPublicID = false) {
 
     let fileUploaded = {};
 
-    const options = currentPublicID ? {
-        public_id: currentPublicID
-    } : {};
 
     const callback = async (error, result) => {
         if (error) throw new Error(error);
@@ -143,6 +140,12 @@ async function uploadFile(photo, currentPublicID = false) {
         }
     }
 
+    const options = currentPublicID ? {
+        public_id: currentPublicID
+    } : {};
+
+    // If have a current public_id, 
+    // then the image/file already exists, then update, otherwise, create
     const args = currentPublicID ?
         [newPhotoPath, options, callback] :
         [newPhotoPath, callback]

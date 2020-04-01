@@ -12,7 +12,10 @@ const UserSchema = new Schema(
         },
         photo: {
             type: FileSchema,
-        }
+        },
+        animes: [{
+            type: String
+        }]
     },
     {
         timestamps: true
