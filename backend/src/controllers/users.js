@@ -9,7 +9,7 @@ const sharp = require("sharp");
 const { user: userResponses } = require("../responses");
 const { generate } = userResponses;
 
-const { calcSkip } = require("../utils");
+const { calcSkip, isValidName } = require("../utils");
 
 const UserSchema = require("../models/UserSchema");
 
@@ -71,7 +71,9 @@ const UserController = {
     },
     Get: async function (req, res) {
         try {
-            const { name } = req.params;
+            let { name } = req.params;
+
+            name = name.replace(/-/g, " ");
 
             const user = await UserSchema.findOne({ name });
 
@@ -98,8 +100,16 @@ const UserController = {
             } = req;
 
             let userData = {
-                name: name.toLowerCase(),
+                name: name,
                 photo
+            }
+
+            if (!isValidName(name)) {
+                const { invalidName } = userResponses;
+
+                return res
+                    .status(invalidName.status)
+                    .json(generate(invalidName, { error: true }));
             }
 
             if (!!await UserSchema.findOne({ name })) {

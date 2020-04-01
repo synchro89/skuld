@@ -31,6 +31,12 @@ const userResponses = {
         model: "UserSchema",
         status: 200
     },
+    invalidName: {
+        message: "Names cannot have accents or spaces",
+        code: "user/invalid-name",
+        model: "UserSchema",
+        status: 400
+    },
     successDeleted: {
         message: "User deleted with success",
         code: "user/deleted-with-success",
