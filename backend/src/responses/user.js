@@ -49,6 +49,12 @@ const userResponses = {
         model: "UserSchema",
         status: 200
     },
+    successFetched: {
+        message: "Success user fetch",
+        code: "user/get-with-success",
+        model: "UserSchema",
+        status: 200
+    },
     generate
 }
 

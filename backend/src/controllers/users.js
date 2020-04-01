@@ -15,54 +15,80 @@ const UserSchema = require("../models/UserSchema");
 
 const UserController = {
     Index: async function (req, res) {
+        try {
+            let { page, limit = 2 } = req.query;
 
-        let { page, limit = 2 } = req.query;
+            page = Number(page);
+            limit = Number(limit);
 
-        page = Number(page);
-        limit = Number(limit);
+            let skip = null;
 
-        let skip = null;
+            skip = calcSkip(page, limit).skip;
+            const currentResults = await UserSchema.find()
+                .skip(skip)
+                .limit(limit)
+                .sort([
+                    ["createdAt", "-1"]
+                ]);
 
-        skip = calcSkip(page, limit).skip;
-        const currentResults = await UserSchema.find()
-            .skip(skip)
-            .limit(limit)
-            .sort([
-                ["createdAt", "-1"]
-            ]);
+            if (!currentResults.length) {
+                const { notFoundPagination: notFound } = userResponses;
+                return res.status(notFound.status).json(generate(notFound, {
+                    error: true
+                }));
+            }
 
-        if (!currentResults.length) {
-            const { notFoundPagination: notFound } = userResponses;
-            return res.status(notFound.status).json(generate(notFound, {
-                error: true
+            skip = calcSkip(page + 1, limit).skip;
+            const nextResults = await UserSchema.find()
+                .skip(skip)
+                .limit(limit)
+                .sort([
+                    ["createdAt", "-1"]
+                ]);
+
+            const metadata = {
+                hasMore: nextResults.length > 0,
+                howMany: nextResults.length
+            }
+
+            const data = {
+                results: currentResults,
+                metadata
+            }
+
+            const { successPagination } = userResponses;
+
+            return res.json(generate(successPagination, {
+                data
             }));
+        } catch (error) {
+
+            const { unknownError } = userResponses;
+            return res
+                .status(unknownError.status)
+                .json(generate(unknownError, { error }));
         }
-
-        skip = calcSkip(page + 1, limit).skip;
-        const nextResults = await UserSchema.find()
-            .skip(skip)
-            .limit(limit)
-            .sort([
-                ["createdAt", "-1"]
-            ]);
-
-        const metadata = {
-            hasMore: nextResults.length > 0,
-            howMany: nextResults.length
-        }
-
-        const data = {
-            results: currentResults,
-            metadata
-        }
-
-        const { successPagination } = userResponses;
-
-        return res.json(generate(successPagination, {
-            data
-        }));
     },
     Get: function (req, res) {
+        try {
+            const { name } = req.params;
+
+            const user = await UserSchema.findOne({ name });
+
+            if (!user) {
+                const { userNotExists } = userResponses;
+                return res.status(userNotExists.status).json(generate(userNotExists, { error: true }));
+            }
+
+            const { successFetched } = userResponses;
+            return res.json(generate(successFetched, { data: user }));
+
+        } catch (error) {
+            const { unknownError } = userResponses;
+            return res
+                .status(unknownError.status)
+                .json(generate(unknownError, { error }));
+        }
     },
     Store: async function (req, res) {
         try {
