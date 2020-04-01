@@ -1,12 +1,12 @@
-const User = require("../models/UserSchema");
-
-const cloudinary = require("../cloudinary");
-
 const fs = require('fs')
-
 const path = require("path");
 
+const cloudinary = require("../cloudinary");
 const sharp = require("sharp");
+
+const errors = require("../errors");
+
+const UserSchema = require("../models/UserSchema");
 
 const UserController = {
     Index: function (req, res) {
@@ -18,47 +18,74 @@ const UserController = {
     Get: function (req, res) {
     },
     Store: async function (req, res) {
-        const { fields, files } = req;
-        const { photo } = files;
+        try {
+            const {
+                fields: { name },
+                files
+            } = req;
 
-        let response = {
-            fields,
-            files
-        }
+            const { photo } = files;
 
-        if (photo) {
-            let newName = photo.name.split(".").map(
-                (part, i, fullName) => i === fullName.length - 1 ? "webp" : part
-            ).join(".");
+            let userData = {
+                name,
+                photo: null
+            }
 
-            let newPhotoPath = path.normalize(path.join(__dirname, "..", "temp", newName));
+            let user = null;
 
-            const newImage = await sharp(photo.path)
-                .resize(250, 250, {
-                    fit: sharp.fit.inside,
-                    withoutEnlargement: true
-                })
-                .toFormat('webp')
-                .toFile(newPhotoPath);
-
-            response.newImage = newImage;
-
-            await cloudinary.uploader.upload(newPhotoPath, function (error, result) {
-                if (error) throw new Error(error);
-
-                fs.unlink(newPhotoPath, (error) => {
-                    if (error)
-                        throw new Error(error);
+            if (!!await UserSchema.findOne({ name })) {
+                return res.status(400).json({
+                    message: "User Already Exists",
+                    errors
                 });
+            }
 
-                response.cloudinaryResponse = {
-                    result,
-                    error
-                }
-            });
+            if (!photo) {
+                user = await UserSchema.create(userData);
+            } else {
+                let newName = photo.name.split(".").map(
+                    (part, i, fullName) => i === fullName.length - 1 ? "webp" : part
+                ).join(".");
 
+                let newPhotoPath = path.normalize(path.join(__dirname, "..", "temp", newName));
+
+                await sharp(photo.path)
+                    .resize(250, 250, {
+                        fit: sharp.fit.inside,
+                        withoutEnlargement: true
+                    })
+                    .toFormat('webp')
+                    .toFile(newPhotoPath);
+
+                await cloudinary.uploader.upload(newPhotoPath, async (error, result) => {
+                    if (error) throw new Error(error);
+
+                    fs.unlink(newPhotoPath, (error) => {
+                        if (error)
+                            throw new Error(error);
+                    });
+
+                    const {
+                        public_id,
+                        format: ext,
+                        secure_url: url,
+                        original_filename: name
+                    } = result;
+
+                    userData.photo = {
+                        name,
+                        ext,
+                        url,
+                        public_id
+                    }
+
+                    user = await UserSchema.create(userData);
+                });
+            }
+            return res.json(user);
+        } catch (error) {
+            throw new Error(error);
         }
-        res.json(response);
     },
     Update: function (req, res) {
     },
