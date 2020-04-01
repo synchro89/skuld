@@ -35,7 +35,7 @@ const UserController = {
 
                 return res
                     .status(alreadyExists.status)
-                    .json(generate(alreadyExists));
+                    .json(generate(alreadyExists, { error: true }));
             }
 
             if (!photo) {
@@ -58,12 +58,41 @@ const UserController = {
                 .json(generate(unknownError, { error }));
         }
     },
-    Update: function (req, res) {
+    Update: async function (req, res) {
         try {
+            const {
+                fields: { name },
+                files: { photo = null }
+            } = req;
 
+            const user = await UserSchema.findOne({ name });
+
+            if (!user) {
+                const { userNotExists } = userResponses;
+                return res.status(userNotExists.status).json(generate(userNotExists, { error: true }));
+            }
+            if (!photo) {
+                return res.status(203);
+            }
+
+            const newPhoto = await uploadFile(photo, user.photo.public_id);
+
+            const newUser = await UserSchema.findByIdAndUpdate(user._id, {
+                name: user.name,
+                photo: newPhoto
+            }, {
+                new: true
+            });
+
+            return res.json({
+                newUser
+            });
 
         } catch (error) {
-
+            const { unknownError } = userResponses;
+            return res
+                .status(unknownError.status)
+                .json(generate(unknownError, { error }));
         }
     },
     Delete: function (req, res) {

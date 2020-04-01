@@ -7,6 +7,12 @@ const userResponses = {
         model: "UserSchema",
         status: 400
     },
+    userNotExists: {
+        message: "This user not exists",
+        code: "user/not-exists",
+        model: "UserSchema",
+        status: 400
+    },
     unknownError: {
         message: "Unknown error",
         code: "user/unknown-error",
@@ -18,6 +24,12 @@ const userResponses = {
         code: "user/created-with-success",
         model: "UserSchema",
         status: 201
+    },
+    successUpdated: {
+        message: "User updated with success",
+        code: "user/updated-with-success",
+        model: "UserSchema",
+        status: 200
     },
     generate
 }
