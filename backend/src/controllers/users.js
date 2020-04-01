@@ -2,6 +2,8 @@ const fs = require('fs')
 const path = require("path");
 
 const cloudinary = require("../cloudinary");
+const uploader = cloudinary.uploader;
+
 const sharp = require("sharp");
 
 const { user: userResponses } = require("../responses");
@@ -10,11 +12,15 @@ const { generate } = userResponses;
 const UserSchema = require("../models/UserSchema");
 
 const UserController = {
-    Index: function (req, res) {
+    Index: async function (req, res) {
         const { page } = req.query;
 
         const limit = 10;
         const skip = (page - 1) * limit;
+
+        const results = await UserSchema.find().skip(skip).limit(limit);
+
+        return res.json(results);
     },
     Get: function (req, res) {
     },
@@ -26,7 +32,7 @@ const UserController = {
             } = req;
 
             let userData = {
-                name,
+                name: name.toLowerCase(),
                 photo
             }
 
@@ -71,9 +77,9 @@ const UserController = {
                 const { userNotExists } = userResponses;
                 return res.status(userNotExists.status).json(generate(userNotExists, { error: true }));
             }
-            if (!photo) {
+
+            if (!photo)
                 return res.status(203);
-            }
 
             const newPhoto = await uploadFile(photo, user.photo.public_id);
 
@@ -95,7 +101,24 @@ const UserController = {
                 .json(generate(unknownError, { error }));
         }
     },
-    Delete: function (req, res) {
+    Delete: async function (req, res) {
+        try {
+            const { name } = req.params;
+
+            const user = await UserSchema.findOne({ name });
+
+            await deleteFile(user.photo.public_id);
+
+            await UserSchema.findByIdAndDelete(user._id);
+
+            const { successDeleted } = userResponses;
+            return res.status(successDeleted.status).json(generate(successDeleted));
+        } catch (error) {
+            const { unknownError } = userResponses;
+            return res
+                .status(unknownError.status)
+                .json(generate(unknownError, { error }));
+        }
     },
 }
 
@@ -115,7 +138,6 @@ async function uploadFile(photo, currentPublicID = false) {
         .toFile(newPhotoPath);
 
     let fileUploaded = {};
-
 
     const callback = async (error, result) => {
         if (error) throw new Error(error);
@@ -150,9 +172,13 @@ async function uploadFile(photo, currentPublicID = false) {
         [newPhotoPath, options, callback] :
         [newPhotoPath, callback]
 
-    await cloudinary.uploader.upload(...args)
+    await uploader.upload(...args)
 
     return fileUploaded;
+}
+
+async function deleteFile(currentPublicID) {
+    await uploader.destroy(currentPublicID);
 }
 
 module.exports = UserController;

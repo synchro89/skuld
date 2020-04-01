@@ -31,6 +31,12 @@ const userResponses = {
         model: "UserSchema",
         status: 200
     },
+    successDeleted: {
+        message: "User deleted with success",
+        code: "user/deleted-with-success",
+        model: "UserSchema",
+        status: 204
+    },
     generate
 }
 
