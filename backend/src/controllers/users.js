@@ -16,7 +16,10 @@ const UserSchema = require("../models/UserSchema");
 const UserController = {
     Index: async function (req, res) {
 
-        const { page, limit = 2 } = req.query;
+        let { page, limit = 2 } = req.query;
+
+        page = Number(page);
+        limit = Number(limit);
 
         let skip = null;
 
