@@ -4,7 +4,8 @@ const path = require("path");
 const cloudinary = require("../cloudinary");
 const sharp = require("sharp");
 
-const errors = require("../errors");
+const { user: userResponses } = require("../responses");
+const { generate } = userResponses;
 
 const UserSchema = require("../models/UserSchema");
 
@@ -31,17 +32,19 @@ const UserController = {
                 photo: null
             }
 
-            let user = null;
-
             if (!!await UserSchema.findOne({ name })) {
-                return res.status(400).json({
-                    message: "User Already Exists",
-                    errors
-                });
+                const { alreadyExists } = userResponses;
+
+                return res
+                    .status(alreadyExists.status)
+                    .json(generate(alreadyExists));
             }
 
             if (!photo) {
-                user = await UserSchema.create(userData);
+                const user = await UserSchema.create(userData);
+
+                const { successCreated } = userResponses;
+                return res.json(generate(successCreated, { data: user }));
             } else {
                 let newName = photo.name.split(".").map(
                     (part, i, fullName) => i === fullName.length - 1 ? "webp" : part
@@ -79,12 +82,17 @@ const UserController = {
                         public_id
                     }
 
-                    user = await UserSchema.create(userData);
+                    const user = await UserSchema.create(userData);
+
+                    const { successCreated } = userResponses;
+                    return res.json(generate(successCreated, { data: user }));
                 });
             }
-            return res.json(user);
         } catch (error) {
-            throw new Error(error);
+            const { unknownError } = userResponses;
+            return res
+                .status(unknownError.status)
+                .json(generate(unknownError, { error }));
         }
     },
     Update: function (req, res) {
