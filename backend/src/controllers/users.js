@@ -69,7 +69,7 @@ const UserController = {
                 .json(generate(unknownError, { error }));
         }
     },
-    Get: function (req, res) {
+    Get: async function (req, res) {
         try {
             const { name } = req.params;
 
