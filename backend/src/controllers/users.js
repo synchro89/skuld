@@ -93,7 +93,7 @@ const UserController = {
                 return res.status(userNotExists.status).json(generate(userNotExists, { error: true }));
             }
 
-            const sendRecoveryCodes = isAuth && userId.toString() === user._id.toString();
+            const sendRecoveryCodes = isAuth && compareId(userId, user._id);
 
             if (!sendRecoveryCodes)
                 user.recovery_codes = undefined;
@@ -254,7 +254,10 @@ const UserController = {
     Reset: async function (req, res) {
         const { name } = req.params;
         const { password, newPassword } = req.body;
-        return console.log(req.authState);
+        const { userId } = req.authState;
+
+        console.log(userId);
+
         let user = await UserSchema.findOne({ name }).select("+password");
 
         if (!user) {
@@ -262,7 +265,7 @@ const UserController = {
             return res.status(userNotExists.status).json(generate(userNotExists, { error: true }));
         }
 
-        if (userId !== user._id) {
+        if (!compareId(userId, user._id)) {
             const { unauthorized } = userResponses;
             return res
                 .status(unauthorized.status)
@@ -356,6 +359,10 @@ function generateAccessToken(id) {
         expiresIn: 86400
     });
     return accessToken;
+}
+
+function compareId(id, otherId) {
+    return id.toString() === otherId.toString();
 }
 
 
