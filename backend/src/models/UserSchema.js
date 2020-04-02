@@ -19,7 +19,7 @@ const UserSchema = new Schema(
         photo: {
             type: FileSchema,
         },
-        recuperation_codes: {
+        recovery_codes: {
             type: Array,
             required: true
         }

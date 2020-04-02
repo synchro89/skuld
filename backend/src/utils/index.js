@@ -31,8 +31,21 @@ function isValidName(name) {
     return valid;
 }
 
+function generateRandomNumber(min, max) {
+    return Math.floor(Math.random() * (max - min + 1) + min);
+}
+
+function generateRecoveryCodes() {
+    return Array.from({ length: 4 }).map(() => ({
+        valid: true,
+        code: Array.from({ length: 6 }).map(() => generateRandomNumber(0, 9).toString()).join("")
+    }));
+}
+
 module.exports = {
     generateResponse,
     calcSkip,
-    isValidName
+    isValidName,
+    generateRandomNumber,
+    generateRecoveryCodes
 }

@@ -8,7 +8,7 @@ const sharp = require("sharp");
 const { user: userResponses } = require("../responses");
 const { generate } = userResponses;
 
-const { calcSkip, isValidName } = require("../utils");
+const { calcSkip, isValidName, generateRecoveryCodes } = require("../utils");
 
 const UserSchema = require("../models/UserSchema");
 
@@ -170,7 +170,8 @@ const UserController = {
             let userData = {
                 name,
                 password,
-                photo
+                photo,
+                recovery_codes: generateRecoveryCodes()
             }
 
             if (!isValidName(name)) {
