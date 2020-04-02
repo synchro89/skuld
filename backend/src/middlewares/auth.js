@@ -2,7 +2,7 @@ const authConfig = require("../config");
 const jwt = require("jsonwebtoken");
 
 const { user: userResponses } = require("../responses");
-const { generate } = userResponses;
+const { generateResponse: generate } = require("../utils");
 
 const defaultOptions = {
     nextWithAuthState: false
