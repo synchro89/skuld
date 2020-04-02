@@ -127,7 +127,6 @@ const UserController = {
                 return res.status(userNotExists.status).json(generate(userNotExists, { error: true }));
             }
 
-
             const newPhoto = await uploadFile(photo, user.photo.public_id);
 
             user = await UserSchema.findByIdAndUpdate(user._id, {
