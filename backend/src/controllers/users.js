@@ -1,18 +1,18 @@
 const fs = require('fs')
 const path = require("path");
 
-const { uploader } = require("../cloudinary");
-
-const sharp = require("sharp");
+const { calcSkip, isValidName, generateRecoveryCodes } = require("../utils");
 
 const { user: userResponses } = require("../responses");
 const { generate } = userResponses;
 
-const { calcSkip, isValidName, generateRecoveryCodes } = require("../utils");
-
 const UserSchema = require("../models/UserSchema");
 
 const bcrypt = require("bcryptjs");
+const jwt = require("jsonwebtoken");
+
+const sharp = require("sharp");
+const { uploader } = require("../cloudinary");
 
 const UserController = {
     Index: async function (req, res) {
