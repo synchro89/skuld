@@ -4,7 +4,7 @@ const path = require("path");
 const { calcSkip, isValidName, generateRecoveryCodes } = require("../utils");
 
 const { user: userResponses } = require("../responses");
-const { generateResponse: generate, compareId } = require("../utils");
+const { generateResponse: generate, compareId, exists } = require("../utils");
 
 const UserSchema = require("../models/UserSchema");
 
@@ -88,7 +88,7 @@ const UserController = {
 
             const user = await UserSchema.findOne({ name });
 
-            if (!user) {
+            if (!exists(user)) {
                 const { userNotExists } = userResponses;
                 return res.status(userNotExists.status).json(generate(userNotExists, { error: true }));
             }
@@ -115,14 +115,14 @@ const UserController = {
                 file: { photo = null }
             } = req;
 
-            if (!photo) {
+            if (!exists(photo)) {
                 return res
                     .json(generate(successUpdated, { data: user }));
             }
 
             let user = await UserSchema.findOne({ name });
 
-            if (!user) {
+            if (!exists(user)) {
                 const { userNotExists } = userResponses;
                 return res.status(userNotExists.status).json(generate(userNotExists, { error: true }));
             }
@@ -152,7 +152,7 @@ const UserController = {
 
             const user = await UserSchema.findOne({ name });
 
-            if (!user) {
+            if (!exists(user)) {
                 const { userNotExists } = userResponses;
                 return res.status(userNotExists.status).json(generate(userNotExists, { error: true }));
             }
@@ -193,7 +193,7 @@ const UserController = {
                     .json(generate(invalidName, { error: true }));
             }
 
-            if (!!await UserSchema.findOne({ name })) {
+            if (exists(await UserSchema.findOne({ name }))) {
                 const { alreadyExists } = userResponses;
 
                 return res
@@ -201,7 +201,7 @@ const UserController = {
                     .json(generate(alreadyExists, { error: true }));
             }
 
-            if (!photo) {
+            if (!exists(photo)) {
                 const user = await UserSchema.create(userData);
                 user.password = undefined;
 
@@ -235,7 +235,7 @@ const UserController = {
 
             const user = await UserSchema.findOne({ name }).select("+password");
 
-            if (!user) {
+            if (!exists(user)) {
                 const { userNotExists } = userResponses;
                 return res.status(userNotExists.status).json(generate(userNotExists, { error: true }));
             }
@@ -300,7 +300,7 @@ const UserController = {
             if (isAuth) {
                 let user = await UserSchema.findOne({ name }).select("+password");
 
-                if (!user) {
+                if (!exists(user)) {
                     const { userNotExists } = userResponses;
                     return res.status(userNotExists.status).json(generate(userNotExists, { error: true }));
                 }
@@ -312,7 +312,7 @@ const UserController = {
                         .json(generate(unauthorized, { error: true }));
                 }
 
-                if (password) {
+                if (exists(password)) {
                     if (!await bcrypt.compare(password, user.password)) {
                         const { invalidPassword } = userResponses;
                         return res
@@ -358,7 +358,7 @@ const UserController = {
                     .json(generate(successUpdated, { data: user }));
 
             } else {
-                if (!code) {
+                if (!exists(code)) {
                     const { invalidRecoveryCode } = userResponses;
                     return res
                         .status(invalidRecoveryCode.status)
@@ -366,7 +366,7 @@ const UserController = {
                 }
                 let user = await UserSchema.findOne({ name });
 
-                if (!user) {
+                if (!exists(user)) {
                     const { userNotExists } = userResponses;
                     return res.status(userNotExists.status).json(generate(userNotExists, { error: true }));
                 }
@@ -423,14 +423,14 @@ async function uploadFile(photo, currentPublicID = false) {
     let fileUploaded = {};
 
     const callback = async (error, result) => {
-        if (error) throw new Error(error);
+        if (exists(error)) throw new Error(error);
 
         fs.unlink(newPhotoPath, (error) => {
-            if (error)
+            if (exists(error))
                 throw new Error(error);
         });
         fs.unlink(photo.path, (error) => {
-            if (error)
+            if (exists(error))
                 throw new Error(error);
         });
 
