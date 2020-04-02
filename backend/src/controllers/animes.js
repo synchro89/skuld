@@ -1,8 +1,8 @@
 const { calcSkip } = require("../utils");
 
-const { anime: animeResponses } = require("../responses");
 const { user: userResponses } = require("../responses");
-const { generateResponse: generate } = require("../utils");
+const { anime: animeResponses } = require("../responses");
+const { generateResponse: generate, compareId } = require("../utils");
 
 const mongoose = require('../database');
 
@@ -23,6 +23,12 @@ const AnimeController = {
             return res
                 .status(userNotExists.status)
                 .json(generate(userNotExists, { error: true }));
+        }
+        if (!compareId(loggedUserId, user._id)) {
+            const { unauthorized } = userResponses;
+            return res
+                .status(unauthorized.status)
+                .json(generate(unauthorized, { error: true }));
         }
     }
 }
