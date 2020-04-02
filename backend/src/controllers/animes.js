@@ -14,6 +14,13 @@ const AnimeController = {
         let { userId, animeId } = req.body;
         let { userId: loggedUserId } = req.authState;
 
+        if (!compareId(loggedUserId, userId)) {
+            const { unauthorized } = userResponses;
+            return res
+                .status(unauthorized.status)
+                .json(generate(unauthorized, { error: true }));
+        }
+
         userId = mongoose.Types.ObjectId(userId);
 
         const user = await UserSchema.findOne({ _id: userId });
@@ -24,15 +31,9 @@ const AnimeController = {
                 .status(userNotExists.status)
                 .json(generate(userNotExists, { error: true }));
         }
-        if (!compareId(loggedUserId, user._id)) {
-            const { unauthorized } = userResponses;
-            return res
-                .status(unauthorized.status)
-                .json(generate(unauthorized, { error: true }));
-        }
 
         const anime = await AnimeSchema.create({
-            fk_user_id: user._id.toString(),
+            fk_user_id: userId,
             fk_anime_id: animeId
         });
 
