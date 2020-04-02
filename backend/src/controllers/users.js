@@ -229,6 +229,8 @@ const UserController = {
             return res.status(invalidPassword.status).json(generate(invalidPassword, { error: true }));
         }
 
+        user.password = undefined;
+
         return res.json(user);
     },
 }

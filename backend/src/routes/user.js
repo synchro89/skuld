@@ -10,7 +10,7 @@ routes.get("/", UserController.Index);
 routes.get("/:name", UserController.Get);
 
 routes.post("/", upload.single('photo'), UserController.Store);
-routes.post("/auth", upload.single('photo'), UserController.Auth);
+routes.post("/auth", UserController.Auth);
 routes.put("/:name", upload.single('photo'), UserController.Update);
 
 routes.delete("/:name", UserController.Delete);
