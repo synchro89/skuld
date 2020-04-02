@@ -80,6 +80,8 @@ const UserController = {
     },
     Get: async function (req, res) {
         try {
+            let { userId, isAuth } = req.authState;
+
             let { name } = req.params;
 
             name = name.replace(/-/g, " ");
@@ -90,6 +92,11 @@ const UserController = {
                 const { userNotExists } = userResponses;
                 return res.status(userNotExists.status).json(generate(userNotExists, { error: true }));
             }
+
+            const sendRecoveryCodes = isAuth && userId === user._id === userId;
+
+            if (!sendRecoveryCodes)
+                user.recovery_codes = undefined;
 
             const { successFetched } = userResponses;
             return res.json(generate(successFetched, { data: user }));
