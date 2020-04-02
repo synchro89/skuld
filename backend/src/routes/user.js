@@ -15,6 +15,7 @@ routes.post("/", upload.single('photo'), UserController.Store);
 routes.post("/auth", UserController.Auth);
 routes.put("/:name", authMiddleware(), upload.single('photo'), UserController.Update);
 routes.put("/:name/reset", authMiddleware({ nextWithAuthState: true }), UserController.Reset);
+routes.put("/:name/generate-codes", authMiddleware(), UserController.GenerateCodes);
 
 routes.delete("/:name", authMiddleware(), UserController.Delete);
 
