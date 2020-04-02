@@ -29,7 +29,7 @@ const middleware = (userOptions = {}) => {
             const token = authorization.split(" ")[1];
             let isValidToken = verifyToken(token);
 
-            if (!isValidToken) {
+            if (!isValidToken.isAuth) {
                 const { unauthorized } = userResponses;
 
                 return res
@@ -37,7 +37,7 @@ const middleware = (userOptions = {}) => {
                     .json(generate(unauthorized, { error: true }));
             }
 
-            req.authState = isValidToken.authState;
+            req.authState = isValidToken;
 
             return next();
         } else {

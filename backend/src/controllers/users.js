@@ -254,8 +254,7 @@ const UserController = {
     Reset: async function (req, res) {
         const { name } = req.params;
         const { password, newPassword } = req.body;
-        const { userId } = req.authState;
-
+        return console.log(req.authState);
         let user = await UserSchema.findOne({ name }).select("+password");
 
         if (!user) {
