@@ -6,14 +6,16 @@ const multer = require('multer')
 const { storage } = require("../multer");
 const upload = multer({ storage })
 
-routes.get("/", UserController.Index);
-routes.get("/:name", UserController.Get);
+const authMiddleware = require("../middlewares/auth");
+
+routes.get("/", authMiddleware(), UserController.Index);
+routes.get("/:name", authMiddleware({ nextWithAuthState: true }), UserController.Get);
 
 routes.post("/", upload.single('photo'), UserController.Store);
 routes.post("/auth", UserController.Auth);
-routes.put("/:name", upload.single('photo'), UserController.Update);
+routes.put("/:name", authMiddleware(), upload.single('photo'), UserController.Update);
 
-routes.delete("/:name", UserController.Delete);
+routes.delete("/:name", authMiddleware(), UserController.Delete);
 
 
 module.exports = (app) => app.use("/users", routes);
