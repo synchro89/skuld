@@ -4,7 +4,7 @@ const path = require("path");
 const { calcSkip, isValidName, generateRecoveryCodes } = require("../utils");
 
 const { user: userResponses } = require("../responses");
-const { generateResponse: generate } = require("../utils");
+const { generateResponse: generate, compareId } = require("../utils");
 
 const UserSchema = require("../models/UserSchema");
 
@@ -474,9 +474,6 @@ function generateAccessToken(id) {
     return accessToken;
 }
 
-function compareId(id, otherId) {
-    return id.toString() === otherId.toString();
-}
 
 
 module.exports = UserController;

@@ -52,11 +52,17 @@ function createUniqueId() {
     });
     return "id-" + uuid;
 }
+
+function compareId(id, otherId) {
+    return id.toString() === otherId.toString();
+}
+
 module.exports = {
     generateResponse,
     calcSkip,
     isValidName,
     generateRandomNumber,
     generateRecoveryCodes,
-    createUniqueId
+    createUniqueId,
+    compareId
 }
