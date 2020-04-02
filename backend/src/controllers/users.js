@@ -12,6 +12,8 @@ const { calcSkip, isValidName, generateRecoveryCodes } = require("../utils");
 
 const UserSchema = require("../models/UserSchema");
 
+const bcrypt = require("bcryptjs");
+
 const UserController = {
     Index: async function (req, res) {
         try {
@@ -101,8 +103,8 @@ const UserController = {
     Update: async function (req, res) {
         try {
             const {
-                fields: { name },
-                files: { photo = null }
+                body: { name },
+                file: { photo = null }
             } = req;
 
             const user = await UserSchema.findOne({ name });
@@ -124,10 +126,10 @@ const UserController = {
                 new: true
             });
 
-            return res.json({
-                newUser
-            });
-
+            const { successUpdated } = userResponses;
+            return res
+                .status(successUpdated.status)
+                .json(generate(successUpdated, { data: newUser }));
         } catch (error) {
             const { unknownError } = userResponses;
             return res
@@ -163,8 +165,8 @@ const UserController = {
     Store: async function (req, res) {
         try {
             const {
-                fields: { name, password },
-                files: { photo = null }
+                body: { name, password },
+                file: photo = null
             } = req;
 
             let userData = {
@@ -213,12 +215,26 @@ const UserController = {
         }
     },
     Auth: async function (req, res) {
+        const { name, password } = req.body;
 
+        const user = await UserSchema.findOne({ name }).select("+password");
+
+        if (!user) {
+            const { userNotExists } = userResponses;
+            return res.status(userNotExists.status).json(generate(userNotExists, { error: true }));
+        }
+
+        if (!await bcrypt.compare(password, user.password)) {
+            const { invalidPassword } = userResponses;
+            return res.status(invalidPassword.status).json(generate(invalidPassword, { error: true }));
+        }
+
+        return res.json(user);
     },
 }
 
 async function uploadFile(photo, currentPublicID = false) {
-    let newName = photo.name.split(".").map(
+    let newName = photo.originalname.split(".").map(
         (part, i, fullName) => i === fullName.length - 1 ? "webp" : part
     ).join(".");
 
@@ -238,6 +254,10 @@ async function uploadFile(photo, currentPublicID = false) {
         if (error) throw new Error(error);
 
         fs.unlink(newPhotoPath, (error) => {
+            if (error)
+                throw new Error(error);
+        });
+        fs.unlink(photo.path, (error) => {
             if (error)
                 throw new Error(error);
         });
@@ -261,6 +281,7 @@ async function uploadFile(photo, currentPublicID = false) {
         public_id: currentPublicID
     } : {};
 
+
     // If have a current public_id, 
     // then the image/file already exists, then update, otherwise, create
     const args = currentPublicID ?
@@ -268,6 +289,8 @@ async function uploadFile(photo, currentPublicID = false) {
         [newPhotoPath, callback]
 
     await uploader.upload(...args)
+
+    console.log(fileUploaded);
 
     return fileUploaded;
 }

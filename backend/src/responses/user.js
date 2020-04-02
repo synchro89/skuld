@@ -61,6 +61,12 @@ const userResponses = {
         model: "UserSchema",
         status: 200
     },
+    invalidPassword: {
+        message: "Invalid password for this user",
+        code: "user/invalid-password",
+        model: "UserSchema",
+        status: 400
+    },
     generate
 }
 

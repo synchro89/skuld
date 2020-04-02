@@ -2,16 +2,14 @@ require('dotenv/config');
 
 const express = require('express');
 const app = express();
-const formidableMiddleware = require('express-formidable');
-
+const formidable = require("express-formidable");
 const cors = require("cors");
 
 app.use(cors());
 app.use(express.json());
-app.use(formidableMiddleware());
 
-require("./routes")(app);
 require("./database");
+require("./routes")(app);
 
 app.listen(process.env.PORT || 8080);
 
