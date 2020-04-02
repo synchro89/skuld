@@ -280,7 +280,9 @@ const UserController = {
                 new: true
             });
 
-            return
+            const { successUpdated } = userResponses;
+            return res
+                .json(generate(successUpdated, { data: user }));
         } catch (error) {
             const { unknownError } = userResponses;
             return res
