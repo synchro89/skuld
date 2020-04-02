@@ -73,6 +73,12 @@ const userResponses = {
         model: "UserSchema",
         status: 200
     },
+    unauthorized: {
+        message: "Permission denied",
+        code: "user/unauthorized",
+        model: "UserSchema",
+        status: 401
+    },
     generate
 }
 

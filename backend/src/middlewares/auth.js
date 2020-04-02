@@ -1,6 +1,9 @@
 const authConfig = require("../config");
 const jwt = require("jsonwebtoken");
 
+const { user: userResponses } = require("../responses");
+const { generate } = userResponses;
+
 const defaultOptions = {
     nextIfNotAuth: false
 }
@@ -15,30 +18,62 @@ const middleware = (userOptions = {}) => {
         const { Authorization: authorization } = req.headers;
 
         if (!nextIfNotAuth) {
-            const isAuth = isValidAuthorization(authorization);
-        } else {
-            const isAuth = isValidAuthorization(authorization)
-            req.authState = {
-                isAuth,
-                userId: isAuth ? decoded.id : null
+            if (!isValidAuthorization(authorization)) {
+                const { unauthorized } = userResponses;
+
+                return res
+                    .status(unauthorized.status)
+                    .json(generate(unauthorized, { error: true }));
             }
+
+            const token = authorization.split(" ")[1];
+            let isValidToken = verifyToken(token);
+
+            if (!isValidToken) {
+                const { unauthorized } = userResponses;
+
+                return res
+                    .status(unauthorized.status)
+                    .json(generate(unauthorized, { error: true }));
+            }
+
+            req.authState = isValidToken.authState;
+
+            return next();
+        } else {
+            if (!isValidAuthorization(authorization)) {
+                req.authState = {
+                    isAuth: false,
+                    userId: null
+                }
+                return next();
+            }
+
+            const token = authorization.split(" ")[1];
+
+            req.authState = verifyToken(token).authState;
+
             next();
         }
-
-
-        jwt.verify(token, authConfig.secret, (error, decoded) => {
-            if (error) isAuth = false;
-
-            req.authState = {
-                isAuth,
-                userId: decoded.id
-            }
-
-            if (nextIfNotAuth) return next(authState);
-        });
     }
 }
 
+function verifyToken(token) {
+    let authState = {};
+    jwt.verify(token, authConfig.secret, (error, decoded) => {
+        if (error) {
+            return authState = {
+                isAuth: false,
+                userId: null
+            }
+        }
+        return authState = {
+            isAuth: true,
+            userId: decoded.id
+        }
+    });
+    return authState;
+}
 function isValidAuthorization(authorization) {
     if (!authorization)
         return false;
