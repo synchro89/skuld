@@ -258,9 +258,8 @@ const UserController = {
                 .json(generate(unknownError, { error }));
         }
     },
-    GenerateRecoveryCodes: async function (req, res) {
+    GenerateCodes: async function (req, res) {
         try {
-
             const { name } = req.params;
             const { userId } = req.authState;
 
@@ -279,7 +278,7 @@ const UserController = {
                 recovery_codes: newRecoveryCodes
             }, {
                 new: true
-            })
+            });
 
             return
         } catch (error) {
@@ -288,7 +287,6 @@ const UserController = {
                 .status(unknownError.status)
                 .json(generate(unknownError, { error }));
         }
-
     },
     Reset: async function (req, res) {
         try {
