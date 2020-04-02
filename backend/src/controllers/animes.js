@@ -54,30 +54,37 @@ const AnimeController = {
         return res.json(generate(successCreated, { data: anime }));
     },
     Delete: async function (req, res) {
-        let { animeId } = req.params;
-        const { userId } = req.authState;
+        try {
+            let { animeId } = req.params;
+            const { userId } = req.authState;
 
-        animeId = stringToObjectId(animeId);
+            animeId = stringToObjectId(animeId);
 
-        const anime = await AnimeSchema.findOne({ _id: animeId });
+            const anime = await AnimeSchema.findOne({ _id: animeId });
 
-        if (!compareId(userId, anime.fk_user_id)) {
-            const { unauthorized } = animeResponses;
+            if (!compareId(userId, anime.fk_user_id)) {
+                const { unauthorized } = animeResponses;
+                return res
+                    .status(unauthorized.status)
+                    .json(generate(unauthorized, { error: true }));
+            }
+            if (!exists(anime)) {
+                const { animeNotExists } = animeResponses;
+                return res
+                    .status(animeNotExists.status)
+                    .json(generate(animeNotExists, { error: true }));
+            }
+
+            await AnimeSchema.findOneAndRemove({ _id: stringToObjectId(animeId) });
+
+            const { successDeleted } = animeResponses;
+            return res.status(successDeleted.status).json(generate(successDeleted));
+        } catch (error) {
+            const { unknownError } = animeResponses;
             return res
-                .status(unauthorized.status)
-                .json(generate(unauthorized, { error: true }));
+                .status(unknownError.status)
+                .json(generate(unknownError, { error }));
         }
-        if (!exists(anime)) {
-            const { animeNotExists } = animeResponses;
-            return res
-                .status(animeNotExists.status)
-                .json(generate(animeNotExists, { error: true }));
-        }
-
-        await AnimeSchema.findOneAndRemove({ _id: stringToObjectId(animeId) });
-
-        const { successDeleted } = animeResponses;
-        return res.status(successDeleted.status).json(generate(successDeleted));
     }
 }
 
