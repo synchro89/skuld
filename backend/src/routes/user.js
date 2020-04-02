@@ -6,6 +6,7 @@ routes.get("/", UserController.Index);
 routes.get("/:name", UserController.Get);
 
 routes.post("/", UserController.Store);
+routes.post("/auth", UserController.Auth);
 routes.put("/:name", UserController.Update);
 
 routes.delete("/:name", UserController.Delete);

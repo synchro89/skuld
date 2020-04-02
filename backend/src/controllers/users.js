@@ -49,7 +49,6 @@ const UserController = {
                     ["createdAt", "-1"]
                 ]);
 
-
             const metadata = {
                 hasMore: nextResults.length > 0,
                 howManyDocsInNextPage: nextResults.length,
@@ -92,55 +91,6 @@ const UserController = {
             const { successFetched } = userResponses;
             return res.json(generate(successFetched, { data: user }));
 
-        } catch (error) {
-            const { unknownError } = userResponses;
-            return res
-                .status(unknownError.status)
-                .json(generate(unknownError, { error }));
-        }
-    },
-    Store: async function (req, res) {
-        try {
-            const {
-                fields: { name, password },
-                files: { photo = null }
-            } = req;
-
-            let userData = {
-                name,
-                password,
-                photo
-            }
-
-            if (!isValidName(name)) {
-                const { invalidName } = userResponses;
-
-                return res
-                    .status(invalidName.status)
-                    .json(generate(invalidName, { error: true }));
-            }
-
-            if (!!await UserSchema.findOne({ name })) {
-                const { alreadyExists } = userResponses;
-
-                return res
-                    .status(alreadyExists.status)
-                    .json(generate(alreadyExists, { error: true }));
-            }
-
-            if (!photo) {
-                const user = await UserSchema.create(userData);
-
-                const { successCreated } = userResponses;
-                return res.json(generate(successCreated, { data: user }));
-            } else {
-                userData.photo = await uploadFile(photo);
-
-                const user = await UserSchema.create(userData);
-
-                const { successCreated } = userResponses;
-                return res.json(generate(successCreated, { data: user }));
-            }
         } catch (error) {
             const { unknownError } = userResponses;
             return res
@@ -209,6 +159,60 @@ const UserController = {
                 .status(unknownError.status)
                 .json(generate(unknownError, { error }));
         }
+    },
+    Store: async function (req, res) {
+        try {
+            const {
+                fields: { name, password },
+                files: { photo = null }
+            } = req;
+
+            let userData = {
+                name,
+                password,
+                photo
+            }
+
+            if (!isValidName(name)) {
+                const { invalidName } = userResponses;
+
+                return res
+                    .status(invalidName.status)
+                    .json(generate(invalidName, { error: true }));
+            }
+
+            if (!!await UserSchema.findOne({ name })) {
+                const { alreadyExists } = userResponses;
+
+                return res
+                    .status(alreadyExists.status)
+                    .json(generate(alreadyExists, { error: true }));
+            }
+
+            if (!photo) {
+                const user = await UserSchema.create(userData);
+                user.password = undefined;
+
+                const { successCreated } = userResponses;
+                return res.json(generate(successCreated, { data: user }));
+            } else {
+                userData.photo = await uploadFile(photo);
+
+                const user = await UserSchema.create(userData);
+                user.password = undefined;
+
+                const { successCreated } = userResponses;
+                return res.json(generate(successCreated, { data: user }));
+            }
+        } catch (error) {
+            const { unknownError } = userResponses;
+            return res
+                .status(unknownError.status)
+                .json(generate(unknownError, { error }));
+        }
+    },
+    Auth: async function (req, res) {
+
     },
 }
 

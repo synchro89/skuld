@@ -19,9 +19,9 @@ const UserSchema = new Schema(
         photo: {
             type: FileSchema,
         },
-        animes: {
+        recuperation_codes: {
             type: Array,
-            default: []
+            required: true
         }
     },
     {
