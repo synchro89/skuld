@@ -8,6 +8,7 @@ const middleware = (userOptions) => {
     const { nextIfNotAuth } = options;
 
     return function (req, res, next) {
+        const { Authorization } = req.headers;
         console.log("opa");
     }
 }
