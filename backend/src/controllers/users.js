@@ -17,12 +17,14 @@ const UserController = {
         try {
             let { page, limit = 2 } = req.query;
 
+            const total = await UserSchema.find().estimatedDocumentCount();
+
             page = Number(page);
             limit = Number(limit);
+            totalPages = Math.ceil(total / limit);
 
             let skip = null;
 
-            const total = await UserSchema.find().estimatedDocumentCount();
 
             skip = calcSkip(page, limit).skip;
             const currentResults = await UserSchema.find()
@@ -50,8 +52,10 @@ const UserController = {
 
             const metadata = {
                 hasMore: nextResults.length > 0,
-                howManyInNextPage: nextResults.length,
-                total
+                howManyDocsInNextPage: nextResults.length,
+                totalDocs: total,
+                currentPage: page,
+                totalPages
             }
 
             const data = {
