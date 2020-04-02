@@ -10,6 +10,7 @@ const UserSchema = require("../models/UserSchema");
 
 const bcrypt = require("bcryptjs");
 const jwt = require("jsonwebtoken");
+const authConfig = require("../config");
 
 const sharp = require("sharp");
 const { uploader } = require("../cloudinary");
@@ -230,6 +231,10 @@ const UserController = {
         }
 
         user.password = undefined;
+
+        const accessToken = jwt.sign({ id: user._id }, authConfig.secret, {
+            expiresIn: 86400
+        });
 
         return res.json(user);
     },
