@@ -40,7 +40,9 @@ const AnimeController = {
 
         if (exists(anime)) {
             const { alreadyExists } = animeResponses;
-            return res.json(generate(alreadyExists, { error: true }));
+            return res
+                .status(alreadyExists.status)
+                .json(generate(alreadyExists, { error: true }));
         }
 
         anime = await AnimeSchema.create({
@@ -50,7 +52,7 @@ const AnimeController = {
 
         const { successCreated } = animeResponses;
         return res.json(generate(successCreated, { data: anime }));
-    }
+    },
 }
 
 module.exports = AnimeController;
