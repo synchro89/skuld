@@ -67,6 +67,12 @@ const userResponses = {
         model: "UserSchema",
         status: 400
     },
+    successAuth: {
+        message: "Success auth, user logged",
+        code: "user/success-auth",
+        model: "UserSchema",
+        status: 200
+    },
     generate
 }
 

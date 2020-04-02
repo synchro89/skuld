@@ -236,7 +236,8 @@ const UserController = {
             expiresIn: 86400
         });
 
-        return res.json(user);
+        const { successAuth } = userResponses;
+        return res.json(generate(successAuth, { data: user, accessToken }));
     },
 }
 
