@@ -162,7 +162,6 @@ const UserController = {
             });
 
             const { successDeleted } = userResponses;
-
             return res.status(successDeleted.status).json(generate(successDeleted));
         } catch (error) {
             const { unknownError } = userResponses;

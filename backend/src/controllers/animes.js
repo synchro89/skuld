@@ -21,7 +21,7 @@ const AnimeController = {
                 .json(generate(unauthorized, { error: true }));
         }
 
-        userId = mongoose.Types.ObjectId(userId);
+        userId = stringToObjectId(userId);
         userIdLikeString = userId.toString();
 
         const user = await UserSchema.findOne({ _id: userId });
@@ -53,6 +53,36 @@ const AnimeController = {
         const { successCreated } = animeResponses;
         return res.json(generate(successCreated, { data: anime }));
     },
+    Delete: async function (req, res) {
+        let { animeId } = req.params;
+        const { userId } = req.authState;
+
+        animeId = stringToObjectId(animeId);
+
+        const anime = await AnimeSchema.findOne({ _id: animeId });
+
+        if (!compareId(userId, anime.fk_user_id)) {
+            const { unauthorized } = animeResponses;
+            return res
+                .status(unauthorized.status)
+                .json(generate(unauthorized, { error: true }));
+        }
+        if (!exists(anime)) {
+            const { animeNotExists } = animeResponses;
+            return res
+                .status(animeNotExists.status)
+                .json(generate(animeNotExists, { error: true }));
+        }
+
+        await AnimeSchema.findOneAndRemove({ _id: stringToObjectId(animeId) });
+
+        const { successDeleted } = animeResponses;
+        return res.status(successDeleted.status).json(generate(successDeleted));
+    }
+}
+
+function stringToObjectId(str) {
+    return mongoose.Types.ObjectId(str);
 }
 
 module.exports = AnimeController;

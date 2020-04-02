@@ -5,7 +5,7 @@ const userResponses = {
         model: "AnimeSchema",
         status: 400
     },
-    userNotExists: {
+    animeNotExists: {
         message: "This anime entry not exists",
         code: "anime/not-exists",
         model: "AnimeSchema",
