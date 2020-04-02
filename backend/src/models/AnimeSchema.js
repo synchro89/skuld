@@ -4,18 +4,12 @@ const { Schema } = mongo;
 
 const AnimeSchema = new Schema(
     {
-        name: {
+        fk_user_id: {
             type: String,
-            unique: true,
             required: true
         },
-        password: {
+        fk_anime_id: {
             type: String,
-            select: false,
-            required: true
-        },
-        recovery_codes: {
-            type: Array,
             required: true
         }
     },
