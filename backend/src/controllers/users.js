@@ -255,7 +255,7 @@ const UserController = {
         const { name } = req.params;
         const { userId } = req.authState;
 
-        const user = await UserSchema.findOne({ name });
+        let user = await UserSchema.findOne({ name });
 
         if (!compareId(userId, user._id)) {
             const { unauthorized } = userResponses;
@@ -263,6 +263,17 @@ const UserController = {
                 .status(unauthorized.status)
                 .json(generate(unauthorized, { error: true }));
         }
+
+        const newRecoveryCodes = generateRecoveryCodes();
+
+        user = await UserSchema.findByIdAndUpdate(user._id, {
+            recovery_codes: newRecoveryCodes
+        }, {
+            new: true
+        })
+
+        return
+
     },
     Reset: async function (req, res) {
         const { name } = req.params;
