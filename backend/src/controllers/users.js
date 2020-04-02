@@ -229,27 +229,34 @@ const UserController = {
         }
     },
     Auth: async function (req, res) {
-        const { name, password } = req.body;
+        try {
+            const { name, password } = req.body;
 
-        const user = await UserSchema.findOne({ name }).select("+password");
+            const user = await UserSchema.findOne({ name }).select("+password");
 
-        if (!user) {
-            const { userNotExists } = userResponses;
-            return res.status(userNotExists.status).json(generate(userNotExists, { error: true }));
+            if (!user) {
+                const { userNotExists } = userResponses;
+                return res.status(userNotExists.status).json(generate(userNotExists, { error: true }));
+            }
+
+            if (!await bcrypt.compare(password, user.password)) {
+                const { invalidPassword } = userResponses;
+                return res.status(invalidPassword.status).json(generate(invalidPassword, { error: true }));
+            }
+
+            user.password = undefined;
+
+            const { successAuth } = userResponses;
+            return res.json(generate(successAuth, {
+                data: user,
+                accessToken: generateAccessToken(user._id)
+            }));
+        } catch (error) {
+            const { unknownError } = userResponses;
+            return res
+                .status(unknownError.status)
+                .json(generate(unknownError, { error }));
         }
-
-        if (!await bcrypt.compare(password, user.password)) {
-            const { invalidPassword } = userResponses;
-            return res.status(invalidPassword.status).json(generate(invalidPassword, { error: true }));
-        }
-
-        user.password = undefined;
-
-        const { successAuth } = userResponses;
-        return res.json(generate(successAuth, {
-            data: user,
-            accessToken: generateAccessToken(user._id)
-        }));
     },
     GenerateRecoveryCodes: async function (req, res) {
         const { name } = req.params;
@@ -277,7 +284,6 @@ const UserController = {
     },
     Reset: async function (req, res) {
         try {
-
             const { name } = req.params;
             const { password = false, newPassword, code = false } = req.body;
             const { userId, isAuth } = req.authState;
