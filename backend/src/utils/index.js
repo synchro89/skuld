@@ -21,7 +21,8 @@ function isValidName(name) {
         const letter = allLetters[i];
         const code = letter.charCodeAt();
 
-        if (code < 65) valid = false;
+        if (code < 48) valid = false;
+        else if (code > 57 && code < 65) valid = false;
         else if (code > 90 && code < 97) valid = false;
         else if (code > 122) valid = false;
 
@@ -41,6 +42,7 @@ function generateRecoveryCodes() {
         code: Array.from({ length: 6 }).map(() => generateRandomNumber(0, 9).toString()).join("")
     }));
 }
+
 function createUniqueId() {
     let dt = new Date().getTime();
     let uuid = "xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx".replace(/[xy]/g, function (
