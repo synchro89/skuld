@@ -251,6 +251,40 @@ const UserController = {
             accessToken: generateAccessToken(user._id)
         }));
     },
+    Reset: async function (req, res) {
+        const { name } = req.params;
+        const { password, newPassword } = req.body;
+        const { userId } = req.authState;
+
+        let user = await UserSchema.findOne({ name }).select("+password");
+
+        if (!user) {
+            const { userNotExists } = userResponses;
+            return res.status(userNotExists.status).json(generate(userNotExists, { error: true }));
+        }
+
+        if (userId !== user._id) {
+            const { unauthorized } = userResponses;
+            return res
+                .status(unauthorized.status)
+                .json(generate(unauthorized, { error: true }));
+        }
+        if (!await bcrypt.compare(password, user.password)) {
+            return res
+                .status(invalidPassword.status)
+                .json(generate(invalidPassword, { error: true }));
+        }
+
+        user = await UserSchema.findByIdAndUpdate(user._id, {
+            password: newPassword
+        }, {
+            new: true
+        });
+
+
+
+        user.password = undefined;
+    }
 }
 
 async function uploadFile(photo, currentPublicID = false) {
