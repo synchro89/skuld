@@ -5,7 +5,7 @@ const defaultOptions = {
     nextIfNotAuth: false
 }
 
-const middleware = (userOptions) => {
+const middleware = (userOptions = {}) => {
     const options = Object.assign({}, defaultOptions, userOptions);
 
     const { nextIfNotAuth } = options;
@@ -42,6 +42,8 @@ const middleware = (userOptions) => {
     }
 }
 
+function verifyAuthorization(authorization) {
 
+}
 
 module.exports = middleware;
