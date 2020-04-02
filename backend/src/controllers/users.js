@@ -254,42 +254,97 @@ const UserController = {
     Reset: async function (req, res) {
         const { name } = req.params;
         const { password = false, newPassword, code = false } = req.body;
-        const { userId } = req.authState;
+        const { userId, isAuth } = req.authState;
 
-        console.log(userId);
+        if (isAuth) {
+            let user = await UserSchema.findOne({ name }).select("+password");
 
-        let user = await UserSchema.findOne({ name }).select("+password");
+            if (!user) {
+                const { userNotExists } = userResponses;
+                return res.status(userNotExists.status).json(generate(userNotExists, { error: true }));
+            }
 
-        if (!user) {
-            const { userNotExists } = userResponses;
-            return res.status(userNotExists.status).json(generate(userNotExists, { error: true }));
-        }
+            if (!compareId(userId, user._id)) {
+                const { unauthorized } = userResponses;
+                return res
+                    .status(unauthorized.status)
+                    .json(generate(unauthorized, { error: true }));
+            }
 
-        if (!compareId(userId, user._id)) {
-            const { unauthorized } = userResponses;
+            if (password) {
+                if (!await bcrypt.compare(password, user.password)) {
+                    const { invalidPassword } = userResponses;
+                    return res
+                        .status(invalidPassword.status)
+                        .json(generate(invalidPassword, { error: true }));
+                }
+
+                const hash = await bcrypt.hash(newPassword, 10);
+
+                user = await UserSchema.findByIdAndUpdate(user._id, {
+                    password: hash
+                }, {
+                    new: true
+                });
+            } else {
+                const validCodes = user.recovery_codes.filter(item => item.valid).map(item => item.code);
+                if (!validCodes.includes(code)) {
+                    const { invalidRecoveryCode } = userResponses;
+                    return res
+                        .status(invalidRecoveryCode.status)
+                        .json(generate(invalidRecoveryCode, { error: true }));
+                }
+                const hash = await bcrypt.hash(newPassword, 10);
+                const updatedRecoveryCodes = user.recovery_codes.map(item => item.code === code ? ({
+                    code,
+                    valid: false
+                }) : item);
+
+                user = await UserSchema.findByIdAndUpdate(user._id, {
+                    password: hash,
+                    recovery_codes: updatedRecoveryCodes
+                }, {
+                    new: true
+                });
+            }
+
+            const { successUpdated } = userResponses;
             return res
-                .status(unauthorized.status)
-                .json(generate(unauthorized, { error: true }));
-        }
+                .json(generate(successUpdated, { data: user }));
 
-        if (!await bcrypt.compare(password, user.password)) {
-            const { invalidPassword } = userResponses;
+        } else {
+            let user = await UserSchema.findOne({ name }).select("+password");
+
+            if (!user) {
+                const { userNotExists } = userResponses;
+                return res.status(userNotExists.status).json(generate(userNotExists, { error: true }));
+            }
+
+            const validCodes = user.recovery_codes.filter(item => item.valid).map(item => item.code);
+            if (!validCodes.includes(code)) {
+                const { invalidRecoveryCode } = userResponses;
+                return res
+                    .status(invalidRecoveryCode.status)
+                    .json(generate(invalidRecoveryCode, { error: true }));
+            }
+            const hash = await bcrypt.hash(newPassword, 10);
+            const updatedRecoveryCodes = user.recovery_codes.map(item => item.code === code ? ({
+                code,
+                valid: false
+            }) : item);
+
+            user = await UserSchema.findByIdAndUpdate(user._id, {
+                password: hash,
+                recovery_codes: updatedRecoveryCodes
+            }, {
+                new: true
+            });
+            const { successUpdated } = userResponses;
+
             return res
-                .status(invalidPassword.status)
-                .json(generate(invalidPassword, { error: true }));
+                .json(generate(successUpdated, { data: user }));
+
         }
-
-        const hash = await bcrypt.hash(newPassword, 10);
-
-        user = await UserSchema.findByIdAndUpdate(user._id, {
-            password: hash
-        }, {
-            new: true
-        });
-
-        const { successUpdated } = userResponses;
-        return res
-            .json(generate(successUpdated, { data: user }));
     }
 }
 

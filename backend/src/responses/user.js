@@ -79,6 +79,12 @@ const userResponses = {
         model: "UserSchema",
         status: 401
     },
+    invalidRecoveryCode: {
+        message: "Invalid recovery code",
+        code: "user/invalid-recovery-code",
+        model: "UserSchema",
+        status: 400
+    },
     generate
 }
 
