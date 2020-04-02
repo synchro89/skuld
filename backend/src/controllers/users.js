@@ -251,8 +251,18 @@ const UserController = {
             accessToken: generateAccessToken(user._id)
         }));
     },
-    GenerateRecoveryCodes: async function () {
+    GenerateRecoveryCodes: async function (req, res) {
+        const { name } = req.params;
+        const { userId } = req.authState;
 
+        const user = await UserSchema.findOne({ name });
+
+        if (!compareId(userId, user._id)) {
+            const { unauthorized } = userResponses;
+            return res
+                .status(unauthorized.status)
+                .json(generate(unauthorized, { error: true }));
+        }
     },
     Reset: async function (req, res) {
         const { name } = req.params;
