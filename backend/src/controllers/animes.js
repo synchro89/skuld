@@ -30,6 +30,14 @@ const AnimeController = {
                 .status(unauthorized.status)
                 .json(generate(unauthorized, { error: true }));
         }
+
+        const anime = await AnimeSchema.create({
+            fk_user_id: user._id.toString(),
+            fk_anime_id: animeId
+        });
+
+        const { successCreated } = animeResponses;
+        return res.json(generate(successCreated, { data: anime }));
     }
 }
 
