@@ -19,5 +19,4 @@ routes.put("/:name/generate-codes", authMiddleware(), UserController.GenerateCod
 
 routes.delete("/:name", authMiddleware(), UserController.Delete);
 
-
 module.exports = (app) => app.use("/users", routes);
