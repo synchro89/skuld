@@ -1,5 +1,3 @@
-const { generateResponse: generate } = require("../utils");
-
 const userResponses = {
     alreadyExists: {
         message: "User already exists on database",
@@ -84,8 +82,7 @@ const userResponses = {
         code: "user/invalid-recovery-code",
         model: "UserSchema",
         status: 400
-    },
-    generate
+    }
 }
 
 module.exports = userResponses;

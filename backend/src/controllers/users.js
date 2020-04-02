@@ -4,7 +4,7 @@ const path = require("path");
 const { calcSkip, isValidName, generateRecoveryCodes } = require("../utils");
 
 const { user: userResponses } = require("../responses");
-const { generate } = userResponses;
+const { generateResponse: generate } = require("../utils");
 
 const UserSchema = require("../models/UserSchema");
 
@@ -115,19 +115,22 @@ const UserController = {
                 file: { photo = null }
             } = req;
 
-            const user = await UserSchema.findOne({ name });
+            if (!photo) {
+                return res
+                    .json(generate(successUpdated, { data: user }));
+            }
+
+            let user = await UserSchema.findOne({ name });
 
             if (!user) {
                 const { userNotExists } = userResponses;
                 return res.status(userNotExists.status).json(generate(userNotExists, { error: true }));
             }
 
-            if (!photo)
-                return res.status(203);
 
             const newPhoto = await uploadFile(photo, user.photo.public_id);
 
-            const newUser = await UserSchema.findByIdAndUpdate(user._id, {
+            user = await UserSchema.findByIdAndUpdate(user._id, {
                 name: user.name,
                 photo: newPhoto
             }, {
@@ -136,8 +139,7 @@ const UserController = {
 
             const { successUpdated } = userResponses;
             return res
-                .status(successUpdated.status)
-                .json(generate(successUpdated, { data: newUser }));
+                .json(generate(successUpdated, { data: user }));
         } catch (error) {
             const { unknownError } = userResponses;
             return res
