@@ -259,27 +259,35 @@ const UserController = {
         }
     },
     GenerateRecoveryCodes: async function (req, res) {
-        const { name } = req.params;
-        const { userId } = req.authState;
+        try {
 
-        let user = await UserSchema.findOne({ name });
+            const { name } = req.params;
+            const { userId } = req.authState;
 
-        if (!compareId(userId, user._id)) {
-            const { unauthorized } = userResponses;
+            let user = await UserSchema.findOne({ name });
+
+            if (!compareId(userId, user._id)) {
+                const { unauthorized } = userResponses;
+                return res
+                    .status(unauthorized.status)
+                    .json(generate(unauthorized, { error: true }));
+            }
+
+            const newRecoveryCodes = generateRecoveryCodes();
+
+            user = await UserSchema.findByIdAndUpdate(user._id, {
+                recovery_codes: newRecoveryCodes
+            }, {
+                new: true
+            })
+
+            return
+        } catch (error) {
+            const { unknownError } = userResponses;
             return res
-                .status(unauthorized.status)
-                .json(generate(unauthorized, { error: true }));
+                .status(unknownError.status)
+                .json(generate(unknownError, { error }));
         }
-
-        const newRecoveryCodes = generateRecoveryCodes();
-
-        user = await UserSchema.findByIdAndUpdate(user._id, {
-            recovery_codes: newRecoveryCodes
-        }, {
-            new: true
-        })
-
-        return
 
     },
     Reset: async function (req, res) {
