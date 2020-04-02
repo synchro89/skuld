@@ -8,22 +8,27 @@ const UserSchema = new Schema(
     {
         name: {
             type: String,
-            unique: true
+            unique: true,
+            required: true
         },
         password: {
             type: String,
-            select: false
+            select: false,
+            required: true
         },
         photo: {
             type: FileSchema,
         },
-        animes: [{
-            type: String
-        }]
+        animes: {
+            type: Array,
+            default: []
+        }
     },
     {
         timestamps: true
     }
 );
+
+require("./preActions/user")(UserSchema);
 
 module.exports = mongo.model("User", UserSchema);

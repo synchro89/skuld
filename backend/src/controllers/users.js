@@ -1,8 +1,7 @@
 const fs = require('fs')
 const path = require("path");
 
-const cloudinary = require("../cloudinary");
-const uploader = cloudinary.uploader;
+const { uploader } = require("../cloudinary");
 
 const sharp = require("sharp");
 
@@ -22,6 +21,8 @@ const UserController = {
             limit = Number(limit);
 
             let skip = null;
+
+            const total = await UserSchema.find().estimatedDocumentCount();
 
             skip = calcSkip(page, limit).skip;
             const currentResults = await UserSchema.find()
@@ -46,14 +47,16 @@ const UserController = {
                     ["createdAt", "-1"]
                 ]);
 
+
             const metadata = {
                 hasMore: nextResults.length > 0,
-                howMany: nextResults.length
+                howManyInNextPage: nextResults.length,
+                total
             }
 
             const data = {
                 results: currentResults,
-                metadata
+                metadata,
             }
 
             const { successPagination } = userResponses;
@@ -95,12 +98,13 @@ const UserController = {
     Store: async function (req, res) {
         try {
             const {
-                fields: { name },
+                fields: { name, password },
                 files: { photo = null }
             } = req;
 
             let userData = {
-                name: name,
+                name,
+                password,
                 photo
             }
 
@@ -183,11 +187,17 @@ const UserController = {
 
             const user = await UserSchema.findOne({ name });
 
-            await deleteFile(user.photo.public_id);
+            if (!user) {
+                const { userNotExists } = userResponses;
+                return res.status(userNotExists.status).json(generate(userNotExists, { error: true }));
+            }
 
-            await UserSchema.findByIdAndDelete(user._id);
+            await UserSchema.findOneAndRemove({
+                _id: user._id
+            });
 
             const { successDeleted } = userResponses;
+
             return res.status(successDeleted.status).json(generate(successDeleted));
         } catch (error) {
             const { unknownError } = userResponses;
@@ -253,9 +263,6 @@ async function uploadFile(photo, currentPublicID = false) {
     return fileUploaded;
 }
 
-async function deleteFile(currentPublicID) {
-    await uploader.destroy(currentPublicID);
-}
 
 
 module.exports = UserController;
