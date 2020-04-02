@@ -251,6 +251,9 @@ const UserController = {
             accessToken: generateAccessToken(user._id)
         }));
     },
+    GenerateRecoveryCodes: async function () {
+
+    },
     Reset: async function (req, res) {
         const { name } = req.params;
         const { password = false, newPassword, code = false } = req.body;
@@ -313,7 +316,13 @@ const UserController = {
                 .json(generate(successUpdated, { data: user }));
 
         } else {
-            let user = await UserSchema.findOne({ name }).select("+password");
+            if (!code) {
+                const { invalidRecoveryCode } = userResponses;
+                return res
+                    .status(invalidRecoveryCode.status)
+                    .json(generate(invalidRecoveryCode, { error: true }));
+            }
+            let user = await UserSchema.findOne({ name });
 
             if (!user) {
                 const { userNotExists } = userResponses;
