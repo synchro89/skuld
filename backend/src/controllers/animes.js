@@ -32,7 +32,7 @@ const AnimeController = {
                 .json(generate(userNotExists, { error: true }));
         }
 
-        const anime = await AnimeSchema.create({
+        let anime = await AnimeSchema.create({
             fk_user_id: userId,
             fk_anime_id: animeId
         });
