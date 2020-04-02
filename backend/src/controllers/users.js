@@ -198,7 +198,10 @@ const UserController = {
                 user.password = undefined;
 
                 const { successCreated } = userResponses;
-                return res.json(generate(successCreated, { data: user }));
+                return res.json(generate(successCreated, {
+                    data: user,
+                    accessToken: generateAccessToken(user._id)
+                }));
             } else {
                 userData.photo = await uploadFile(photo);
 
@@ -206,7 +209,10 @@ const UserController = {
                 user.password = undefined;
 
                 const { successCreated } = userResponses;
-                return res.json(generate(successCreated, { data: user }));
+                return res.json(generate(successCreated, {
+                    data: user,
+                    accessToken: generateAccessToken(user._id)
+                }));
             }
         } catch (error) {
             const { unknownError } = userResponses;
@@ -232,12 +238,11 @@ const UserController = {
 
         user.password = undefined;
 
-        const accessToken = jwt.sign({ id: user._id }, authConfig.secret, {
-            expiresIn: 86400
-        });
-
         const { successAuth } = userResponses;
-        return res.json(generate(successAuth, { data: user, accessToken }));
+        return res.json(generate(successAuth, {
+            data: user,
+            accessToken: generateAccessToken(user._id)
+        }));
     },
 }
 
@@ -303,6 +308,12 @@ async function uploadFile(photo, currentPublicID = false) {
     return fileUploaded;
 }
 
+function generateAccessToken(id) {
+    const accessToken = jwt.sign({ id }, authConfig.secret, {
+        expiresIn: 86400
+    });
+    return accessToken;
+}
 
 
 module.exports = UserController;
