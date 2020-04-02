@@ -57,6 +57,10 @@ function compareId(id, otherId) {
     return id.toString() === otherId.toString();
 }
 
+function exists(entity) {
+    return typeof entity !== "undefined" && typeof entity !== "null" && !!entity;
+}
+
 module.exports = {
     generateResponse,
     calcSkip,
@@ -64,5 +68,6 @@ module.exports = {
     generateRandomNumber,
     generateRecoveryCodes,
     createUniqueId,
-    compareId
+    compareId,
+    exists
 }

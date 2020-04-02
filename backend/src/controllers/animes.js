@@ -2,7 +2,7 @@ const { calcSkip } = require("../utils");
 
 const { user: userResponses } = require("../responses");
 const { anime: animeResponses } = require("../responses");
-const { generateResponse: generate, compareId } = require("../utils");
+const { generateResponse: generate, compareId, exists } = require("../utils");
 
 const mongoose = require('../database');
 
@@ -22,6 +22,7 @@ const AnimeController = {
         }
 
         userId = mongoose.Types.ObjectId(userId);
+        userIdLikeString = userId.toString();
 
         const user = await UserSchema.findOne({ _id: userId });
 
@@ -32,8 +33,18 @@ const AnimeController = {
                 .json(generate(userNotExists, { error: true }));
         }
 
-        let anime = await AnimeSchema.create({
-            fk_user_id: userId,
+        let anime = await AnimeSchema.findOne({
+            fk_user_id: userIdLikeString,
+            fk_anime_id: animeId
+        });
+
+        if (exists(anime)) {
+            const { alreadyExists } = animeResponses;
+            return res.json(generate(alreadyExists, { error: true }));
+        }
+
+        anime = await AnimeSchema.create({
+            fk_user_id: userIdLikeString,
             fk_anime_id: animeId
         });
 
