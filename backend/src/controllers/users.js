@@ -270,6 +270,7 @@ const UserController = {
                 .json(generate(unauthorized, { error: true }));
         }
         if (!await bcrypt.compare(password, user.password)) {
+            const { invalidPassword } = userResponses;
             return res
                 .status(invalidPassword.status)
                 .json(generate(invalidPassword, { error: true }));
@@ -281,9 +282,11 @@ const UserController = {
             new: true
         });
 
+        // user.password = undefined;
 
-
-        user.password = undefined;
+        const { successUpdated } = userResponses;
+        return res
+            .json(generate(successUpdated, { error: true }));
     }
 }
 
