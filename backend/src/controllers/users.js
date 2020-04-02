@@ -253,7 +253,7 @@ const UserController = {
     },
     Reset: async function (req, res) {
         const { name } = req.params;
-        const { password, newPassword } = req.body;
+        const { password = false, newPassword, code = false } = req.body;
         const { userId } = req.authState;
 
         console.log(userId);
@@ -271,6 +271,7 @@ const UserController = {
                 .status(unauthorized.status)
                 .json(generate(unauthorized, { error: true }));
         }
+
         if (!await bcrypt.compare(password, user.password)) {
             const { invalidPassword } = userResponses;
             return res
@@ -278,17 +279,17 @@ const UserController = {
                 .json(generate(invalidPassword, { error: true }));
         }
 
+        const hash = await bcrypt.hash(newPassword, 10);
+
         user = await UserSchema.findByIdAndUpdate(user._id, {
-            password: newPassword
+            password: hash
         }, {
             new: true
         });
 
-        // user.password = undefined;
-
         const { successUpdated } = userResponses;
         return res
-            .json(generate(successUpdated, { error: true }));
+            .json(generate(successUpdated, { data: user }));
     }
 }
 
