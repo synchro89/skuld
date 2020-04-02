@@ -15,7 +15,7 @@ const middleware = (userOptions = {}) => {
 
     return function (req, res, next) {
 
-        const { Authorization: authorization } = req.headers;
+        const { authorization } = req.headers;
 
         if (!nextWithAuthState) {
             if (!isValidAuthorization(authorization)) {
@@ -51,7 +51,7 @@ const middleware = (userOptions = {}) => {
 
             const token = authorization.split(" ")[1];
 
-            req.authState = verifyToken(token).authState;
+            req.authState = verifyToken(token);
 
             next();
         }

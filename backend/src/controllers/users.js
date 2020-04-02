@@ -93,13 +93,13 @@ const UserController = {
                 return res.status(userNotExists.status).json(generate(userNotExists, { error: true }));
             }
 
-            const sendRecoveryCodes = isAuth && userId === user._id === userId;
+            const sendRecoveryCodes = isAuth && userId.toString() === user._id.toString();
 
             if (!sendRecoveryCodes)
                 user.recovery_codes = undefined;
 
             const { successFetched } = userResponses;
-            return res.json(generate(successFetched, { data: user }));
+            return res.json(generate(successFetched, { data: user, req: req.authState }));
 
         } catch (error) {
             const { unknownError } = userResponses;
