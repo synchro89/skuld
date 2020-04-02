@@ -5,19 +5,19 @@ const { user: userResponses } = require("../responses");
 const { generate } = userResponses;
 
 const defaultOptions = {
-    nextIfNotAuth: false
+    nextWithAuthState: false
 }
 
 const middleware = (userOptions = {}) => {
     const options = Object.assign({}, defaultOptions, userOptions);
 
-    const { nextIfNotAuth } = options;
+    const { nextWithAuthState } = options;
 
     return function (req, res, next) {
 
         const { Authorization: authorization } = req.headers;
 
-        if (!nextIfNotAuth) {
+        if (!nextWithAuthState) {
             if (!isValidAuthorization(authorization)) {
                 const { unauthorized } = userResponses;
 
