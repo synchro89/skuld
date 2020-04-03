@@ -1,7 +1,7 @@
 const routes = require("express").Router();
 
-const ResourceMiddleware = require("../controllers/resources");
+const ResourceController = require("../controllers/resources");
 
-routes.get("/:resource", ResourceMiddleware.Index);
+routes.get("/:resource", ResourceController.Index);
 
 module.exports = app => app.use("/resources", routes);
