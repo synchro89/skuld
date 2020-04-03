@@ -11,6 +11,10 @@ const AnimeSchema = new Schema(
         fk_anime_id: {
             type: String,
             required: true
+        },
+        ref_user_name: {
+            type: String,
+            required: true
         }
     },
     {

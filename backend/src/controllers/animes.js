@@ -42,7 +42,8 @@ const AnimeController = {
 
             anime = await AnimeSchema.create({
                 fk_user_id: userIdLikeString,
-                fk_anime_id: animeId
+                fk_anime_id: animeId,
+                ref_user_name: user.name
             });
 
             const { successCreated } = animeResponses;
