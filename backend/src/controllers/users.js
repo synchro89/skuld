@@ -84,8 +84,6 @@ const UserController = {
 
             let { name } = req.params;
 
-            name = name.replace(/-/g, " ");
-
             const user = await UserSchema.findOne({ name });
 
             if (!exists(user)) {
@@ -115,16 +113,25 @@ const UserController = {
                 file: { photo = null }
             } = req;
 
-            if (!exists(photo)) {
-                return res
-                    .json(generate(successUpdated, { data: user }));
-            }
+            const { userId } = req.authState;
 
             let user = await UserSchema.findOne({ name });
 
             if (!exists(user)) {
                 const { userNotExists } = userResponses;
                 return res.status(userNotExists.status).json(generate(userNotExists, { error: true }));
+            }
+
+            if (!compareId(userId, user._id)) {
+                const { unauthorized } = userResponses;
+                return res
+                    .status(unauthorized.status)
+                    .json(generate(unauthorized, { error: true }));
+            }
+
+            if (!exists(photo)) {
+                return res
+                    .json(generate(successUpdated, { data: user }));
             }
 
             const newPhoto = await uploadFile(photo, user.photo.public_id);
