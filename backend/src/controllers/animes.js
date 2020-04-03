@@ -1,5 +1,3 @@
-const { calcSkip } = require("../utils");
-
 const { user: userResponses } = require("../responses");
 const { anime: animeResponses } = require("../responses");
 const { generateResponse: generate, compareId, exists } = require("../utils");
