@@ -1,8 +1,11 @@
 const { user: userResponses } = require("../responses");
 const { anime: animeResponses } = require("../responses");
-const { generateResponse: generate, compareId, exists } = require("../utils");
-
-const mongoose = require('../database');
+const {
+    generateResponse: generate,
+    compareId,
+    exists,
+    stringToObjectId
+} = require("../utils");
 
 const UserSchema = require("../models/UserSchema");
 const AnimeSchema = require("../models/AnimeSchema");
@@ -121,10 +124,6 @@ const AnimeController = {
                 .json(generate(unknownError, { error }));
         }
     }
-}
-
-function stringToObjectId(str) {
-    return mongoose.Types.ObjectId(str);
 }
 
 module.exports = AnimeController;

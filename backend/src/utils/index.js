@@ -1,3 +1,5 @@
+const mongoose = require('../database');
+
 function generateResponse(metadata, complement = {}) {
     const response = Object.assign({}, metadata, complement);
 
@@ -63,6 +65,10 @@ function exists(entity) {
     return typeof entity !== "undefined" && typeof entity !== "null" && !!entity;
 }
 
+function stringToObjectId(str) {
+    return mongoose.Types.ObjectId(str);
+}
+
 module.exports = {
     generateResponse,
     calcSkip,
@@ -71,5 +77,6 @@ module.exports = {
     generateRecoveryCodes,
     createUniqueId,
     compareId,
-    exists
+    exists,
+    stringToObjectId
 }
