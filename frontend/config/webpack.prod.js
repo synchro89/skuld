@@ -1,3 +1,5 @@
+const Dotenv = require('dotenv-webpack');
+
 const path = require('path');
 const merge = require('webpack-merge');
 
@@ -42,7 +44,7 @@ module.exports = merge(common, {
             options: {
               sourceMap: true,
               config: {
-                path: `${__dirname}/postcss.config.js`,
+                path: `${__dirname}/../postcss.config.js`,
                 ctx: {
                   env: 'production'
                 }
@@ -94,7 +96,7 @@ module.exports = merge(common, {
       ]
     }),
     new FaviconsWebpackPlugin({
-      logo: './src/images/favicon.svg',
+      logo: '../src/images/favicon.svg',
       favicons: {
         appName: 'tris-webpack-boilerplate',
         appDescription:
@@ -113,10 +115,13 @@ module.exports = merge(common, {
         windows: true
       }
     }),
-    new OfflinePlugin()
+    new OfflinePlugin(),
+    new Dotenv({
+      path: './.env.dev', // Path to .env file (this is the default)
+    })
   ],
   output: {
     filename: '[name].[contentHash].js',
-    path: path.resolve(__dirname, 'dist')
+    path: path.normalize(path.join(__dirname, "..", 'build'))
   }
 });

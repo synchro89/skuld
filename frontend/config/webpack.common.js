@@ -10,8 +10,8 @@ const ScriptExtHtmlWebpackPlugin = require('script-ext-html-webpack-plugin');
 module.exports = {
   mode: 'development',
   entry: {
-    main: './src/index.js',
-    vendor: './src/vendor.js'
+    main: path.normalize(path.join(__dirname, "..", "src", "index.js")),
+    vendor: path.normalize(path.join(__dirname, "..", "src", "vendor.js"))
   },
   module: {
     rules: [
@@ -64,20 +64,20 @@ module.exports = {
     new WriteFilePlugin(),
     new CopyPlugin([
       {
-        from: path.resolve(__dirname, 'src', 'robots.txt'),
-        to: path.resolve(__dirname, 'dist', 'robots.txt')
+        from: path.normalize(path.join(__dirname, '..', 'src', 'robots.txt')),
+        to: path.normalize(path.join(__dirname, '..', 'build', 'robots.txt'))
       }
     ]),
     new HtmlWebpackPlugin({
       title: 'tris-home-page',
       filename: 'index.html',
-      template: './src/index.html',
+      template: path.normalize(path.join(__dirname, "..", "src", "index.html")),
       inject: 'head'
     }),
     new HtmlWebpackPlugin({
       title: 'tris-404-page',
       filename: '404.html',
-      template: './src/404.html',
+      template: path.normalize(path.join(__dirname, "..", "src", "404.html")),
       inject: 'head'
     }),
     new PreloadWebpackPlugin({

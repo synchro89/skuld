@@ -1,3 +1,5 @@
+const Dotenv = require('dotenv-webpack');
+
 const path = require('path');
 const merge = require('webpack-merge');
 const common = require('./webpack.common.js');
@@ -41,8 +43,13 @@ module.exports = merge(common, {
       }
     ]
   },
+  plugins: [
+    new Dotenv({
+      path: '.env.dev', // Path to .env file (this is the default)
+    })
+  ],
   output: {
     filename: '[name].js',
-    path: path.resolve(__dirname, 'dist')
+    path: path.normalize(path.join(__dirname, "..", 'build'))
   }
 });
