@@ -149,12 +149,20 @@ const UserController = {
     Delete: async function (req, res) {
         try {
             const { name } = req.params;
+            const { userId } = req.authState;
 
             const user = await UserSchema.findOne({ name });
 
             if (!exists(user)) {
                 const { userNotExists } = userResponses;
                 return res.status(userNotExists.status).json(generate(userNotExists, { error: true }));
+            }
+
+            if (!compareId(userId, user._id)) {
+                const { unauthorized } = userResponses;
+                return res
+                    .status(unauthorized.status)
+                    .json(generate(unauthorized, { error: true }));
             }
 
             await UserSchema.findOneAndRemove({
