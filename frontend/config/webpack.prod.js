@@ -96,7 +96,7 @@ module.exports = merge(common, {
       ]
     }),
     new FaviconsWebpackPlugin({
-      logo: '../src/images/favicon.svg',
+      logo: path.normalize(path.join(__dirname, "..", "src", "images", "favicon.svg")),
       favicons: {
         appName: 'tris-webpack-boilerplate',
         appDescription:
@@ -117,7 +117,7 @@ module.exports = merge(common, {
     }),
     new OfflinePlugin(),
     new Dotenv({
-      path: './.env.dev', // Path to .env file (this is the default)
+      path: '.env.prod', // Path to .env file (this is the default)
     })
   ],
   output: {
