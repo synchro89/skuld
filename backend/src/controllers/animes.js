@@ -13,15 +13,8 @@ const AnimeSchema = require("../models/AnimeSchema");
 const AnimeController = {
     Create: async function (req, res) {
         try {
-            let { userId, animeId } = req.body;
-            let { userId: loggedUserId } = req.authState;
-
-            if (!compareId(loggedUserId, userId)) {
-                const { unauthorized } = userResponses;
-                return res
-                    .status(unauthorized.status)
-                    .json(generate(unauthorized, { error: true }));
-            }
+            let { animeId } = req.body;
+            let { userId } = req.authState;
 
             userId = stringToObjectId(userId);
             userIdLikeString = userId.toString();
