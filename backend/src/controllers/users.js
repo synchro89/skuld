@@ -406,8 +406,6 @@ async function uploadFile(photo, currentPublicID = false) {
 
     await uploader.upload(...args)
 
-    console.log(fileUploaded);
-
     return fileUploaded;
 }
 
