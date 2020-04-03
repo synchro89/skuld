@@ -69,17 +69,17 @@ const AnimeController = {
 
             const anime = await AnimeSchema.findOne({ _id: animeId });
 
-            if (!compareId(userId, anime.fk_user_id)) {
-                const { unauthorized } = animeResponses;
-                return res
-                    .status(unauthorized.status)
-                    .json(generate(unauthorized, { error: true }));
-            }
             if (!exists(anime)) {
                 const { animeNotExists } = animeResponses;
                 return res
                     .status(animeNotExists.status)
                     .json(generate(animeNotExists, { error: true }));
+            }
+            if (!compareId(userId, anime.fk_user_id)) {
+                const { unauthorized } = animeResponses;
+                return res
+                    .status(unauthorized.status)
+                    .json(generate(unauthorized, { error: true }));
             }
 
             await AnimeSchema.findOneAndRemove({ _id: stringToObjectId(animeId) });
