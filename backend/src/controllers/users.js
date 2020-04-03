@@ -1,10 +1,10 @@
 const fs = require('fs')
 const path = require("path");
 
-const { calcSkip, isValidName, generateRecoveryCodes } = require("../utils");
+const { isValidName, generateRecoveryCodes } = require("../utils");
 
 const { user: userResponses } = require("../responses");
-const { generateResponse: generate, compareId, exists } = require("../utils");
+const { generateResponse: generate, compareId, exists, stringToObjectId } = require("../utils");
 
 const UserSchema = require("../models/UserSchema");
 
@@ -18,25 +18,17 @@ const { uploader } = require("../cloudinary");
 const UserController = {
     Get: async function (req, res) {
         try {
-            let { userId, isAuth } = req.authState;
+            let { userId } = req.authState;
 
-            let { name } = req.params;
-
-            const user = await UserSchema.findOne({ name });
+            const user = await UserSchema.findOne({ _id: stringToObjectId(userId) });
 
             if (!exists(user)) {
                 const { userNotExists } = userResponses;
                 return res.status(userNotExists.status).json(generate(userNotExists, { error: true }));
             }
 
-            const sendRecoveryCodes = isAuth && compareId(userId, user._id);
-
-            if (!sendRecoveryCodes)
-                user.recovery_codes = undefined;
-
             const { successFetched } = userResponses;
-            return res.json(generate(successFetched, { data: user, req: req.authState }));
-
+            return res.json(generate(successFetched, { data: user }));
         } catch (error) {
             const { unknownError } = userResponses;
             return res
