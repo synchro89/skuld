@@ -8,7 +8,6 @@ const upload = multer({ storage })
 
 const authMiddleware = require("../middlewares/auth");
 
-routes.get("/", authMiddleware(), UserController.Index);
 routes.get("/:name", authMiddleware({ nextWithAuthState: true }), UserController.Get);
 
 routes.post("/", upload.single('photo'), UserController.Store);
