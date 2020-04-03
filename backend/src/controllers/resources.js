@@ -3,6 +3,8 @@ const { calcSkip, isValidName, generateRecoveryCodes } = require("../utils");
 const { user: userResponses } = require("../responses");
 const { generateResponse: generate, compareId, exists } = require("../utils");
 
+const { resource: resourceResponses } = require("../responses");
+
 const UserSchema = require("../models/UserSchema");
 const AnimeSchema = require("../models/AnimeSchema");
 
@@ -22,20 +24,95 @@ const ResourceController = {
         try {
             const { resource } = req.params;
             let {
-                q,
                 exact = false,
                 limit = 2,
-                orderBy
+                order = "desc",
+                filter = "none",
+                page = "1"
             } = req.query;
 
+
             let Schema = getSchema(resource);
-
-            if (exists(Schema)) {
-
+            if (!exists(Schema)) {
+                const { invalidResource } = resourceResponses
+                return res
+                    .status(invalidResource.status)
+                    .json(generate(invalidResource, { error: true }));
             }
 
+            page = Number(page);
+            limit = Number(limit);
+
+            order = order === "desc" ? "-1" : "+1";
+            let skip = null;
+
+            skip = calcSkip(page, limit).skip;
+
+            if (filter === "none") {
+                filter = {};
+            } else {
+                let columns = [];
+                let values = [];
+
+                filter.split("-").forEach((item, i) =>
+                    i % 2 === 0 ? columns.push(item) : values.push(item)
+                );
+
+                filter = {};
+
+                columns.forEach((column, i) => {
+                    const value = values[i];
+                    exact ?
+                        filter[column] = value :
+                        filter[column] = new RegExp('^' + value, "g");
+                });
+            }
+
+            const total = await UserSchema.find(filter).estimatedDocumentCount();
+            const currentResults = await UserSchema.find(filter)
+                .skip(skip)
+                .limit(limit)
+                .sort([
+                    ["createdAt", order]
+                ]);
+
+
+            if (!currentResults.length) {
+                const { notFoundPagination: notFound } = resourceResponses;
+                return res.status(notFound.status).json(generate(notFound, {
+                    error: true
+                }));
+            }
+
+            skip = calcSkip(page + 1, limit).skip;
+            const nextResults = await UserSchema.find(filter)
+                .skip(skip)
+                .limit(limit)
+                .sort([
+                    ["createdAt", order]
+                ]);
+
+            const metadata = {
+                hasMore: nextResults.length > 0,
+                howManyDocsInNextPage: nextResults.length,
+                totalDocs: total,
+                currentPage: page,
+                totalPages
+            }
+
+            const data = {
+                results: currentResults,
+                metadata,
+            }
+
+            const { successPagination } = resourceResponses;
+
+            return res.json(generate(successPagination, {
+                data
+            }));
+
         } catch (error) {
-            const { unknownError } = userResponses;
+            const { unknownError } = resourceResponses;
             return res
                 .status(unknownError.status)
                 .json(generate(unknownError, { error }));
