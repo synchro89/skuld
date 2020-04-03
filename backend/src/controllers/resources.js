@@ -24,7 +24,7 @@ const ResourceController = {
         try {
             const { resource } = req.params;
             let {
-                exact = false,
+                exact = "false",
                 limit = 2,
                 order = "desc",
                 filter = "none",
@@ -42,6 +42,7 @@ const ResourceController = {
 
             page = Number(page);
             limit = Number(limit);
+            exact = exact === "true";
 
             order = order === "desc" ? "-1" : "+1";
             let skip = null;
@@ -68,13 +69,15 @@ const ResourceController = {
                 });
             }
 
-            const total = await UserSchema.find(filter).estimatedDocumentCount();
-            const currentResults = await UserSchema.find(filter)
+            const total = await Schema.find(filter).estimatedDocumentCount();
+            let totalPages = Math.ceil(total / limit);
+
+            const currentResults = await Schema.find(filter)
                 .skip(skip)
                 .limit(limit)
                 .sort([
                     ["createdAt", order]
-                ]);
+                ]).select("-recovery_codes");
 
 
             if (!currentResults.length) {
@@ -85,16 +88,16 @@ const ResourceController = {
             }
 
             skip = calcSkip(page + 1, limit).skip;
-            const nextResults = await UserSchema.find(filter)
+            const nextResults = await Schema.find(filter)
                 .skip(skip)
                 .limit(limit)
                 .sort([
                     ["createdAt", order]
-                ]);
+                ]).estimatedDocumentCount();
 
             const metadata = {
-                hasMore: nextResults.length > 0,
-                howManyDocsInNextPage: nextResults.length,
+                hasMore: nextResults > 0,
+                howManyDocsInNextPage: nextResults,
                 totalDocs: total,
                 currentPage: page,
                 totalPages
@@ -112,6 +115,7 @@ const ResourceController = {
             }));
 
         } catch (error) {
+            console.log(error);
             const { unknownError } = resourceResponses;
             return res
                 .status(unknownError.status)
@@ -131,67 +135,3 @@ function getSchema(resourceName) {
 }
 
 module.exports = ResourceController;
-
-
-
-
-// try {
-//     let { page, limit = 2 } = req.query;
-
-//     const total = await UserSchema.find().estimatedDocumentCount();
-
-//     page = Number(page);
-//     limit = Number(limit);
-//     totalPages = Math.ceil(total / limit);
-
-//     let skip = null;
-
-
-//     skip = calcSkip(page, limit).skip;
-//     const currentResults = await UserSchema.find()
-//         .skip(skip)
-//         .limit(limit)
-//         .sort([
-//             ["createdAt", "-1"]
-//         ]);
-
-//     if (!currentResults.length) {
-//         const { notFoundPagination: notFound } = userResponses;
-//         return res.status(notFound.status).json(generate(notFound, {
-//             error: true
-//         }));
-//     }
-
-//     skip = calcSkip(page + 1, limit).skip;
-//     const nextResults = await UserSchema.find()
-//         .skip(skip)
-//         .limit(limit)
-//         .sort([
-//             ["createdAt", "-1"]
-//         ]);
-
-//     const metadata = {
-//         hasMore: nextResults.length > 0,
-//         howManyDocsInNextPage: nextResults.length,
-//         totalDocs: total,
-//         currentPage: page,
-//         totalPages
-//     }
-
-//     const data = {
-//         results: currentResults,
-//         metadata,
-//     }
-
-//     const { successPagination } = userResponses;
-
-//     return res.json(generate(successPagination, {
-//         data
-//     }));
-// } catch (error) {
-
-//     const { unknownError } = userResponses;
-//     return res
-//         .status(unknownError.status)
-//         .json(generate(unknownError, { error }));
-// }
