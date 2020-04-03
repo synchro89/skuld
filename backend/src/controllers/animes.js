@@ -92,6 +92,36 @@ const AnimeController = {
                 .status(unknownError.status)
                 .json(generate(unknownError, { error }));
         }
+    },
+    Get: async function (req, res) {
+        try {
+            const { animeId } = req.params;
+            const { userId } = req.authState;
+
+            const anime = await AnimeSchema.findOne({ _id: stringToObjectId(animeId) });
+
+            if (!exists(anime)) {
+                const { animeNotExists } = animeResponses;
+                return res
+                    .status(animeNotExists.status)
+                    .json(generate(animeNotExists, { error: true }));
+            }
+
+            if (!compareId(userId, anime.fk_user_id)) {
+                const { unauthorized } = animeResponses;
+                return res
+                    .status(unauthorized.status)
+                    .json(generate(unauthorized, { error: true }));
+            }
+
+            const { successFetched } = animeResponses;
+            return res.json(generate(successFetched, { data: anime }));
+        } catch (error) {
+            const { unknownError } = animeResponses;
+            return res
+                .status(unknownError.status)
+                .json(generate(unknownError, { error }));
+        }
     }
 }
 
