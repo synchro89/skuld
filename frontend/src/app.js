@@ -1,12 +1,12 @@
 import "./scripts/script";
 
-import Router, { privateRoute as private, publicRoute as public } from "./app/routes";
+import Router, { privateRoute as privateR, publicRoute as publicR } from "./app/routes";
 
 document.addEventListener("DOMContentLoaded", () => {
-    Router.get("/", private(() => {
+    Router.get("/", privateR(() => {
         console.log("Estou na pagina dashboard/home");
     }));
-    Router.get("/login", public(() => {
+    Router.get("/login", publicR(() => {
         console.log("Estou na pagina login");
     }));
     Router.get("*", () => { });
