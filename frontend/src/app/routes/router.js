@@ -2,9 +2,9 @@ const public_path = process.env.PUBLIC_PATH === "/" ? "" : process.env.PUBLIC_PA
 
 const defaultRoute = {
     render: () => { },
-    before: () => { },
-    after: () => { },
-    leave: () => { }
+    willRender: () => { },
+    didRender: () => { },
+    unMount: () => { }
 };
 
 const Router = {
@@ -14,36 +14,42 @@ const Router = {
 
     _publicRoute: public_path,
 
-    _404: null,
-
     get: function (r, userRoute = {}) {
         if (typeof userRoute === "function")
             userRoute = { render: userRoute };
 
         const route = Object.assign({}, { path: this._publicRoute + r, params: {} }, defaultRoute, userRoute);
 
-        if (r === "*") return this._404 = route;
-
         this.routes.push(route);
     },
     navigateTo: function (newRoute) {
+        if (newRoute === this.currentRoute.path) return;
 
+        this._setRoute(newRoute);
     },
     _unmontRoute: function (route) {
-
+        console.log({
+            desmontei: true,
+            essaRota: route
+        });
     },
     _renderRoute: function (route) {
-        console.log(route);
+        console.log({
+            renderizei: true,
+            essaRota: route
+        });
     },
     _setRoute: function (newRoute) {
         const matchedRoute = this._matchRoute(newRoute);
 
-        if (!matchedRoute || matchedRoute.path !== this.currentRoute.path) {
-            this._unmontRoute(this.currentRoute);
-            if (!matchedRoute) this.currentRoute = this._404;
-            else this.currentRoute = matchedRoute;
-            this._renderRoute(this.currentRoute);
+        if (this.currentRoute) {
+            if (matchedRoute.path === this.currentRoute.path) return
+            else this._unmontRoute(this.currentRoute);
         }
+
+        this.currentRoute = matchedRoute;
+
+        this._renderRoute(this.currentRoute);
     },
     init: function () {
         if (!window) return;
@@ -75,9 +81,13 @@ const Router = {
             }
             return matched;
         });
+        const [_404Route] = this.routes.filter(r => (r.path === "*" || r.path === "/*"));
 
-        if (!!matchedRoute) return Object.assign({}, matchedRoute, { params });
-        else return null;
+        return Object.assign(
+            {},
+            (matchedRoute || _404Route || defaultRoute),
+            { params }
+        );
     }
 }
 
