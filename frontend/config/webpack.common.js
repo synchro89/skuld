@@ -86,7 +86,7 @@ module.exports = {
         if (/\.(woff|woff2|ttf|otf)$/.test(entry)) return 'font';
       },
       fileWhitelist: [/\.(woff|woff2|ttf|otf)$/],
-      include: 'allAssets'
+      include: 'allAssets',
     }),
     new ScriptExtHtmlWebpackPlugin({
       defaultAttribute: 'defer'

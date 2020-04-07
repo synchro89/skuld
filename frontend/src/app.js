@@ -9,15 +9,6 @@ document.addEventListener("DOMContentLoaded", () => {
     Router.init();
 
     setTimeout(() => {
-        Router.navigateTo("/aksoaks");
-        console.log("yeah");
-
-        setTimeout(() => {
-            Router.prev();
-            setTimeout(() => {
-                Router.next();
-            }, 5000)
-        }, 5000)
-
+        Router.navigateTo("/aksoaks/asasjfsdsjia");
     }, 3000)
 })
