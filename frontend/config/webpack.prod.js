@@ -122,6 +122,7 @@ module.exports = merge(common, {
   ],
   output: {
     filename: '[name].[contentHash].js',
-    path: path.normalize(path.join(__dirname, "..", 'build'))
+    path: path.normalize(path.join(__dirname, "..", 'build')),
+    publicPath: "/skuld"
   }
 });
