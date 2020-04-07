@@ -1,23 +1,38 @@
-const getDefaultConfig = {
-    method: 'GET',
+const defaultConfig = {
     mode: 'cors',
     cache: 'default'
+}
+
+const getDefaultConfig = {
+    method: 'GET',
+    ...defaultConfig
 };
-const getDefaultConfig = {
-    method: 'GET',
-    mode: 'cors',
-    cache: 'default'
+const postDefaultConfig = {
+    method: 'POST',
+    ...defaultConfig
 };
-const getDefaultConfig = {
-    method: 'GET',
-    mode: 'cors',
-    cache: 'default'
+const putDefaultConfig = {
+    method: 'PUT',
+    ...defaultConfig
+};
+const deleteDefaultConfig = {
+    method: 'DELETE',
+    ...defaultConfig
 };
 
 const backend = {
     baseURL: process.env.BACKEND_URL,
-    get: async function (endpoint, userConfig) {
-        const response = await fetch(this.baseURL + endpoint, Object.assign({}, getDefaultConfig, userConfig));
+    _getEndpoint: function (endpoint) {
+        return this.baseURL + endpoint
+    },
+    _mergeConfig: function (configs) {
+        return Object.assign({}, ...configs);
+    },
+    _sendRequestWith: function (endpoint, ...requestConfig) {
+        return this._request(this._getEndpoint(endpoint), this._mergeConfig([...requestConfig]));
+    },
+    _request: async function (endpoint, config) {
+        const response = await fetch(endpoint, config);
 
         const data = await response.json();
 
@@ -25,6 +40,18 @@ const backend = {
             throw data;
 
         return data;
+    },
+    get: function (endpoint, userConfig) {
+        return this._sendRequestWith(endpoint, getDefaultConfig, userConfig);
+    },
+    post: function (endpoint, userConfig) {
+        return this._sendRequestWith(endpoint, postDefaultConfig, userConfig);
+    },
+    put: function (endpoint, userConfig) {
+        return this._sendRequestWith(endpoint, putDefaultConfig, userConfig);
+    },
+    delete: function (endpoint, userConfig) {
+        return this._sendRequestWith(endpoint, deleteDefaultConfig, userConfig);
     }
 }
 

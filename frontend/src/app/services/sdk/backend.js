@@ -5,16 +5,27 @@ const Users = {
         try {
             const response = await backend_core.get("/users", {
                 headers: {
-                    authorizathion: token
+                    authorization: token
                 }
             });
+            console.log(response);
             return response;
         } catch (error) {
             throw error;
         }
     },
     auth: async function (data) {
-
+        try {
+            const response = await backend_core.post("/users", {
+                headers: {
+                    authorizathion: token
+                },
+                body: JSON.stringify(data)
+            });
+            return response;
+        } catch (error) {
+            throw error;
+        }
     },
     create: async function (data) {
 

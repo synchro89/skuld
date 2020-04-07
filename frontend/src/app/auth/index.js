@@ -90,6 +90,7 @@ const Auth = {
                 const response = await Users.get(this.get());
                 return response;
             } catch (error) {
+                console.log(error);
                 return false;
             }
         }
