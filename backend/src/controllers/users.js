@@ -16,7 +16,7 @@ const sharp = require("sharp");
 const { uploader } = require("../cloudinary");
 
 const UserController = {
-    Get: async function (req, res) {
+    Get: async function(req, res) {
         try {
             let { userId } = req.authState;
 
@@ -36,27 +36,19 @@ const UserController = {
                 .json(generate(unknownError, { error }));
         }
     },
-    Update: async function (req, res) {
+    Update: async function(req, res) {
         try {
             const {
-                body: { name },
                 file: { photo = null }
             } = req;
 
             const { userId } = req.authState;
 
-            let user = await UserSchema.findOne({ name });
+            let user = await UserSchema.findOne({ _id: userId });
 
             if (!exists(user)) {
                 const { userNotExists } = userResponses;
                 return res.status(userNotExists.status).json(generate(userNotExists, { error: true }));
-            }
-
-            if (!compareId(userId, user._id)) {
-                const { unauthorized } = userResponses;
-                return res
-                    .status(unauthorized.status)
-                    .json(generate(unauthorized, { error: true }));
             }
 
             if (!exists(photo)) {
@@ -83,23 +75,15 @@ const UserController = {
                 .json(generate(unknownError, { error }));
         }
     },
-    Delete: async function (req, res) {
+    Delete: async function(req, res) {
         try {
-            const { name } = req.params;
             const { userId } = req.authState;
 
-            const user = await UserSchema.findOne({ name });
+            const user = await UserSchema.findOne({ _id: userId });
 
             if (!exists(user)) {
                 const { userNotExists } = userResponses;
                 return res.status(userNotExists.status).json(generate(userNotExists, { error: true }));
-            }
-
-            if (!compareId(userId, user._id)) {
-                const { unauthorized } = userResponses;
-                return res
-                    .status(unauthorized.status)
-                    .json(generate(unauthorized, { error: true }));
             }
 
             await UserSchema.findOneAndRemove({
@@ -115,7 +99,7 @@ const UserController = {
                 .json(generate(unknownError, { error }));
         }
     },
-    Store: async function (req, res) {
+    Store: async function(req, res) {
         try {
             const {
                 body: { name, password },
@@ -173,7 +157,7 @@ const UserController = {
                 .json(generate(unknownError, { error }));
         }
     },
-    Auth: async function (req, res) {
+    Auth: async function(req, res) {
         try {
             const { name, password } = req.body;
 
@@ -203,7 +187,7 @@ const UserController = {
                 .json(generate(unknownError, { error }));
         }
     },
-    GenerateCodes: async function (req, res) {
+    GenerateCodes: async function(req, res) {
         try {
             const { name } = req.params;
             const { userId } = req.authState;
@@ -235,7 +219,7 @@ const UserController = {
                 .json(generate(unknownError, { error }));
         }
     },
-    Reset: async function (req, res) {
+    Reset: async function(req, res) {
         try {
             const { name } = req.params;
             const { password = false, newPassword, code = false } = req.body;
@@ -366,7 +350,7 @@ async function uploadFile(photo, currentPublicID = false) {
 
     let fileUploaded = {};
 
-    const callback = async (error, result) => {
+    const callback = async(error, result) => {
         if (exists(error)) throw new Error(error);
 
         fs.unlink(newPhotoPath, (error) => {
@@ -400,9 +384,7 @@ async function uploadFile(photo, currentPublicID = false) {
 
     // If have a current public_id, 
     // then the image/file already exists, then update, otherwise, create
-    const args = currentPublicID ?
-        [newPhotoPath, options, callback] :
-        [newPhotoPath, callback]
+    const args = currentPublicID ? [newPhotoPath, options, callback] : [newPhotoPath, callback]
 
     await uploader.upload(...args)
 
