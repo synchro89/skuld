@@ -29,9 +29,35 @@ const Users = {
     },
     create: async function (data) {
 
+        try {
+            const response = await backend_core.post("/users", {
+                headers: {
+                    authorizathion: token,
+                    "Content-Type": "multipart/form-data"
+                },
+                body: JSON.stringify(data)
+            });
+            return response;
+        } catch (error) {
+            throw error;
+        }
+
+
     },
     update: async function (newData) {
-
+        try {
+            // remember to convert data using new FormData()... 
+            const response = await backend_core.post("/users", {
+                headers: {
+                    authorizathion: token,
+                    "Content-Type": "multipart/form-data"
+                },
+                body: JSON.stringify(data)
+            });
+            return response;
+        } catch (error) {
+            throw error;
+        }
     },
     delete: async function (token) {
 
