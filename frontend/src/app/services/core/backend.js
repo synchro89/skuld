@@ -3,6 +3,16 @@ const getDefaultConfig = {
     mode: 'cors',
     cache: 'default'
 };
+const getDefaultConfig = {
+    method: 'GET',
+    mode: 'cors',
+    cache: 'default'
+};
+const getDefaultConfig = {
+    method: 'GET',
+    mode: 'cors',
+    cache: 'default'
+};
 
 const backend = {
     baseURL: process.env.BACKEND_URL,

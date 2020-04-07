@@ -13,7 +13,16 @@ const Users = {
             throw error;
         }
     },
-    update: function () {
+    auth: async function (data) {
+
+    },
+    create: async function (data) {
+
+    },
+    update: async function (newData) {
+
+    },
+    delete: async function (token) {
 
     }
 };
