@@ -10,10 +10,6 @@ document.addEventListener("DOMContentLoaded", () => {
     Router.get("*", () => { });
     Router.init();
     (async function () {
-        if (await Auth.accessToken.isValid()) {
-            console.log("bah");
-        } else {
-            console.log("sniff");
-        }
+        await Auth.init();
     })()
 })
