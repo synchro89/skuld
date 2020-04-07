@@ -1,4 +1,4 @@
-import backend from "../services/core/backend";
+import { Users } from "../services/sdk/backend";
 
 const storage_prefix = "skuld__app__access__token";
 
@@ -11,7 +11,7 @@ function isValidAuthorization(authorization) {
     if (parts.length !== 2)
         return false;
 
-    const [scheme, token] = parts;
+    const [scheme] = parts;
 
     if (!/^Bearer$/.test(scheme))
         return false;
@@ -48,7 +48,7 @@ const Auth = {
         return !!this.userData;
     },
     auth: async function () {
-        const token = localStorage.getItem("token");
+        const token = localStorage.getItem(storage_prefix);
 
         if (!token)
             return;
@@ -69,6 +69,10 @@ const Auth = {
         await this.auth();
         return this.dispatchEvent(this.events.AUTH_INIT);
     },
+    login: function (token, userData) {
+        this.userData = userData;
+        localStorage.setItem(storage_prefix, token);
+    },
     logout: function () {
         if (!this.isAuth()) return;
 
@@ -83,15 +87,10 @@ const Auth = {
         set: token => localStorage.setItem(storage_prefix, token),
         getUserData: async function () {
             try {
-                const response = await backend.get("/users", {
-                    headers: {
-                        authorization: this.get()
-                    }
-                });
+                const response = await Users.get(this.get());
                 return response;
             } catch (error) {
-                if (this.error.code === "user/unauthorized")
-                    return false;
+                return false;
             }
         }
     }
