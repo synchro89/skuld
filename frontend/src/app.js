@@ -4,7 +4,7 @@ import Router from "./app/routes/router";
 
 document.addEventListener("DOMContentLoaded", () => {
     Router.get("/", () => { });
-    Router.get("/:id/:simdeubom", () => { });
+    Router.get("/users/:id", () => { });
     Router.get("*", () => { });
     Router.init();
 })

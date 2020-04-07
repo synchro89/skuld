@@ -28,22 +28,21 @@ const Router = {
         this._setRoute(newRoute);
     },
     _unmontRoute: function (route) {
-        console.log({
-            desmontei: true,
-            essaRota: route
-        });
+        route.unMount();
     },
     _renderRoute: function (route) {
-        console.log({
-            renderizei: true,
-            essaRota: route
-        });
+        const props = {
+            params: route.params
+        }
+        route.willRender(props);
+        route.render(props);
+        route.didRender(props);
     },
     _setRoute: function (newRoute) {
         const matchedRoute = this._matchRoute(newRoute);
 
         if (this.currentRoute) {
-            if (matchedRoute.path === this.currentRoute.path) return
+            if (matchedRoute.path === this.currentRoute.path) return;
             else this._unmontRoute(this.currentRoute);
         }
 
