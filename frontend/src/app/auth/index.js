@@ -25,6 +25,7 @@ const Auth = {
     listeners: [],
 
     events: {
+        AUTH_INIT: "auth_init",
         AUTH_STATE_CHANGE: "auth_state_change",
         USER_DATA_CHANGE: "user_data_change"
     },
@@ -41,38 +42,40 @@ const Auth = {
             .filter(item => !(item.type === type) && !(item.callback === callback));
     },
     dispatchEvent: function (type) {
-        this.listeners.forEach(item => item.type === type && item.callback());
+        this.listeners.forEach(item => item.type === type && item.callback(this));
     },
-
-    isAuth: async function () {
+    isAuth: function () {
+        return !!this.userData;
+    },
+    auth: async function () {
         const token = localStorage.getItem("token");
 
         if (!token)
-            return this.isAuth = false;
-
+            return;
 
         this.token.set(token);
 
         if (!isValidAuthorization(this.token.get()))
-            return this.isAuth = false;
+            return;
 
         const userData = await this.token.getUserData();
 
-        this.isAuth = !!userData;
+        if (!userData) return this.token.clear();
 
-        if (!this.isAuth) return this.token.clear();
-
-        return this.userData = userData;
+        this.userData = userData;
+        this.dispatchEvent(this.events.AUTH_STATE_CHANGE);
     },
     init: async function () {
-        this.isAuth();
+        await this.auth();
+        return this.dispatchEvent(this.events.AUTH_INIT);
     },
     logout: function () {
-        if (!this.isAuth) return;
+        if (!this.isAuth()) return;
 
         this.token.clear();
-        this.isAuth = false;
         this.userData = null;
+
+        this.dispatchEvent(this.events.AUTH_STATE_CHANGE);
     },
     token: {
         clear: () => localStorage.removeItem(storage_prefix),
