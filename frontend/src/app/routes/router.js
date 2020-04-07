@@ -22,18 +22,25 @@ const Router = {
 
         this.routes.push(route);
     },
+    prev: function () {
+        window.history.back(1);
+    },
+    next: function () {
+        window.history.go(1);
+    },
     navigateTo: function (newRoute) {
+        newRoute = this._publicRoute + newRoute;
+
         if (newRoute === this.currentRoute.path) return;
 
         this._setRoute(newRoute);
+
+        window.history.pushState({}, newRoute, newRoute);
     },
     _unmontRoute: function (route) {
         route.unMount();
     },
-    _renderRoute: function (route) {
-        const props = {
-            params: route.params
-        }
+    _renderRoute: function (route, props) {
         route.willRender(props);
         route.render(props);
         route.didRender(props);
@@ -48,7 +55,11 @@ const Router = {
 
         this.currentRoute = matchedRoute;
 
-        this._renderRoute(this.currentRoute);
+        const props = {
+            params: this.currentRoute.params
+        }
+
+        this._renderRoute(this.currentRoute, props);
     },
     init: function () {
         if (!window) return;
@@ -80,7 +91,14 @@ const Router = {
             }
             return matched;
         });
-        const [_404Route] = this.routes.filter(r => (r.path === "*" || r.path === "/*"));
+
+        const [_404Route] = [Object.assign(
+            {},
+            this.routes.filter(r => (r.path === "*" || r.path === "/*"))[0],
+            {
+                path: route
+            }
+        )];
 
         return Object.assign(
             {},
