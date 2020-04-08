@@ -13,7 +13,7 @@ export default function LoginPage() {
             console.log("page login");
             const LoginHTML = `
             <div class="auth-wrapper">
-                <form class="auth-form">
+                <form class="auth-form" autocomplete="off">
 
                     <label for="login_name">Username</label>
                     <div class="auth-input-wrapper">
@@ -48,7 +48,7 @@ export default function LoginPage() {
 
             const removeRipple = new Ripple(buttonSubmit, {
                 color: "rgba(0,0,0,0.3)",
-                size: 5
+                size: 7
             });
 
             return {
@@ -56,7 +56,7 @@ export default function LoginPage() {
             }
         },
         unMount: async function (props) {
-
+            props.lifeCycle.didRender.removeRipple();
         }
     }
 }
