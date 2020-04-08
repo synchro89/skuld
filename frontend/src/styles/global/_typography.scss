@@ -21,8 +21,10 @@ html {
 }
 
 body {
-  font-family: $font-body;
   font-size: 1.6rem;
+}
+*{
+  font-family: $font-heading;
 }
 
 h1 {

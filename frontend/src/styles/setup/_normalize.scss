@@ -8,6 +8,11 @@
  * 2. Prevent adjustments of font size after orientation changes in iOS.
  */
 
+ *{
+   outline: 0;
+   border: none;
+ }
+ 
 html {
   line-height: 1.15;
   /* 1 */
@@ -15,6 +20,9 @@ html {
   /* 2 */
 }
 
+input{
+  background: transparent;
+}
 /* Sections
    ========================================================================== */
 
@@ -174,7 +182,6 @@ input,
 optgroup,
 select,
 textarea {
-  font-family: inherit;
   /* 1 */
   font-size: 100%;
   /* 1 */
@@ -336,8 +343,6 @@ textarea {
 ::-webkit-file-upload-button {
   -webkit-appearance: button;
   /* 1 */
-  font: inherit;
-  /* 2 */
 }
 
 /* Interactive

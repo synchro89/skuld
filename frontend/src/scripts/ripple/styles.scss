@@ -1,17 +1,28 @@
 @import "../../styles/utils/variables";
 
-.ripple__init{
-    width: 20px;
-    height: 20px;
-    background: var(--fallback);
+.ripple__container{
     position: absolute;
-    transform: translate(-50%, -50%) scale(0.2);
-    border-radius: 50%;
-    transition: all .6s ease-in-out;
-    &.ripple__running{
+    top: 0;
+    left: 0;
+    bottom: 0;
+    right: 0;
+    z-index: 2000;
+}
+.ripple__tap{
+    position: absolute;
+    animation: ripple_animation 1s ease-in-out 0s 1;
+    animation-fill-mode: forwards;
+}
+
+@keyframes ripple_animation {
+    0%{
+        transform: translate(-50%, -50%) scale(0.2);
+        border-radius: 50%;
+    }
+    50%{
         transform: translate(-50%, -50%) scale(50);
     }
-    &.ripple__finally{
+    100%{
         opacity: 0;
     }
 }

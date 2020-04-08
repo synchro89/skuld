@@ -7,64 +7,53 @@ function setAttributes(node, attributes) {
 }
 
 function tap(config) {
-    const { container, x, y } = config;
+    const { container, x, y, color, size } = config;
 
     this.tap = document.createElement("span");
-    this.tap.addEventListener("pointerdown", e => {
-        e.stopPropagation();
-
-        const wrapperData = container.getBoundingClientRect();
-
-        new tap({
-            container,
-            x: e.pageX - 20,
-            y: (e.pageY - wrapperData.top)
-        });
-    });
 
     container.appendChild(this.tap);
 
     setAttributes(this.tap, {
         left: x + "px",
-        top: y + "px"
+        top: y + "px",
+        background: color,
+        width: size + "px",
+        height: size + "px"
     });
 
-    this.tap.classList.add("ripple__init");
+    this.tap.classList.add("ripple__tap");
 
     setTimeout(() => {
-
-        this.tap.classList.add("ripple__running");
-
-        setTimeout(() => {
-            this.tap.classList.add("ripple__finally");
-
-            setTimeout(() => {
-                container.removeChild(this.tap);
-            }, 600);
-
-        }, 250);
-    }, 1);
+        container.removeChild(this.tap);
+    }, 1000);
 }
 
-function initRipple(e) {
+function initRipple(e, { color, size }) {
     new tap({
         container: this.wrapper,
         x: e.layerX,
         y: e.layerY,
+        color,
+        size
     });
 }
 
 function remove(initFunction) {
     return () =>
-        this.wrapper.removeEventListener("pointerdown", initFunction);
+        this.container.removeEventListener("pointerdown", initFunction);
 }
 
-function Ripple(wrapper) {
-    const initRippleFunction = initRipple.bind(this);
+function Ripple(wrapper, options = { color: "var(--fallback)", size: 20 }) {
+    const initRippleFunction = (e) => initRipple.apply(this, [e, options]);
 
     this.wrapper = wrapper;
 
-    this.wrapper.addEventListener("pointerdown", initRippleFunction);
+    this.container = document.createElement("div");
+    this.container.classList.add("ripple__container");
+
+    this.wrapper.appendChild(this.container);
+
+    this.container.addEventListener("pointerdown", initRippleFunction);
 
     return remove.apply(this, [initRippleFunction]);
 }

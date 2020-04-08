@@ -14,5 +14,38 @@
     padding: 2rem;
     border-radius: $radius;
     box-shadow: var(--box-shadow);
-    
+    background: var(--content);
+}
+.auth-input-wrapper{
+    border: 2px solid $secondary;
+    display: flex;
+    align-items: center;
+    background: var(--content);
+    color: var(--color);
+    border-radius: $radius;
+    overflow: hidden;
+}
+.auth-input-wrapper__input{
+    padding: 6px 12px;
+
+    &::placeholder{
+        color: var(--color-light);
+    }
+}
+.auth-input-wrapper__icon{
+    margin: 0 12px;
+    font-size: 1em;
+}
+
+.auth-submit{
+    padding: 8px 12px;
+    width: 100%;
+    max-width: 150px;
+    background: $primary;
+    color: var(--content);
+    margin-top: 3rem;
+    border-radius: $radius;
+    cursor: pointer;
+    overflow: hidden;
+    position: relative;
 }
