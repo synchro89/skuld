@@ -5,7 +5,7 @@ import Router, { privateRoute as privateR, publicRoute as publicR, access_types 
 import LoginPage from "./views/pages/login";
 import SignupPage from "./views/pages/signup";
 
-document.addEventListener("DOMContentLoaded", () => {
+document.addEventListener("DOMContentLoaded", async () => {
 
     const Login = LoginPage();
     // const Signup = SignupPage();
@@ -20,12 +20,14 @@ document.addEventListener("DOMContentLoaded", () => {
         access: access_types.PUBLIC_ONLY
     });
 
-    Router.get("*", () => { });
+    Router.get("*", () => {
+        console.log("agora to aqui");
+    });
 
     Router.configure({
         redirectWhenNotAuth: "/login",
         redirectWhenAuth: "/"
     });
 
-    Router.init();
+    await Router.init();
 });

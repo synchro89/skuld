@@ -1,5 +1,7 @@
 import "./styles.scss";
 
+import Ripple from "../../../scripts/ripple";
+
 import root from "../../root";
 
 export default function LoginPage() {
@@ -8,21 +10,19 @@ export default function LoginPage() {
             return await (await fetch("https://api.github.com/users/lakscastro")).json();
         },
         render: async function (props) {
-            console.log("toquiwapopra");
-            console.log();
-            const teste = props.data.willRenderProps;
+            console.log("page login");
             const LoginHTML = `
-                <div class="wrapper">
-                    <h1></h1>
-                </div>
             `
             root.innerHTML = LoginHTML;
 
             return LoginHTML;
         },
         didRender: async function (props) {
-            const input = document.getElementById("name");
-            input.oninput = e => console.log(e.target.value);
+            const form = document.getElementsByClassName("auth-wrapper")[0];
+            form.onsubmit = e => {
+                e.preventDefault();
+                console.log(e);
+            }
         },
         unMount: async function (props) {
 

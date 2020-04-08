@@ -1,0 +1,17 @@
+@import "../../styles/utils/variables";
+
+.ripple__init{
+    width: 20px;
+    height: 20px;
+    background: var(--fallback);
+    position: absolute;
+    transform: translate(-50%, -50%) scale(0.2);
+    border-radius: 50%;
+    transition: all .6s ease-in-out;
+    &.ripple__running{
+        transform: translate(-50%, -50%) scale(50);
+    }
+    &.ripple__finally{
+        opacity: 0;
+    }
+}

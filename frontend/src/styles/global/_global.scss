@@ -9,7 +9,8 @@ body.dark{
   
   --content: rgb(18, 18, 18);
   --background: rgb(5, 5, 5);
-  --fallback: rgba(127.5, 127.5, 127.5, 0.5);
+  --fallback: rgba(127.5, 127.5, 127.5, 0.2);
+  --tap: rgba(214, 218, 221, 0.5);
   
   --box-shadow: none;
 }
@@ -20,6 +21,7 @@ body.light{
   --content: rgb(255, 255, 255);
   --background: rgb(238, 239, 241);
   --fallback: rgba(127.5, 127.5, 127.5, 0.5);
+  --tap: rgba(18, 18, 18, 0.5);
 
   --box-shadow: 0 2px 4px 0 rgba(14,30,37,.12);
 }

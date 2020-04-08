@@ -40,21 +40,20 @@ const Router = {
         this._setRoute(newRoute);
     },
     _unmontRoute: function (route) {
-        route.unMount();
+        route.unMount(this.currentRoute.props);
     },
     _renderRoute: async function (route, props) {
         this.currentRoute = route;
 
-        let data = {};
+        this.currentRoute.props = props;
 
-        data.willRenderProps = await route.willRender(props);
-        props.data = data;
+        this.currentRoute.props.lifeCycle = {};
 
-        data.renderProps = await route.render(props);
-        props.data = data;
+        this.currentRoute.props.lifeCycle.willRenderProps = await route.willRender(this.currentRoute.props);
 
-        data.didRender = await route.didRender(props);
-        props.data = data;
+        this.currentRoute.props.lifeCycle.renderProps = await route.render(this.currentRoute.props);
+
+        this.currentRoute.props.lifeCycle.didRender = await route.didRender(this.currentRoute.props);
     },
     _equalRoutes: function (route, otherRoute) {
         return route.path === otherRoute.path;

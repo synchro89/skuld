@@ -1,4 +1,5 @@
 import * as OfflinePluginRuntime from 'offline-plugin/runtime';
+
 import "webpack-icons-installer";
 
 import './index.html';
