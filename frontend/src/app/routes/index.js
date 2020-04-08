@@ -42,11 +42,19 @@ const Router = {
     _unmontRoute: function (route) {
         route.unMount();
     },
-    _renderRoute: function (route, props) {
+    _renderRoute: async function (route, props) {
         this.currentRoute = route;
-        route.willRender(props);
-        route.render(props);
-        route.didRender(props);
+
+        let data = {};
+
+        data.willRenderProps = await route.willRender(props);
+        props.data = data;
+
+        data.renderProps = await route.render(props);
+        props.data = data;
+
+        data.didRender = await route.didRender(props);
+        props.data = data;
     },
     _equalRoutes: function (route, otherRoute) {
         return route.path === otherRoute.path;
@@ -87,11 +95,9 @@ const Router = {
                 return;
             }
         }
-
         const props = {
             params: (this.currentRoute ? this.currentRoute.params : {})
         }
-
 
         if (!firstRender && this._equalRoutes(this.currentRoute, matchedRoute))
             return;
@@ -99,7 +105,7 @@ const Router = {
         this._pushState(props, matchedRoute.path);
 
         if (firstRender)
-            return this._renderRoute(matchedRoute);
+            return this._renderRoute(matchedRoute, props);
 
         this._unMountAndRenderThis(this.currentRoute, matchedRoute, props);
     },
@@ -169,13 +175,13 @@ const Router = {
     init: async function () {
         if (!window) return;
 
-        let loadingUser = true;
-
+        // USER LOADING = TRUE
         await Auth.init();
 
-        Auth.on(Auth.events.AUTH_STATE_CHANGE, () => {
-            this._setRoute(window.location.pathname);
-        });
+        Auth.on(
+            Auth.events.AUTH_STATE_CHANGE,
+            () => this._setRoute(window.location.pathname)
+        );
 
         if (Auth.isAuth()) {
             console.log("usuario logado:");
@@ -183,14 +189,12 @@ const Router = {
         } else {
             console.log("usuario nao logado:");
         }
-        loadingUser = false;
+        // USER LOADING = FALSE
 
+        console.log(window.location.pathname);
         this._setRoute(window.location.pathname);
 
-        window.addEventListener("popstate", () => {
-            alert("a");
-            this._setRoute(window.location.pathname);
-        });
+        window.addEventListener("popstate", () => this._setRoute(window.location.pathname));
     },
 }
 
