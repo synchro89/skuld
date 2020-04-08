@@ -17,4 +17,8 @@ document.addEventListener("DOMContentLoaded", () => {
     });
 
     Router.init();
+
+    setTimeout(() => {
+        Router.navigateTo("/");
+    }, 5000);
 })

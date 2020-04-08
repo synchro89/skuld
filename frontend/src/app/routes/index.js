@@ -21,18 +21,11 @@ const Router = {
 
     currentRoute: null,
 
-    _publicRoute: public_path,
+    _publicPath: public_path,
 
-    _config: null,
+    _publicRoute: null,
+    _privateRoute: null,
 
-    get: function (r, userRoute = {}) {
-        if (typeof userRoute === "function")
-            userRoute = { render: userRoute };
-
-        const route = Object.assign({}, { path: this._publicRoute + r, params: {} }, defaultRoute, userRoute);
-
-        this.routes.push(route);
-    },
     prev: function () {
         window.history.back(1);
     },
@@ -40,60 +33,75 @@ const Router = {
         window.history.go(1);
     },
     navigateTo: function (newRoute) {
-        newRoute = this._publicRoute + newRoute;
+        newRoute = this._publicPath + newRoute;
 
-        if (newRoute === this.currentRoute.path) return;
+        if (this.currentRoute && newRoute === this.currentRoute.path) return;
 
         this._setRoute(newRoute);
-
-        window.history.pushState({}, newRoute, newRoute);
     },
     _unmontRoute: function (route) {
         route.unMount();
     },
     _renderRoute: function (route, props) {
+        this.currentRoute = route;
         route.willRender(props);
         route.render(props);
         route.didRender(props);
     },
+    _equalRoutes: function (route, otherRoute) {
+        return route.path === otherRoute.path;
+    },
+    _unMountAndRenderThis: function (unMountThisRoute, renderThisRoute, props = { params: {} }) {
+        this._unmontRoute(unMountThisRoute);
+        this._renderRoute(renderThisRoute, props);
+    },
+    _pushState: function (state, path) {
+        window.history.pushState(state, path, path);
+    },
     _setRoute: function (newRoute) {
+        const firstRender = !this.currentRoute;
+
         const matchedRoute = this._matchRoute(newRoute);
 
-        if (this.currentRoute) {
-            if (matchedRoute.path === this.currentRoute.path) return;
-            else this._unmontRoute(this.currentRoute);
-        }
+        const isAuth = Auth.isAuth();
 
-        this.currentRoute = matchedRoute;
+        const allowedAccessTypes = isAuth ?
+            [access_types.ANY, access_types.PRIVATE_ONLY] :
+            [access_types.ANY, access_types.PUBLIC_ONLY];
+
+        const routeToRedirect = isAuth ? this._privateRoute : this._publicRoute;
+
+        if (!firstRender) {
+            if (
+                !allowedAccessTypes.includes(this.currentRoute.access) ||
+                !allowedAccessTypes.includes(matchedRoute.access)
+            ) {
+                this.navigateTo(routeToRedirect.path);
+                return;
+            }
+        } else {
+            if (
+                !allowedAccessTypes.includes(matchedRoute.access)
+            ) {
+                this.navigateTo(routeToRedirect.path);
+                return;
+            }
+        }
 
         const props = {
-            params: this.currentRoute.params
+            params: (this.currentRoute ? this.currentRoute.params : {})
         }
 
-        this._renderRoute(this.currentRoute, props);
-    },
-    init: async function () {
-        if (!window) return;
 
-        let loadingUser = true;
+        if (!firstRender && this._equalRoutes(this.currentRoute, matchedRoute))
+            return;
 
-        await this.auth.init();
+        this._pushState(props, matchedRoute.path);
 
-        Auth.on(Auth.events.AUTH_STATE_CHANGE, () => {
-            this._setRoute(window.location.pathname);
-        });
+        if (firstRender)
+            return this._renderRoute(matchedRoute);
 
-        if (Auth.isAuth()) {
-            console.log("usuario logado:");
-            console.log(Auth.userData);
-        } else {
-            console.log("usuario nao logado:");
-        }
-        loadingUser = false;
-
-        this._setRoute(window.location.pathname);
-
-        window.addEventListener("popstate", () => this._setRoute(window.location.pathname));
+        this._unMountAndRenderThis(this.currentRoute, matchedRoute, props);
     },
     _matchRoute: function (route) {
         let params = {};
@@ -132,7 +140,58 @@ const Router = {
             (matchedRoute || _404Route || defaultRoute),
             { params }
         );
-    }
+    },
+    get: function (r, userRoute = {}) {
+        if (typeof userRoute === "function")
+            userRoute = { render: userRoute };
+
+        const route = Object.assign({}, { path: this._publicPath + r, params: {} }, defaultRoute, userRoute);
+
+        this.routes.push(route);
+    },
+    configure: function (config) {
+        const {
+            redirectWhenNotAuth: publicPath,
+            redirectWhenAuth: privatePath
+        } = config;
+
+        if (publicPath) {
+            const [publicRoute] = this.routes.filter(item => item.path === publicPath);
+            if (!publicRoute) throw new Error("Redirect routes must be defined on get method");
+            this._publicRoute = publicRoute;
+        }
+        if (privatePath) {
+            const [privateRoute] = this.routes.filter(item => item.path === privatePath);
+            if (!privateRoute) throw new Error("Redirect routes must be defined on get method");
+            this._privateRoute = privateRoute;
+        }
+    },
+    init: async function () {
+        if (!window) return;
+
+        let loadingUser = true;
+
+        await Auth.init();
+
+        Auth.on(Auth.events.AUTH_STATE_CHANGE, () => {
+            this._setRoute(window.location.pathname);
+        });
+
+        if (Auth.isAuth()) {
+            console.log("usuario logado:");
+            console.log(Auth.userData);
+        } else {
+            console.log("usuario nao logado:");
+        }
+        loadingUser = false;
+
+        this._setRoute(window.location.pathname);
+
+        window.addEventListener("popstate", () => {
+            alert("a");
+            this._setRoute(window.location.pathname);
+        });
+    },
 }
 
 function privateRoute(route) {
