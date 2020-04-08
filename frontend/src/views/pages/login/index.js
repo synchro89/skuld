@@ -15,14 +15,14 @@ export default function LoginPage() {
             <div class="auth-wrapper">
                 <form class="auth-form" autocomplete="off">
 
-                    <label for="login_name">Username</label>
+                    <label class="auth-wrapper__label" for="login_name">Username</label>
                     <div class="auth-input-wrapper">
                         <span class="auth-input-wrapper__icon material-icons">person</span>
                         <input class="auth-input-wrapper__input" id="login_name" type="text" name="login_name"
                             placeholder="Username" autofocus>
                     </div>
 
-                    <label for="login_name">Password</label>
+                    <label class="auth-wrapper__label" for="login_name">Password</label>
                     <div class="auth-input-wrapper">
                         <span class="auth-input-wrapper__icon material-icons">person</span>
                         <input class="auth-input-wrapper__input" id="login_password" type="password" name="login_password" placeholder="Password">

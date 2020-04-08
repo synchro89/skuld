@@ -16,24 +16,33 @@
     box-shadow: var(--box-shadow);
     background: var(--content);
 }
+.auth-wrapper__label{
+    color: var(--color-light);
+    margin-bottom: 1rem;
+    display: block;
+}
 .auth-input-wrapper{
-    border: 2px solid $secondary;
+    border: 1px solid var(--fallback);
+
     display: flex;
     align-items: center;
     background: var(--content);
-    color: var(--color);
     border-radius: $radius;
     overflow: hidden;
+    margin-bottom: 3rem;
 }
 .auth-input-wrapper__input{
-    padding: 6px 12px;
+    padding: 10px 16px;
+    color: var(--color);
 
     &::placeholder{
         color: var(--color-light);
     }
 }
 .auth-input-wrapper__icon{
-    margin: 0 12px;
+    color: var(--color);
+    margin: 0 4px;
+    margin-left: 12px;
     font-size: 1em;
 }
 
@@ -43,7 +52,6 @@
     max-width: 150px;
     background: $primary;
     color: var(--content);
-    margin-top: 3rem;
     border-radius: $radius;
     cursor: pointer;
     overflow: hidden;
