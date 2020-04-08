@@ -28,7 +28,7 @@ module.exports = {
               esModule: false,
               name: '[name].[ext]',
               outputPath: 'images/',
-              publicPath: '/images/'
+              publicPath: 'images/'
             }
           }
         ]
@@ -46,6 +46,15 @@ module.exports = {
             }
           }
         ]
+      },
+      {
+        test: /\.(eot|svg)(\?v=[0-9]\.[0-9]\.[0-9])?$/,
+        loader: 'url-loader',
+        options: {
+          limit: 8192,
+          name: '[name].[ext]',
+          outputPath: 'assets/'
+        }
       },
       {
         test: /\.js$/,

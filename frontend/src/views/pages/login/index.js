@@ -5,13 +5,16 @@ import root from "../../root";
 export default function LoginPage() {
     return {
         willRender: async function () {
-            return "a, sim";
+            return await (await fetch("https://api.github.com/users/lakscastro")).json();
         },
         render: async function (props) {
             console.log("toquiwapopra");
-            console.log(props.data);
+            console.log();
+            const teste = props.data.willRenderProps;
             const LoginHTML = `
-                <input type="text" name="name" placeholder"nome" id="name">
+                <div class="wrapper">
+                    <h1></h1>
+                </div>
             `
             root.innerHTML = LoginHTML;
 

@@ -10,7 +10,7 @@ document.addEventListener("DOMContentLoaded", () => {
     const Login = LoginPage();
     // const Signup = SignupPage();
 
-    Router.get("/", () => console.log("estou na pagina home"));
+    Router.get("/", privateR(() => console.log("estou na pagina home")));
 
     Router.get("/login", {
         willRender: Login.willRender,
