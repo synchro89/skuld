@@ -11,14 +11,15 @@ export default function LoginPage() {
             console.log("toquiwapopra");
             console.log(props.data);
             const LoginHTML = `
-                <div class="testando"></div>
+                <input type="text" name="name" placeholder"nome" id="name">
             `
             root.innerHTML = LoginHTML;
 
             return LoginHTML;
         },
         didRender: async function (props) {
-
+            const input = document.getElementById("name");
+            input.oninput = e => console.log(e.target.value);
         },
         unMount: async function (props) {
 

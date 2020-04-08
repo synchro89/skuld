@@ -10,17 +10,15 @@ document.addEventListener("DOMContentLoaded", () => {
     const Login = LoginPage();
     // const Signup = SignupPage();
 
-    Router.get("/", {
+    Router.get("/", () => console.log("estou na pagina home"));
+
+    Router.get("/login", {
         willRender: Login.willRender,
         render: Login.render,
         didRender: Login.didRender,
         unMount: Login.unMount,
-        access: access_types.PRIVATE_ONLY
+        access: access_types.PUBLIC_ONLY
     });
-
-    Router.get("/login", publicR(() => {
-        console.log("Estou na pagina login");
-    }));
 
     Router.get("*", () => { });
 
