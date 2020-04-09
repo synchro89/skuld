@@ -5,15 +5,6 @@ function AnimateLoginCanvas(canvasNode) {
         canvasNode,
         canvas: null,
         colors: ["#EEDAFF", "#D0A5F5", "#B981E9", "#A467D9", "#8547BA"],
-        positions: {
-            data: [],
-            metadata: {},
-            getPositionAt: function (column, row) {
-                const index = Math.floor(row * this.metadata.rowsHeight + column * this.metadata.columnsWidth);
-                console.log(index);
-                return this.data[index];
-            }
-        },
         setSize: function (width, height) {
             this.canvasNode.width = width;
             this.canvasNode.height = height;
@@ -25,11 +16,6 @@ function AnimateLoginCanvas(canvasNode) {
             }
 
             this.setSize(innerWidth, innerHeight)
-
-            addEventListener("resize", () => {
-                this.setSize(innerWidth, innerHeight);
-                startAnimation();
-            });
 
             startAnimation();
         },
