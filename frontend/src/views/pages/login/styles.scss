@@ -5,7 +5,6 @@
     top: 0;
     left: 0;
     z-index: -1;
-    image-rendering: pixelated;
 }
 .auth-wrapper{
     z-index: 30;
@@ -40,6 +39,8 @@
     color: var(--color-light);
     margin-bottom: 1rem;
     display: block;
+    font-size: $small;
+    letter-spacing: 2px;
 }
 .auth-input-wrapper{
     border: 1px solid var(--fallback);

@@ -50,7 +50,7 @@ function AnimateLoginCanvas(canvasNode) {
         },
         runAnimation: async function () {
             const rain = {
-                length: 3,
+                length: 20,
                 items: [],
                 context: null,
                 init: function (context) {
@@ -110,7 +110,7 @@ function AnimateLoginCanvas(canvasNode) {
                             y: [item.y[0] + item.velocity, item.y[1] + item.velocity],
                         }
 
-                        if (newPos.x[0] >= x || newPos.y >= y[1])
+                        if (newPos.x[0] >= x || newPos.y[0] >= y)
                             newPos = this.generateItem();
 
 

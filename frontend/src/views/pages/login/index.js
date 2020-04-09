@@ -55,8 +55,8 @@ export default function LoginPage() {
             }
 
             const removeRipple = new Ripple(buttonSubmit, {
-                color: "rgba(0,0,0,0.3)",
-                size: 7
+                color: "var(--tap)",
+                size: 10
             });
 
             canvas(document.getElementById("auth-canvas"));
