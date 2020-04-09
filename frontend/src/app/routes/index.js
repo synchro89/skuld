@@ -33,11 +33,14 @@ const Router = {
         window.history.go(1);
     },
     navigateTo: function (newRoute) {
+        if (/[htt(p|ps)]/g.test(newRoute))
+            newRoute = new URL(newRoute).pathname;
+
         newRoute = this._publicPath + newRoute;
 
         if (this.currentRoute && newRoute === this.currentRoute.path) return;
 
-        this._setRoute(newRoute);
+        this._setRoute(newRoute, true);
     },
     _unmontRoute: function (route) {
         route.unMount(this.currentRoute.props);
@@ -65,7 +68,7 @@ const Router = {
     _pushState: function (state, path) {
         window.history.pushState(state, path, path);
     },
-    _setRoute: function (newRoute) {
+    _setRoute: function (newRoute, push = false) {
         const firstRender = !this.currentRoute;
 
         const matchedRoute = this._matchRoute(newRoute);
@@ -94,14 +97,16 @@ const Router = {
                 return;
             }
         }
+
         const props = {
             params: (this.currentRoute ? this.currentRoute.params : {})
         }
 
+        if (push)
+            this._pushState(props, matchedRoute.path);
+
         if (!firstRender && this._equalRoutes(this.currentRoute, matchedRoute))
             return;
-
-        this._pushState(props, matchedRoute.path);
 
         if (firstRender)
             return this._renderRoute(matchedRoute, props);

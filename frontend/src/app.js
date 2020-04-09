@@ -8,7 +8,7 @@ import SignupPage from "./views/pages/signup";
 document.addEventListener("DOMContentLoaded", async () => {
 
     const Login = LoginPage();
-    // const Signup = SignupPage();
+    const Signup = SignupPage();
 
     Router.get("/", privateR(() => console.log("estou na pagina home")));
 
@@ -17,6 +17,13 @@ document.addEventListener("DOMContentLoaded", async () => {
         render: Login.render,
         didRender: Login.didRender,
         unMount: Login.unMount,
+        access: access_types.PUBLIC_ONLY
+    });
+    Router.get("/register", {
+        willRender: Signup.willRender,
+        render: Signup.render,
+        didRender: Signup.didRender,
+        unMount: Signup.unMount,
         access: access_types.PUBLIC_ONLY
     });
 
