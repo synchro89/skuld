@@ -65,19 +65,18 @@ function AnimateLoginCanvas(canvasNode) {
 
                     const { innerWidth, innerHeight } = this.context.constants;
 
-                    let x = [0 - size, 0]
-                    let ybase = randomNumber(0, innerHeight);
-                    let y = [ybase - size, ybase]
+                    const possiblePositions = ['', ''].map((_, i) => {
+                        const useVertical = i === 0;
 
-                    const possiblePositions = [{
-                        x, y
-                    }]
+                        const a = [0 - size, 0];
+                        const relativeB = randomNumber(0, (useVertical ? innerHeight : innerWidth));
+                        const b = [relativeB - size, relativeB]
 
-                    let xbase = randomNumber(0, innerWidth);
-                    x = [xbase - size, xbase];
-                    y = [0 - size, 0];
-
-                    possiblePositions.push({ x, y });
+                        return {
+                            x: useVertical ? a : b,
+                            y: useVertical ? b : a
+                        }
+                    });
 
                     const pos = {
                         velocity: randomNumber(20, 40),
