@@ -5,6 +5,20 @@ function AnimateLoginCanvas(canvasNode) {
         canvasNode,
         canvas: null,
         colors: ["#EEDAFF", "#D0A5F5", "#B981E9", "#A467D9", "#8547BA"],
+
+        constants: {
+            innerWidth: window.innerWidth,
+            innerHeight: window.innerHeight,
+        },
+        getWindowSize: function () {
+            return {
+                innerWidth: window.innerWidth,
+                innerHeight: window.innerHeight,
+            }
+        },
+        updateConstants: function () {
+            this.constants = this.getWindowSize();
+        },
         setSize: function (width, height) {
             this.canvasNode.width = width;
             this.canvasNode.height = height;
@@ -15,7 +29,16 @@ function AnimateLoginCanvas(canvasNode) {
                 this.initAnimation();
             }
 
-            this.setSize(innerWidth, innerHeight)
+            function initialize() {
+                this.updateConstants();
+
+                const { innerWidth, innerHeight } = this.constants;
+                this.setSize(innerWidth, innerHeight)
+
+                return initialize.bind(this);
+            }
+
+            window.addEventListener("resize", initialize.call(this));
 
             startAnimation();
         },
@@ -39,6 +62,8 @@ function AnimateLoginCanvas(canvasNode) {
                 },
                 generateItem: function () {
                     const size = randomNumber(10, 50);
+
+                    const { innerWidth, innerHeight } = this.context.constants;
 
                     let x = [0 - size, 0]
                     let ybase = randomNumber(0, innerHeight);
@@ -73,6 +98,8 @@ function AnimateLoginCanvas(canvasNode) {
                 },
                 nextFrame: function () {
                     this.items = this.items.map(item => {
+                        const { innerWidth, innerHeight } = this.context.constants;
+
                         const { x, y } = {
                             x: innerWidth,
                             y: innerHeight
