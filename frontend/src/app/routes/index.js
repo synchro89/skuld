@@ -35,8 +35,10 @@ const Router = {
     navigateTo: function (newRoute) {
         if (/[htt(p|ps)]/g.test(newRoute))
             newRoute = new URL(newRoute).pathname;
+        else
+            newRoute = this._publicPath + newRoute;
 
-        newRoute = this._publicPath + newRoute;
+
 
         if (this.currentRoute && newRoute === this.currentRoute.path) return;
 
