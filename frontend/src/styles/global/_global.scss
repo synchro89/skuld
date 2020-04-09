@@ -2,7 +2,9 @@ html,
 body, #root {
   height: 100%;
 }
-
+*{
+  -webkit-tap-highlight-color: transparent;
+}
 body.dark{
   --color: rgb(214, 218, 221);
   --color-light: rgb(129, 130, 132);
