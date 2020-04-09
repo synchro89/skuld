@@ -1,6 +1,10 @@
 import "./styles.scss";
 
+import Logo from "../../../images/favicon.png"
+
 import Ripple from "../../../scripts/ripple";
+
+import canvas from "./canvas";
 
 import root from "../../root";
 
@@ -12,19 +16,23 @@ export default function LoginPage() {
         render: async function (props) {
             console.log("page login");
             const LoginHTML = `
+            <canvas id="auth-canvas"></canvas>
             <div class="auth-wrapper">
                 <form class="auth-form" autocomplete="off">
 
-                    <label class="auth-wrapper__label" for="login_name">Username</label>
+
+                    <img class="auth-form__logotipo" src="${Logo}" alt="Skuld Logo">
+                    
+                    <label class="auth-wrapper__label" for="login_name">USERNAME</label>
                     <div class="auth-input-wrapper">
                         <span class="auth-input-wrapper__icon material-icons">person</span>
                         <input class="auth-input-wrapper__input" id="login_name" type="text" name="login_name"
                             placeholder="Username" autofocus>
                     </div>
 
-                    <label class="auth-wrapper__label" for="login_name">Password</label>
+                    <label class="auth-wrapper__label" for="login_name">PASSWORD</label>
                     <div class="auth-input-wrapper">
-                        <span class="auth-input-wrapper__icon material-icons">person</span>
+                        <span class="auth-input-wrapper__icon material-icons">https</span>
                         <input class="auth-input-wrapper__input" id="login_password" type="password" name="login_password" placeholder="Password">
                     </div>
 
@@ -50,6 +58,8 @@ export default function LoginPage() {
                 color: "rgba(0,0,0,0.3)",
                 size: 7
             });
+
+            canvas(document.getElementById("auth-canvas"));
 
             return {
                 removeRipple

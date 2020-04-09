@@ -95,7 +95,8 @@ module.exports = {
       title: 'tris-home-page',
       filename: 'index.html',
       template: path.normalize(path.join(__dirname, "..", "src", "index.html")),
-      inject: 'head'
+      inject: 'head',
+      favicon: path.normalize(path.join(__dirname, "..", "src", "images", "favicon.png"))
     }),
     new HtmlWebpackPlugin({
       title: 'tris-404-page',

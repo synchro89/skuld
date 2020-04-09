@@ -23,9 +23,7 @@ function tap(config) {
 
     this.tap.classList.add("ripple__tap");
 
-    setTimeout(() => {
-        container.removeChild(this.tap);
-    }, 1000);
+    this.tap.onanimationend = () => container.removeChild(this.tap);
 }
 
 function initRipple(e, { color, size }) {

@@ -12,7 +12,7 @@ body.dark{
   --fallback: rgba(127.5, 127.5, 127.5, 0.2);
   --tap: rgba(214, 218, 221, 0.5);
   
-  --box-shadow: none;
+  --box-shadow: 0 2px 10px 0 rgba(0,0,0,.2);
 }
 body.light{
   --color: rgb(35, 25, 45);
