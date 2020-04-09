@@ -22,21 +22,28 @@
     border-radius: $radius-big;
     box-shadow: var(--box-shadow);
     background: var(--content);
-
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    flex-direction: column;
 }
 
 .auth-wrapper__label{
-    width: 100%;
     color: var(--color-light);
-    margin-bottom: 1rem;
-    display: block;
+    display: inline-block;
     font-size: $small;
-    letter-spacing: 2px;
+    letter-spacing: 1px;
 }
+.auth-wrapper__label--as-wrapper{
+    margin-bottom: 6px;
+}
+.auth-wrapper__label--disabled{
+    color: var(--color-transparent);
+}
+.auth-wrapper__label--active{
+    color: $primary;
+}
+.auth-wrapper__label--error{
+    color: $danger;
+}
+
+
 .auth-input-wrapper{
     border: 1px solid var(--fallback);
 
@@ -71,4 +78,5 @@
     cursor: pointer;
     overflow: hidden;
     position: relative;
+    margin-bottom: 10px;
 }

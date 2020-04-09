@@ -1,3 +1,5 @@
+@import "../utils/variables";
+
 html,
 body, #root {
   height: 100%;
@@ -8,6 +10,7 @@ body, #root {
 body.dark{
   --color: rgb(214, 218, 221);
   --color-light: rgb(129, 130, 132);
+  --color-transparent: rgba(214, 218, 221, .4);
   
   --content: rgb(30, 30, 30);
   --background: rgb(5, 5, 5);
@@ -19,6 +22,7 @@ body.dark{
 body.light{
   --color: rgb(35, 25, 45);
   --color-light: rgb(105, 109, 110);
+  --color-transparent: rgba(35, 25, 45, .4);
   
   --content: rgb(255, 255, 255);
   --background: rgb(238, 239, 241);
@@ -56,7 +60,24 @@ p {
 a {
   text-decoration: none;
 }
-
+.border-on-hover{
+  position: relative;
+  &::after{
+    position: absolute;
+    content: "";
+    bottom: 0;
+    left: 0;
+    height: 2px;
+    width: 0;
+    transition: $transition;
+    background: $primary;
+  }
+  &:hover{
+    &::after{
+      width: 100%;
+    }
+  }
+}
 img {
   display: block;
 }
