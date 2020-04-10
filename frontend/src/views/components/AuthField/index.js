@@ -38,7 +38,7 @@ export default function AuthField({ config: userConfig }) {
             >
                 ${label.toUpperCase()}
             </label>
-            <div class="auth-input-wrapper">
+            <div id="auth-input-wrapper-${id}" class="auth-input-wrapper">
                 ${icon ? `<span class="auth-input-wrapper__icon material-icons">${icon}</span>` : ""}
                 <input class="auth-input-wrapper__input" id="${id}" type="${type}" name="${name}"
                     placeholder="${placeholder}" ${autofocus ? `autofocus` : ""}>
@@ -51,24 +51,71 @@ export default function AuthField({ config: userConfig }) {
         </div>
     `
 
+    let input = null;
+    let labelInput = null;
+    let inputWrapper = null;
+
+    const labelClassError = "auth-wrapper__label--error";
+    const inputWrapperClassError = "auth-input-wrapper--error";
+    const inputWrapperClassFocus = "auth-input-wrapper--focus-here";
+
+    const api = {
+        error: false,
+        heyHere: function () {
+            if (inputWrapper.classList.contains(inputWrapperClassFocus)) return;
+
+            inputWrapper.classList.add(inputWrapperClassFocus);
+        },
+        getValue: function () {
+            return input.value;
+        },
+        clearError: function () {
+            if (!labelInput.classList.contains(labelClassError)) return;
+
+            this.error = false;
+            labelInput.classList.remove(labelClassError);
+            inputWrapper.classList.remove(inputWrapperClassError);
+            labelInput.textContent = label.toUpperCase();
+        },
+        setError: function (message) {
+            if (labelInput.classList.contains(labelClassError)) return;
+
+            this.error = true;
+            labelInput.classList.add(labelClassError);
+            inputWrapper.classList.add(inputWrapperClassError);
+            labelInput.textContent = labelInput.textContent + " - " + message;
+        }
+    }
+
     async function init() {
-        const input = !!id ? getById(id) : query(`.auth-wrapper__field input[name='${name}']`);
+        input = !!id ? getById(id) : query(`.auth-wrapper__field input[name='${name}']`);
+        labelInput = query(`.auth-wrapper__field label[for='${id || name}']`);
+        inputWrapper = getById(`auth-input-wrapper-${id}`);
+
+        inputWrapper.addEventListener("animationend", () => {
+            inputWrapper.classList.remove(inputWrapperClassFocus);
+        });
 
         usePassword && initShowPass(input);
 
-        input.oninput = onInput;
+        input.oninput = e => {
+            api.clearError();
+            onInput(e.target.value, api);
+        };
+
+        return api;
     }
     async function remove() {
 
     }
 
-    function initShowPass(inputTarget) {
+    function initShowPass() {
         const showPass = getById("show_password");
 
         showPass.onclick = function () {
-            const newType = inputTarget.getAttribute("type") === "password" ? "text" : "password";
+            const newType = input.getAttribute("type") === "password" ? "text" : "password";
             const newIcon = newType === "password" ? "visibility" : "visibility_off"
-            inputTarget.setAttribute("type", newType);
+            input.setAttribute("type", newType);
             showPass.textContent = newIcon;
         }
     }

@@ -1,6 +1,6 @@
 import "./styles.scss";
 
-import loading from "../../../images/buttonLoading.svg"
+import _ from "lodash";
 
 import Router from "../../../app/routes";
 
@@ -20,12 +20,25 @@ import ButtonSubmit from "../../components/AuthSubmitButton";
 import root from "../../root";
 
 export default function LoginPage() {
+
+    function onNameChange(value, api) {
+        if (!value.length || !isValidName(value))
+            return api.setError("Invalid username");
+        else
+            api.clearError();
+    }
+    function onPasswordChange(value, api) {
+        if (!value.length || value.length < 5)
+            return api.setError("Password must have 5 letters or more");
+        else
+            api.clearError();
+    }
+
     return {
         willRender: async function () {
             const buttonSubmit = ButtonSubmit({
                 config: {
-                    label: "Login",
-                    onClick: () => alert("a")
+                    label: "Login"
                 }
             });
             const nameField = AuthField({
@@ -34,7 +47,8 @@ export default function LoginPage() {
                     id: "login_name",
                     autofocus: true,
                     label: "username",
-                    icon: "person"
+                    icon: "person",
+                    onInput: _.debounce(onNameChange, 300)
                 }
             });
             const passwordField = AuthField({
@@ -44,7 +58,8 @@ export default function LoginPage() {
                     label: "password",
                     icon: "https",
                     type: "password",
-                    inject: `<a class="auth-wrapper__label auth-wrapper__label--active border-on-hover use-padding" href="/reset">Reset password</a>`
+                    inject: `<a class="auth-wrapper__label auth-wrapper__label--active border-on-hover use-padding" href="/reset">Reset password</a>`,
+                    onInput: _.debounce(onPasswordChange, 300)
                 }
             });
 
@@ -101,14 +116,29 @@ export default function LoginPage() {
                 buttonSubmit
             } = props.lifeCycle.willRender;
 
-            await nameField.didRender();
-            await passwordField.didRender();
+            const nameApi = await nameField.didRender();
+            const passwordApi = await passwordField.didRender();
 
             const btnSubmitApi = await buttonSubmit.didRender();
 
             function onSubmit({ login_name: name, login_password: password }) {
-                btnSubmitApi.setLoading(true);
+                nameApi.clearError();
+                passwordApi.clearError();
 
+                if (!name.length || !isValidName(name)) {
+                    nameApi.setError("Invalid username");
+                    nameApi.heyHere();
+                }
+
+                if (!password.length || password.length < 5) {
+                    passwordApi.setError("Password must have 5 letters or more");
+                    passwordApi.heyHere();
+                }
+
+                if (passwordApi.error || nameApi.error)
+                    return;
+
+                btnSubmitApi.setLoading(true);
                 setTimeout(() => {
                     console.log("terminei");
                     btnSubmitApi.setLoading(false);
@@ -131,17 +161,6 @@ export default function LoginPage() {
                     e.preventDefault();
                     Router.navigateTo(link.href);
                 }
-            }
-
-
-
-            function showLabelError(label, message) {
-                label.classList.add("auth-wrapper__label--error");
-                label.textContent = label.textContent + " - " + message;
-            }
-            function removeLabelError(label, originalMessage) {
-                label.classList.remove("auth-wrapper__label--error");
-                label.textContent = originalMessage;
             }
 
             const { removeRain } = Rain(document.getElementById("auth-canvas"));

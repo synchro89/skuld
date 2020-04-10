@@ -22,7 +22,6 @@
     width: 100%;
     max-width: 500px;
 
-    animation: wrapper-animation 1s ease-in-out 0s infinite alternate;
     padding: 2.5rem;
     border-radius: $radius-big;
     box-shadow: var(--box-shadow);
@@ -39,17 +38,5 @@
         font-size: $normal;
         color: var(--color-transparent);
         margin-bottom: 3rem;
-    }
-}
-
-
-
-
-@keyframes wrapper-animation {
-    0%{
-        transform: translate(0, -4px);
-    }
-    100%{
-        transform: translate(0, 4px);
     }
 }
