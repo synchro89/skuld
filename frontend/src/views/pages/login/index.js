@@ -1,8 +1,12 @@
 import "./styles.scss";
 
-import Logo from "../../../images/favicon.png"
+import loading from "../../../images/buttonLoading.svg"
 
 import Router from "../../../app/routes";
+
+import Auth from "../../../app/auth";
+
+import backend from "../../../app/services/sdk/backend";
 
 import Ripple from "../../../scripts/ripple";
 
@@ -27,7 +31,13 @@ export default function LoginPage() {
                         <p>We are glad for see you again!</p>
                     </header>
                     <div class="auth-wrapper__field">
-                        <label class="auth-wrapper__label auth-wrapper__label--as-wrapper" for="login_name">USERNAME</label>
+                        <label 
+                            class="auth-wrapper__label auth-wrapper__label--as-wrapper" 
+                            for="login_name"
+                        >
+                            USERNAME
+                            <p class="auth-wrapper__label--error"> - This user not exists</p>
+                        </label>
                         <div class="auth-input-wrapper">
                             <span class="auth-input-wrapper__icon material-icons">person</span>
                             <input class="auth-input-wrapper__input" id="login_name" type="text" name="login_name"
@@ -53,7 +63,7 @@ export default function LoginPage() {
                         Need a account? 
                         <a 
                             href="/register" 
-                            class="auth-wrapper__label--active border-on-hover"
+                            class="use-padding auth-wrapper__label--active border-on-hover"
                         >
                             Register
                         <a>
@@ -66,7 +76,7 @@ export default function LoginPage() {
             return LoginHTML;
         },
         didRender: async function (props) {
-            const form = document.getElementsByClassName("auth-wrapper")[0];
+            const form = document.getElementsByClassName("auth-form")[0];
             const buttonSubmit = document.getElementsByClassName("auth-submit")[0];
             const links = document.querySelectorAll(".auth-wrapper a");
 
@@ -87,15 +97,37 @@ export default function LoginPage() {
                 }
             }
 
-            form.onsubmit = e => {
-                e.preventDefault();
-                console.log(e);
-            }
+            let removeRipple = null;
 
-            const removeRipple = new Ripple(buttonSubmit, {
+            removeRipple = new Ripple(buttonSubmit, {
                 color: "var(--tap)",
                 size: 5
             });
+
+            form.onsubmit = e => {
+                e.preventDefault();
+
+                removeRipple();
+                buttonSubmit.setAttribute("disabled", "true");
+                console.log(loading)
+                buttonSubmit.innerHTML = `
+                    <div class="auth-submit__loader" data-delay="0"></div>
+                    <div class="auth-submit__loader" data-delay="1"></div>
+                    <div class="auth-submit__loader" data-delay="2"></div>
+                `;
+
+                backend.Auth
+
+                setTimeout(() => {
+                    buttonSubmit.removeAttribute("disabled")
+                    buttonSubmit.innerHTML = `Login`;
+                    removeRipple = new Ripple(buttonSubmit, {
+                        color: "var(--tap)",
+                        size: 5
+                    });
+                }, 15000);
+            }
+
 
             canvas(document.getElementById("auth-canvas"));
 

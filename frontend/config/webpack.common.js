@@ -48,7 +48,7 @@ module.exports = {
         ]
       },
       {
-        test: /\.(eot|svg)(\?v=[0-9]\.[0-9]\.[0-9])?$/,
+        test: /\.(eot)(\?v=[0-9]\.[0-9]\.[0-9])?$/,
         loader: 'url-loader',
         options: {
           limit: 8192,

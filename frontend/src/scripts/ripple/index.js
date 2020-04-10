@@ -45,7 +45,7 @@ function Ripple(wrapper, options = { color: "var(--fallback)", size: 20 }) {
     const initRippleFunction = (e) => initRipple.apply(this, [e, options]);
 
     this.wrapper = wrapper;
-
+    this.wrapper.classList.add("ripple__root");
     this.container = document.createElement("div");
     this.container.classList.add("ripple__container");
 

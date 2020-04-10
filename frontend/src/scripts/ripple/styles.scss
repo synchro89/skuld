@@ -1,5 +1,9 @@
 @import "../../styles/utils/variables";
 
+.ripple__root{
+    position: relative;
+    overflow: hidden;
+}
 .ripple__container{
     position: absolute;
     top: 0;

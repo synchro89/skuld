@@ -7,6 +7,7 @@
     z-index: -1;
 }
 .auth-wrapper{
+
     z-index: 30;
     width: 100%;
     height: 100%;
@@ -27,6 +28,7 @@
     }
 }
 .auth-form{
+    overflow: hidden;
     animation: wrapper-animation 1s ease-in-out 0s infinite alternate;
     padding: 2.5rem;
     border-radius: $radius-big;
@@ -56,16 +58,21 @@
     letter-spacing: 1px;
 }
 .auth-wrapper__label--as-wrapper{
+    display: inline-block;
     margin-bottom: 6px;
 }
 .auth-wrapper__label--disabled{
+    display: inline-block;
     color: var(--color-transparent);
 }
 .auth-wrapper__label--active{
+    display: inline-block;
     font-weight: 600;
     color: $primary;
 }
 .auth-wrapper__label--error{
+    display: inline-block;
+    font-style: italic;
     color: $danger;
 }
 
@@ -82,6 +89,9 @@
     background: var(--content);
     border-radius: $radius;
     overflow: hidden;
+}
+.auth-input-wrapper--error{
+    border: 1px solid $danger;
 }
 .auth-input-wrapper__input{
     flex: 1;
@@ -110,13 +120,50 @@
 }
 
 .auth-submit{
-    padding: 11px 16px;
+    height: 40px;
+
+    display: flex;
+    justify-content: center;
+    align-items: center;
+
+    padding: 2px 10px;
     width: 100%;
     background: $primary;
     color: var(--content);
     border-radius: $radius;
     cursor: pointer;
-    overflow: hidden;
-    position: relative;
+    
     margin-bottom: 10px;
+    transition: all .3s ease-in-out;
+}
+
+.auth-submit[disabled]{
+    cursor: not-allowed;
+    filter: grayscale(100%);
+}
+.auth-submit__loader{
+    width: 7px;
+    height: 7px;
+
+    margin: 0 4px;
+
+    border-radius: 50%;
+    background: rgba(0,0,0,0.1);
+}
+.auth-submit__loader[data-delay='0']{
+    animation: loader .5s ease-in-out 0s infinite alternate;
+}
+.auth-submit__loader[data-delay='1']{
+    animation: loader .5s ease-in-out .5s infinite alternate;
+}
+.auth-submit__loader[data-delay='2']{
+    animation: loader .5s ease-in-out 1s infinite alternate;
+}
+@keyframes loader {
+    0%{
+        background: rgba(0,0,0,0.1);
+    }
+    100%{
+        background: rgba(0,0,0,0.4);
+    }
 }
