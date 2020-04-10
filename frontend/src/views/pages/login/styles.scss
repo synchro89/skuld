@@ -1,4 +1,5 @@
 @import "../../../styles/utils/variables";
+@import "../../components/AuthField/styles.scss";
 
 #auth-canvas{
     position: fixed;
@@ -40,76 +41,8 @@
         margin-bottom: 3rem;
     }
 }
-.auth-wrapper__field{
-    margin-bottom: 1.5rem;
-}
-.auth-wrapper__label{
-    color: var(--color-light);
-    display: inline-block;
-    font-size: $small;
-    letter-spacing: 1px;
-}
-.auth-wrapper__label--as-wrapper{
-    display: inline-block;
-    margin-bottom: 6px;
-}
-.auth-wrapper__label--disabled{
-    display: inline-block;
-    color: var(--color-transparent);
-}
-.auth-wrapper__label--active{
-    display: inline-block;
-    font-weight: 600;
-    color: $primary;
-}
-.auth-wrapper__label--error{
-    display: inline-block;
-    font-style: italic;
-    color: $danger;
-}
 
-.use-padding{
-    padding: 4px 0;
-    padding-top: 8px;
-}
 
-.auth-input-wrapper{
-    border: 1px solid var(--fallback);
-
-    display: flex;
-    align-items: center;
-    background: var(--content);
-    border-radius: $radius;
-    overflow: hidden;
-}
-.auth-input-wrapper--error{
-    border: 1px solid $danger;
-}
-.auth-input-wrapper__input{
-    flex: 1;
-    padding: 10px 16px;
-    color: var(--color);
-
-    &::placeholder{
-        color: var(--color-light);
-    }
-}
-.pointer{
-    cursor: pointer;
-}
-.auth-input-wrapper__icon{
-    color: var(--color);
-    margin: 0 4px;
-    font-size: 1em;
-    &:first-child{
-        padding: 12px;
-        padding-right: 4px;
-    }
-    &:last-child{
-        padding: 12px;
-        padding-left: 4px;
-    }
-}
 
 .auth-submit{
     height: 40px;

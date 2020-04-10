@@ -6,6 +6,8 @@ import Router from "../../../app/routes";
 
 import Rain from "../../../scripts/rain";
 
+import Form from "../../../scripts/form";
+
 import Auth from "../../../app/auth";
 
 import { Users } from "../../../app/services/sdk/backend";
@@ -14,48 +16,59 @@ import { isValidName } from "../../../scripts/utils";
 
 import Ripple from "../../../scripts/ripple";
 
+
+import AuthField from "../../components/AuthField";
+
 import root from "../../root";
 
 export default function LoginPage() {
     return {
         willRender: async function () {
-            return await (await fetch("https://api.github.com/users/lakscastro")).json();
+            const nameField = AuthField({
+                userOptions: {
+                    name: "login_name",
+                    id: "login_name",
+                    autofocus: true,
+                    label: "username",
+                    icon: "person"
+                }
+            });
+            const passwordField = AuthField({
+                userOptions: {
+                    name: "login_password",
+                    id: "login_password",
+                    label: "password",
+                    icon: "https",
+                    type: "password",
+                    inject: `<a class="auth-wrapper__label auth-wrapper__label--active border-on-hover use-padding" href="/reset">Reset password</a>`
+                }
+            });
+
+            return {
+                nameField,
+                passwordField
+            };
         },
         render: async function (props) {
-            console.log("page login");
-            const LoginHTML = `
+            console.log(props);
+            const {
+                nameField,
+                passwordField
+            } = props.lifeCycle.willRender;
+
+
+            const HTML = `
             <canvas id="auth-canvas"></canvas>
             <div class="auth-wrapper">
-                <form class="auth-form" autocomplete="off">
+                <form id="login-form" class="auth-form" autocomplete="off">
                     
                     <header class="auth-form__header">
                         <h1>Welcome Back!</h1>
                         <p>We are glad for see you again!</p>
                     </header>
-                    <div class="auth-wrapper__field">
-                        <label 
-                            class="auth-wrapper__label auth-wrapper__label--as-wrapper" 
-                            for="login_name"
-                        >
-                            USERNAME
-                        </label>
-                        <div class="auth-input-wrapper">
-                            <span class="auth-input-wrapper__icon material-icons">person</span>
-                            <input class="auth-input-wrapper__input" id="login_name" type="text" name="login_name"
-                                autofocus>
-                        </div>
-                    </div>
 
-                    <div class="auth-wrapper__field">
-                        <label class="auth-wrapper__label auth-wrapper__label--as-wrapper" for="login_password">PASSWORD</label>
-                        <div class="auth-input-wrapper">
-                            <span class="auth-input-wrapper__icon material-icons">https</span>
-                            <input class="auth-input-wrapper__input" id="login_password" type="password" name="login_password">
-                            <span id="show_password" data-target="login_password" class="pointer auth-input-wrapper__icon material-icons">visibility</span>
-                        </div>
-                        <a class="auth-wrapper__label auth-wrapper__label--active border-on-hover use-padding" href="/reset">Reset password</a>
-                    </div>
-                    
+                    ${await nameField.render()}
+                    ${await passwordField.render()}
 
                     <button class="auth-submit" type="submit">Login</button>
                     <p
@@ -72,13 +85,15 @@ export default function LoginPage() {
                 </form>
             </div>
             `
-            root.innerHTML = LoginHTML;
+            root.innerHTML = HTML;
 
-            return LoginHTML;
+            return HTML;
         },
         didRender: async function (props) {
-            const form = document.getElementsByClassName("auth-form")[0];
+            const LoginForm = Form("login-form", true);
+
             const buttonSubmit = document.getElementsByClassName("auth-submit")[0];
+
             const links = document.querySelectorAll(".auth-wrapper a");
 
             const showPass = document.getElementById("show_password");

@@ -54,9 +54,9 @@ const Router = {
 
         this.currentRoute.props.lifeCycle = {};
 
-        this.currentRoute.props.lifeCycle.willRenderProps = await route.willRender(this.currentRoute.props);
+        this.currentRoute.props.lifeCycle.willRender = await route.willRender(this.currentRoute.props);
 
-        this.currentRoute.props.lifeCycle.renderProps = await route.render(this.currentRoute.props);
+        this.currentRoute.props.lifeCycle.render = await route.render(this.currentRoute.props);
 
         this.currentRoute.props.lifeCycle.didRender = await route.didRender(this.currentRoute.props);
     },
