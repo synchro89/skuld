@@ -4,9 +4,13 @@ import loading from "../../../images/buttonLoading.svg"
 
 import Router from "../../../app/routes";
 
+import Rain from "../../../scripts/rain";
+
 import Auth from "../../../app/auth";
 
-import backend from "../../../app/services/sdk/backend";
+import { Users } from "../../../app/services/sdk/backend";
+
+import { isValidName } from "../../../scripts/utils";
 
 import Ripple from "../../../scripts/ripple";
 
@@ -36,7 +40,6 @@ export default function LoginPage() {
                             for="login_name"
                         >
                             USERNAME
-                            <p class="auth-wrapper__label--error"> - This user not exists</p>
                         </label>
                         <div class="auth-input-wrapper">
                             <span class="auth-input-wrapper__icon material-icons">person</span>
@@ -83,6 +86,8 @@ export default function LoginPage() {
             const showPass = document.getElementById("show_password");
             const inputTarget = document.getElementById(showPass.getAttribute("data-target"));
 
+            const inputs = document.getElementsByClassName("auth-input-wrapper__input");
+
             showPass.onclick = function () {
                 const newType = inputTarget.getAttribute("type") === "password" ? "text" : "password";
                 const newIcon = newType === "password" ? "visibility" : "visibility_off"
@@ -104,8 +109,31 @@ export default function LoginPage() {
                 size: 5
             });
 
+            function showLabelError(label, message) {
+                label.classList.add("auth-wrapper__label--error");
+                label.textContent = label.textContent + " - " + message;
+            }
+            function removeLabelError(label, originalMessage) {
+                label.classList.remove("auth-wrapper__label--error");
+                label.textContent = originalMessage;
+            }
+
             form.onsubmit = e => {
                 e.preventDefault();
+
+                const fields = [...inputs].map(inp => ({
+                    name: inp.name,
+                    value: inp.value
+                }));
+
+                const [name] = fields.filter(field => field.name === "login_name");
+
+                if (!name.value.length || !isValidName(name.value)) {
+                    return showLabelError(document.querySelector(".auth-form label[for='login_name']"), "Names contains only letters and numbers");
+                } else {
+                    return alert("okk");
+                }
+                const [password] = fields.filter(field => field.name === "login_password");
 
                 removeRipple();
                 buttonSubmit.setAttribute("disabled", "true");
@@ -116,7 +144,9 @@ export default function LoginPage() {
                     <div class="auth-submit__loader" data-delay="2"></div>
                 `;
 
-                backend.Auth
+                // Users.auth({
+                //     name: 
+                // });
 
                 setTimeout(() => {
                     buttonSubmit.removeAttribute("disabled")
@@ -128,8 +158,7 @@ export default function LoginPage() {
                 }, 15000);
             }
 
-
-            canvas(document.getElementById("auth-canvas"));
+            Rain(document.getElementById("auth-canvas"));
 
             return {
                 removeRipple

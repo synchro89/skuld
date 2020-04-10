@@ -7,7 +7,6 @@
     z-index: -1;
 }
 .auth-wrapper{
-
     z-index: 30;
     width: 100%;
     height: 100%;
@@ -17,18 +16,11 @@
     display: flex;
     justify-content: center;
     align-items: center;
-
-}
-@keyframes wrapper-animation {
-    0%{
-        transform: translate(0, -4px);
-    }
-    100%{
-        transform: translate(0, 4px);
-    }
 }
 .auth-form{
-    overflow: hidden;
+    width: 100%;
+    max-width: 500px;
+
     animation: wrapper-animation 1s ease-in-out 0s infinite alternate;
     padding: 2.5rem;
     border-radius: $radius-big;
@@ -158,6 +150,15 @@
 }
 .auth-submit__loader[data-delay='2']{
     animation: loader .5s ease-in-out 1s infinite alternate;
+}
+
+@keyframes wrapper-animation {
+    0%{
+        transform: translate(0, -4px);
+    }
+    100%{
+        transform: translate(0, 4px);
+    }
 }
 @keyframes loader {
     0%{

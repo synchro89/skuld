@@ -1,6 +1,6 @@
-import { randomNumber } from "../../../scripts/utils";
+import { randomNumber } from "../utils";
 
-function AnimateLoginCanvas(canvasNode) {
+function RainCanvas(canvasNode) {
     const state = {
         canvasNode,
         canvas: null,
@@ -170,4 +170,4 @@ function AnimateLoginCanvas(canvasNode) {
     state.init();
 }
 
-export default AnimateLoginCanvas;
+export default RainCanvas;
