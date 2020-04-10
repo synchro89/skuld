@@ -1,6 +1,10 @@
 const defaultConfig = {
     mode: 'cors',
-    cache: 'default'
+    cache: 'default',
+    headers: {
+        'Accept': 'application/json',
+        'Content-Type': 'application/json'
+    },
 }
 
 const getDefaultConfig = {

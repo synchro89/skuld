@@ -16,10 +16,7 @@ const Users = {
     },
     auth: async function (data) {
         try {
-            const response = await backend_core.post("/users", {
-                headers: {
-                    authorizathion: token
-                },
+            const response = await backend_core.post("/users/auth", {
                 body: JSON.stringify(data)
             });
             return response;

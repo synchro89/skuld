@@ -121,7 +121,15 @@ export default function LoginPage() {
 
             const btnSubmitApi = await buttonSubmit.didRender();
 
-            function onSubmit({ login_name: name, login_password: password }) {
+            Form({
+                config: {
+                    selector: "login-form",
+                    useId: true,
+                    onSubmit
+                }
+            });
+
+            async function onSubmit({ login_name: name, login_password: password }) {
                 nameApi.clearError();
                 passwordApi.clearError();
 
@@ -139,22 +147,30 @@ export default function LoginPage() {
                     return;
 
                 btnSubmitApi.setLoading(true);
-                setTimeout(() => {
-                    console.log("terminei");
+
+                console.log(name, password);
+                try {
+                    const response = await Users.auth({
+                        name,
+                        password
+                    });
+                    console.log(response);
+                } catch (error) {
+                    if (error.code === "user/not-exists")
+                        return nameApi.setError("This user not exists, you have an account?");
+
+                    if (error.code === "user/invalid-password")
+                        return passwordApi.setError("Incorrect password");
+
+                    console.log(error);
+                    return nameApi.setError("An error ocurred, sorry, try again");
+                } finally {
                     btnSubmitApi.setLoading(false);
-                }, 5000);
-            }
-            const LoginForm = Form({
-                config: {
-                    selector: "login-form",
-                    useId: true,
-                    onSubmit
                 }
-            });
+            }
 
 
-            const links = document.querySelectorAll(".auth-wrapper a");
-
+            const links = queryAll(".auth-wrapper a");
 
             for (const link of links) {
                 link.onclick = e => {
