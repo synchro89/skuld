@@ -1,5 +1,6 @@
 import { randomNumber } from "../utils";
 
+
 function RainCanvas(canvasNode) {
     const state = {
         canvasNode,
@@ -9,6 +10,9 @@ function RainCanvas(canvasNode) {
         constants: {
             innerWidth: window.innerWidth,
             innerHeight: window.innerHeight,
+        },
+        removeRain: function () {
+            window.removeEventListener("resize", onResize);
         },
         getWindowSize: function () {
             return {
@@ -24,23 +28,11 @@ function RainCanvas(canvasNode) {
             this.canvasNode.height = height;
         },
         init: function () {
-            const startAnimation = () => {
-                this.initCanvas();
-                this.initAnimation();
-            }
+            window.addEventListener("resize", onResize);
 
-            function initialize() {
-                this.updateConstants();
-
-                const { innerWidth, innerHeight } = this.constants;
-                this.setSize(innerWidth, innerHeight)
-
-                return initialize.bind(this);
-            }
-
-            window.addEventListener("resize", initialize.call(this));
-
-            startAnimation();
+            onResize();
+            this.initCanvas();
+            this.initAnimation();
         },
         initCanvas: function () {
             this.canvas = this.canvasNode.getContext('2d');
@@ -167,7 +159,17 @@ function RainCanvas(canvasNode) {
             this.canvas.stroke(line);
         }
     }
+
+    var onResize = function () {
+        this.updateConstants();
+
+        const { innerWidth, innerHeight } = this.constants;
+        this.setSize(innerWidth, innerHeight);
+    }.bind(state);
+
     state.init();
+
+    return state;
 }
 
 export default RainCanvas;

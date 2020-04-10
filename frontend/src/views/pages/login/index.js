@@ -14,8 +14,6 @@ import { isValidName } from "../../../scripts/utils";
 
 import Ripple from "../../../scripts/ripple";
 
-import canvas from "./canvas";
-
 import root from "../../root";
 
 export default function LoginPage() {
@@ -158,14 +156,16 @@ export default function LoginPage() {
                 }, 15000);
             }
 
-            Rain(document.getElementById("auth-canvas"));
+            const { removeRain } = Rain(document.getElementById("auth-canvas"));
 
             return {
-                removeRipple
+                removeRipple,
+                removeRain
             }
         },
         unMount: async function (props) {
             props.lifeCycle.didRender.removeRipple();
+            props.lifeCycle.didRender.removeRain();
         }
     }
 }
