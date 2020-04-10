@@ -4,7 +4,7 @@ import "webpack-icons-installer";
 
 import './index.html';
 import './index.scss';
-import './scripts/script';
+import './scripts/prototypes';
 
 import "./app";
 
