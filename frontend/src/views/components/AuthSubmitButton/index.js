@@ -77,6 +77,7 @@ export default function AuthSubmit({ config: userConfig }) {
         return api;
     }
     async function remove() {
+        removeRipple();
     }
 
 

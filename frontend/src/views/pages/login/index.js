@@ -12,7 +12,7 @@ import Auth from "../../../app/auth";
 
 import { Users } from "../../../app/services/sdk/backend";
 
-import { isValidName } from "../../../scripts/utils";
+import { isValidName, getById, queryAll } from "../../../scripts/utils";
 
 import AuthField from "../../components/AuthField";
 import ButtonSubmit from "../../components/AuthSubmitButton";
@@ -179,14 +179,19 @@ export default function LoginPage() {
                 }
             }
 
-            const { removeRain } = Rain(document.getElementById("auth-canvas"));
+            const { removeRain } = Rain(getById("auth-canvas"));
 
             return {
                 removeRain
             }
         },
         unMount: async function (props) {
-            props.lifeCycle.didRender.removeRipple();
+            const {
+                buttonSubmit
+            } = props.lifeCycle.willRender;
+
+            buttonSubmit.unMount();
+
             props.lifeCycle.didRender.removeRain();
         }
     }
