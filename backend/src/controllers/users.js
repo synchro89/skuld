@@ -37,16 +37,22 @@ const UserController = {
         }
     },
     Update: async function(req, res) {
+        let photo = null;
         try {
             const {
-                file: { photo = null }
+                file: img = null
             } = req;
+
+            photo = img;
 
             const { userId } = req.authState;
 
             let user = await UserSchema.findOne({ _id: userId });
 
             if (!exists(user)) {
+                if (exists(photo))
+                    deleteLocalFile(photo.path);
+
                 const { userNotExists } = userResponses;
                 return res.status(userNotExists.status).json(generate(userNotExists, { error: true }));
             }
@@ -69,6 +75,9 @@ const UserController = {
             return res
                 .json(generate(successUpdated, { data: user }));
         } catch (error) {
+            if (exists(photo))
+                deleteLocalFile(photo.path);
+
             const { unknownError } = userResponses;
             return res
                 .status(unknownError.status)
@@ -100,11 +109,14 @@ const UserController = {
         }
     },
     Store: async function(req, res) {
+        let photo = null;
         try {
             const {
                 body: { name = null, password = null },
-                file: photo = null
+                file: img = null
             } = req;
+
+            photo = img;
 
             let userData = {
                 name,
@@ -114,6 +126,9 @@ const UserController = {
             }
 
             if (!exists(name) || !exists(password)) {
+                if (exists(photo))
+                    deleteLocalFile(photo.path);
+
                 const { fieldRequired } = userResponses;
 
                 return res
@@ -122,6 +137,9 @@ const UserController = {
             }
 
             if (!isValidName(name)) {
+                if (exists(photo))
+                    deleteLocalFile(photo.path);
+
                 const { invalidName } = userResponses;
 
                 return res
@@ -130,6 +148,9 @@ const UserController = {
             }
 
             if (exists(await UserSchema.findOne({ name }))) {
+                if (exists(photo))
+                    deleteLocalFile(photo.path);
+
                 const { alreadyExists } = userResponses;
 
                 return res
@@ -159,6 +180,9 @@ const UserController = {
                 }));
             }
         } catch (error) {
+            if (exists(photo))
+                deleteLocalFile(photo.path);
+
             const { unknownError } = userResponses;
             return res
                 .status(unknownError.status)
@@ -369,14 +393,8 @@ async function uploadFile(photo, currentPublicID = false) {
     const callback = async(error, result) => {
         if (exists(error)) throw new Error(error);
 
-        fs.unlink(newPhotoPath, (error) => {
-            if (exists(error))
-                throw new Error(error);
-        });
-        fs.unlink(photo.path, (error) => {
-            if (exists(error))
-                throw new Error(error);
-        });
+        deleteLocalFile(newPhotoPath);
+        deleteLocalFile(photo.path);
 
         const {
             public_id,
@@ -405,6 +423,13 @@ async function uploadFile(photo, currentPublicID = false) {
     await uploader.upload(...args)
 
     return fileUploaded;
+}
+
+function deleteLocalFile(path) {
+    fs.unlink(path, (error) => {
+        if (exists(error))
+            throw new Error(error);
+    });
 }
 
 function generateAccessToken(id) {
