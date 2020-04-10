@@ -21,7 +21,17 @@ function isValidName(name) {
 function randomNumber(min, max) {
     return Math.floor(Math.random() * (max - min + 1) + min);
 }
+
+const getById = document.getElementById.bind(document);
+const query = document.querySelector.bind(document);
+const queryAll = document.querySelectorAll.bind(document);
+const getByClass = document.getElementsByClassName.bind(document);
+
 export {
     isValidName,
-    randomNumber
+    randomNumber,
+    getById,
+    query,
+    queryAll,
+    getByClass
 }

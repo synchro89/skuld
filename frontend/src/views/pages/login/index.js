@@ -14,18 +14,22 @@ import { Users } from "../../../app/services/sdk/backend";
 
 import { isValidName } from "../../../scripts/utils";
 
-import Ripple from "../../../scripts/ripple";
-
-
 import AuthField from "../../components/AuthField";
+import ButtonSubmit from "../../components/AuthSubmitButton";
 
 import root from "../../root";
 
 export default function LoginPage() {
     return {
         willRender: async function () {
+            const buttonSubmit = ButtonSubmit({
+                config: {
+                    label: "Login",
+                    onClick: () => alert("a")
+                }
+            });
             const nameField = AuthField({
-                userOptions: {
+                config: {
                     name: "login_name",
                     id: "login_name",
                     autofocus: true,
@@ -34,7 +38,7 @@ export default function LoginPage() {
                 }
             });
             const passwordField = AuthField({
-                userOptions: {
+                config: {
                     name: "login_password",
                     id: "login_password",
                     label: "password",
@@ -46,16 +50,16 @@ export default function LoginPage() {
 
             return {
                 nameField,
-                passwordField
+                passwordField,
+                buttonSubmit
             };
         },
         render: async function (props) {
-            console.log(props);
             const {
                 nameField,
-                passwordField
+                passwordField,
+                buttonSubmit
             } = props.lifeCycle.willRender;
-
 
             const HTML = `
             <canvas id="auth-canvas"></canvas>
@@ -69,8 +73,8 @@ export default function LoginPage() {
 
                     ${await nameField.render()}
                     ${await passwordField.render()}
+                    ${await buttonSubmit.render()}
 
-                    <button class="auth-submit" type="submit">Login</button>
                     <p
                         class="auth-wrapper__label auth-wrapper__label--disabled"
                     >
@@ -90,23 +94,37 @@ export default function LoginPage() {
             return HTML;
         },
         didRender: async function (props) {
-            const LoginForm = Form("login-form", true);
+            console.log(props);
+            const {
+                nameField,
+                passwordField,
+                buttonSubmit
+            } = props.lifeCycle.willRender;
 
-            const buttonSubmit = document.getElementsByClassName("auth-submit")[0];
+            await nameField.didRender();
+            await passwordField.didRender();
+
+            const btnSubmitApi = await buttonSubmit.didRender();
+
+            function onSubmit({ login_name: name, login_password: password }) {
+                btnSubmitApi.setLoading(true);
+
+                setTimeout(() => {
+                    console.log("terminei");
+                    btnSubmitApi.setLoading(false);
+                }, 5000);
+            }
+            const LoginForm = Form({
+                config: {
+                    selector: "login-form",
+                    useId: true,
+                    onSubmit
+                }
+            });
+
 
             const links = document.querySelectorAll(".auth-wrapper a");
 
-            const showPass = document.getElementById("show_password");
-            const inputTarget = document.getElementById(showPass.getAttribute("data-target"));
-
-            const inputs = document.getElementsByClassName("auth-input-wrapper__input");
-
-            showPass.onclick = function () {
-                const newType = inputTarget.getAttribute("type") === "password" ? "text" : "password";
-                const newIcon = newType === "password" ? "visibility" : "visibility_off"
-                inputTarget.setAttribute("type", newType);
-                showPass.textContent = newIcon;
-            }
 
             for (const link of links) {
                 link.onclick = e => {
@@ -115,12 +133,7 @@ export default function LoginPage() {
                 }
             }
 
-            let removeRipple = null;
 
-            removeRipple = new Ripple(buttonSubmit, {
-                color: "var(--tap)",
-                size: 5
-            });
 
             function showLabelError(label, message) {
                 label.classList.add("auth-wrapper__label--error");
@@ -131,50 +144,9 @@ export default function LoginPage() {
                 label.textContent = originalMessage;
             }
 
-            form.onsubmit = e => {
-                e.preventDefault();
-
-                const fields = [...inputs].map(inp => ({
-                    name: inp.name,
-                    value: inp.value
-                }));
-
-                const [name] = fields.filter(field => field.name === "login_name");
-
-                if (!name.value.length || !isValidName(name.value)) {
-                    return showLabelError(document.querySelector(".auth-form label[for='login_name']"), "Names contains only letters and numbers");
-                } else {
-                    return alert("okk");
-                }
-                const [password] = fields.filter(field => field.name === "login_password");
-
-                removeRipple();
-                buttonSubmit.setAttribute("disabled", "true");
-                console.log(loading)
-                buttonSubmit.innerHTML = `
-                    <div class="auth-submit__loader" data-delay="0"></div>
-                    <div class="auth-submit__loader" data-delay="1"></div>
-                    <div class="auth-submit__loader" data-delay="2"></div>
-                `;
-
-                // Users.auth({
-                //     name: 
-                // });
-
-                setTimeout(() => {
-                    buttonSubmit.removeAttribute("disabled")
-                    buttonSubmit.innerHTML = `Login`;
-                    removeRipple = new Ripple(buttonSubmit, {
-                        color: "var(--tap)",
-                        size: 5
-                    });
-                }, 15000);
-            }
-
             const { removeRain } = Rain(document.getElementById("auth-canvas"));
 
             return {
-                removeRipple,
                 removeRain
             }
         },

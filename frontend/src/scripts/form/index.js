@@ -1,21 +1,21 @@
-// Fields = Array of query selectors
-function Form(formSelector, useId = false) {
+import { query, queryAll, getById } from "../utils";
 
-    const query = (useId ? document.getElementById : document.querySelector).bind(document);
+const defaulConfig = {
+    useId: false,
+    onSubmit: e => e.preventDefault()
+}
 
-    const queryAll = document.querySelectorAll.bind(document);
+function Form({ config: userConfig }) {
 
-    const form = query(formSelector);
+    const { useId, onSubmit, selector } = Object.assign({}, defaulConfig, userConfig);
 
-    const fields = [...queryAll(formSelector + " input")];
+    const form = useId ? getById(selector) : query(selector);
 
-    form.addEventListener("submit", e => {
-        e.preventDefault();
-    });
+    const fields = [...queryAll((useId ? "#" + selector : selector) + " input")];
 
     const api = {
         getValue: function () {
-            fields.map(field => {
+            return fields.map(field => {
                 const { name, id, value } = field;
 
                 return {
@@ -23,8 +23,28 @@ function Form(formSelector, useId = false) {
                     value
                 }
             });
+        },
+        init: function () {
+            form.addEventListener("submit", submit);
+        },
+        remove: function () {
+            form.removeEventListener("submit", submit);
         }
     }
+
+    var submit = function (e) {
+        e.preventDefault();
+
+        const data = {};
+
+        this.getValue().forEach(field => {
+            data[field.name] = field.value
+        });
+
+        onSubmit(data);
+    }.bind(api);
+
+    api.init();
 
     return api;
 }

@@ -1,6 +1,8 @@
 import "./styles.scss";
 
-const defaultOptions = {
+import { getById, query } from "../../../scripts/utils";
+
+const defaultConfig = {
     type: "text",
     placeholder: "",
     name: "",
@@ -8,11 +10,11 @@ const defaultOptions = {
     id: null,
     autofocus: false,
     inject: "",
-    icon: null
+    icon: null,
+    onInput: () => { }
 }
 
-export default function AuthField(props) {
-    const { userOptions = {} } = props;
+export default function AuthField({ config: userConfig }) {
 
     const {
         type,
@@ -22,12 +24,12 @@ export default function AuthField(props) {
         id,
         autofocus,
         inject,
-        icon
-    } = Object.assign({}, defaultOptions, userOptions);
+        icon,
+        onInput
+    } = Object.assign({}, defaultConfig, userConfig);
 
     const usePassword = type === "password";
 
-    console.log(icon);
     const HTML = `
         <div class="auth-wrapper__field">
             <label 
@@ -41,25 +43,41 @@ export default function AuthField(props) {
                 <input class="auth-input-wrapper__input" id="${id}" type="${type}" name="${name}"
                     placeholder="${placeholder}" ${autofocus ? `autofocus` : ""}>
                 ${usePassword ? `
-                    <span data-target="${id || name}" 
-                        class="show_password pointer auth-input-wrapper__icon material-icons"
+                    <span id="show_password" data-target="${id || name}" 
+                        class="pointer auth-input-wrapper__icon material-icons"
                     >visibility</span>` : ""}
             </div>
             ${inject}
         </div>
     `
 
-    function initField() {
-    }
-    function removeField() {
+    async function init() {
+        const input = !!id ? getById(id) : query(`.auth-wrapper__field input[name='${name}']`);
 
+        usePassword && initShowPass(input);
+
+        input.oninput = onInput;
+    }
+    async function remove() {
+
+    }
+
+    function initShowPass(inputTarget) {
+        const showPass = getById("show_password");
+
+        showPass.onclick = function () {
+            const newType = inputTarget.getAttribute("type") === "password" ? "text" : "password";
+            const newIcon = newType === "password" ? "visibility" : "visibility_off"
+            inputTarget.setAttribute("type", newType);
+            showPass.textContent = newIcon;
+        }
     }
 
     const lifeCycle = {
         willRender: async () => { },
         render: async () => HTML,
-        didRender: initField,
-        unMount: removeField
+        didRender: init,
+        unMount: remove
     }
 
     return lifeCycle;
