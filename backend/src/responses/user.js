@@ -23,6 +23,12 @@ const userResponses = {
         model: "UserSchema",
         status: 201
     },
+    fieldRequired: {
+        message: "All fields are required",
+        code: "user/field-required",
+        model: "UserSchema",
+        status: 400
+    },
     successUpdated: {
         message: "User updated with success",
         code: "user/updated-with-success",

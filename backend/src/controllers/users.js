@@ -102,7 +102,7 @@ const UserController = {
     Store: async function(req, res) {
         try {
             const {
-                body: { name, password },
+                body: { name = null, password = null },
                 file: photo = null
             } = req;
 
@@ -111,6 +111,14 @@ const UserController = {
                 password,
                 photo,
                 recovery_codes: generateRecoveryCodes()
+            }
+
+            if (!exists(name) || !exists(password)) {
+                const { fieldRequired } = userResponses;
+
+                return res
+                    .status(fieldRequired.status)
+                    .json(generate(fieldRequired, { error: true }));
             }
 
             if (!isValidName(name)) {
@@ -159,7 +167,15 @@ const UserController = {
     },
     Auth: async function(req, res) {
         try {
-            const { name, password } = req.body;
+            const { name = null, password = null } = req.body;
+
+            if (!exists(name) || !exists(password)) {
+                const { fieldRequired } = userResponses;
+
+                return res
+                    .status(fieldRequired.status)
+                    .json(generate(fieldRequired, { error: true }));
+            }
 
             const user = await UserSchema.findOne({ name }).select("+password");
 
