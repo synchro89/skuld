@@ -105,11 +105,8 @@ export default function LoginPage() {
             </div>
             `
             root.innerHTML = HTML;
-
-            return HTML;
         },
         didRender: async function (props) {
-            console.log(props);
             const {
                 nameField,
                 passwordField,
@@ -118,7 +115,6 @@ export default function LoginPage() {
 
             const nameApi = await nameField.didRender();
             const passwordApi = await passwordField.didRender();
-
             const btnSubmitApi = await buttonSubmit.didRender();
 
             Form({
