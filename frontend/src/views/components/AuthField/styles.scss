@@ -29,11 +29,6 @@
     color: $danger;
     font-weight: 900;
 }
-.auth-wrapper__label--success{
-    display: inline-block;
-    color: $success;
-}
-
 
 .auth-input-wrapper{
     border: 1px solid var(--fallback);
@@ -54,6 +49,7 @@
     font-weight: 900;
     border: 1px solid $danger;
 }
+
 .auth-input-wrapper__input{
     flex: 1;
     padding: 10px 16px;
