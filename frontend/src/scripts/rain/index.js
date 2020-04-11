@@ -42,7 +42,7 @@ function RainCanvas(canvasNode) {
         },
         runAnimation: async function () {
             const rain = {
-                length: 20,
+                length: 3,
                 items: [],
                 context: null,
                 init: function (context) {

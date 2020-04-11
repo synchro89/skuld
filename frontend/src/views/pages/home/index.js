@@ -4,6 +4,7 @@ import Auth from "../../../app/auth";
 
 import root from "../../root";
 
+import Drawer from "../../components/Drawer";
 import ButtonRipple from "../../components/AuthSubmitButton";
 
 export default function HomePage() {
@@ -15,23 +16,28 @@ export default function HomePage() {
                     onClick: Auth.logout.bind(Auth)
                 }
             });
+
+            const drawer = Drawer();
+
             return {
-                btn
+                btn,
+                drawer
             }
         },
         render: async function (props) {
-            const { btn } = props.lifeCycle.willRender;
+            const { btn, drawer } = props.lifeCycle.willRender;
 
             const HTML = `
+                ${await drawer.render()}
                 ${await btn.render()}
             `
             root.innerHTML = HTML;
         },
         didRender: async function (props) {
             props.lifeCycle.willRender.btn.didRender();
+            props.lifeCycle.willRender.drawer.didRender();
         },
         unMount: async function (props) {
-            props.lifeCycle.didRender.removeRipple();
             props.lifeCycle.willRender.btn.unMount();
         }
     }

@@ -20,7 +20,7 @@ function isValidAuthorization(authorization) {
 }
 
 const Auth = {
-    userData: null,
+    userData: true,
 
     listeners: [],
 

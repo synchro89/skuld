@@ -7,11 +7,13 @@ const common = require('./webpack.common.js');
 module.exports = merge(common, {
     mode: 'development',
     devServer: {
+        host: '192.168.1.9',//your ip address
         contentBase: path.join(__dirname, "../build"),
         publicPath: "/fonts",
         compress: true,
         overlay: true,
         historyApiFallback: true,
+        disableHostCheck: true,
         headers: {
             "Access-Control-Allow-Origin": "*",
             "Access-Control-Allow-Methods": "GET, POST, PUT, DELETE, PATCH, OPTIONS",
