@@ -2,6 +2,8 @@ import "./scripts/script";
 
 import Router, { privateRoute as privateR, publicRoute as publicR, access_types } from "./app/routes";
 
+import Auth from "./app/auth";
+
 import LoginPage from "./views/pages/login";
 import SignupPage from "./views/pages/signup";
 
@@ -37,4 +39,8 @@ document.addEventListener("DOMContentLoaded", async () => {
     });
 
     await Router.init();
+
+    Auth.on(Auth.events.AUTH_STATE_CHANGE, () =>
+        Router.navigateTo(window.location.href)
+    );
 });

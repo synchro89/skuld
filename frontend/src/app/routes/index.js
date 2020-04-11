@@ -85,7 +85,6 @@ const Router = {
 
         if (!firstRender) {
             if (
-                !allowedAccessTypes.includes(this.currentRoute.access) ||
                 !allowedAccessTypes.includes(matchedRoute.access)
             ) {
                 this.navigateTo(routeToRedirect.path);

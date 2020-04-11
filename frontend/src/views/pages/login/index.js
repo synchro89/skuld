@@ -150,7 +150,10 @@ export default function LoginPage() {
                         name,
                         password
                     });
-                    console.log(response);
+
+                    const { data, accessToken } = response;
+
+                    Auth.login(accessToken, data);
                 } catch (error) {
                     if (error.code === "user/not-exists")
                         return nameApi.setError("This user not exists, you have an account?");

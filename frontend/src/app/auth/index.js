@@ -72,6 +72,8 @@ const Auth = {
     login: function (token, userData) {
         this.userData = userData;
         localStorage.setItem(storage_prefix, token);
+
+        this.dispatchEvent(this.events.AUTH_STATE_CHANGE);
     },
     logout: function () {
         if (!this.isAuth()) return;
