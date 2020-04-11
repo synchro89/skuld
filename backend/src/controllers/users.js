@@ -147,7 +147,7 @@ const UserController = {
                     .json(generate(invalidName, { error: true }));
             }
 
-            if (exists(await UserSchema.findOne({ name }))) {
+            if (exists(await getUserByName(name))) {
                 if (exists(photo))
                     deleteLocalFile(photo.path);
 
@@ -201,7 +201,7 @@ const UserController = {
                     .json(generate(fieldRequired, { error: true }));
             }
 
-            const user = await UserSchema.findOne({ name }).select("+password");
+            const user = await getUserByName(name, { selectPassword: true });
 
             if (!exists(user)) {
                 const { userNotExists } = userResponses;
@@ -232,7 +232,7 @@ const UserController = {
             const { name } = req.params;
             const { userId } = req.authState;
 
-            let user = await UserSchema.findOne({ name });
+            let user = await getUserByName(name);
 
             if (!compareId(userId, user._id)) {
                 const { unauthorized } = userResponses;
@@ -266,7 +266,7 @@ const UserController = {
             const { userId, isAuth } = req.authState;
 
             if (isAuth) {
-                let user = await UserSchema.findOne({ name }).select("+password");
+                let user = await getUserByName(name, { selectPassword: true })
 
                 if (!exists(user)) {
                     const { userNotExists } = userResponses;
@@ -332,7 +332,7 @@ const UserController = {
                         .status(invalidRecoveryCode.status)
                         .json(generate(invalidRecoveryCode, { error: true }));
                 }
-                let user = await UserSchema.findOne({ name });
+                let user = await getUserByName(name);
 
                 if (!exists(user)) {
                     const { userNotExists } = userResponses;
@@ -430,6 +430,22 @@ function deleteLocalFile(path) {
         if (exists(error))
             throw new Error(error);
     });
+}
+
+
+async function getUserByName(name, userOptions) {
+    const defaultOptions = {
+        selectPassword: false
+    }
+
+    const { selectPassword } = Object.assign({}, defaultOptions, userOptions);
+
+    const user = await UserSchema.findOne({
+        // Use this regex to make insenstive case query
+        name: new RegExp("^" + name.toLowerCase() + "$", "i")
+    }).select(selectPassword ? "+password" : "-password");
+
+    return user;
 }
 
 function generateAccessToken(id) {
