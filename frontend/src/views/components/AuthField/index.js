@@ -56,34 +56,51 @@ export default function AuthField({ config: userConfig }) {
     let inputWrapper = null;
 
     const labelClassError = "auth-wrapper__label--error";
-    const inputWrapperClassError = "auth-input-wrapper--error";
     const inputWrapperClassFocus = "auth-input-wrapper--focus-here";
+    const inputWrapperClassError = "auth-input-wrapper--error";
+    const inputWrapperClassSuccess = "auth-wrapper__label--success";
 
     const api = {
         error: false,
+        getValue: function () {
+            return input.value;
+        },
         heyHere: function () {
             if (inputWrapper.classList.contains(inputWrapperClassFocus)) return;
 
             inputWrapper.classList.add(inputWrapperClassFocus);
         },
-        getValue: function () {
-            return input.value;
-        },
-        clearError: function () {
+        clear: function () {
             if (!labelInput.classList.contains(labelClassError)) return;
 
             this.error = false;
+
             labelInput.classList.remove(labelClassError);
             inputWrapper.classList.remove(inputWrapperClassError);
+            inputWrapper.classList.remove(inputWrapperClassSuccess);
             labelInput.textContent = label.toUpperCase();
         },
+        setCorrect: function () {
+            if (inputWrapper.classList.contains(inputWrapperClassSuccess)) return;
+
+            this.error = false;
+
+            labelInput.classList.add(labelClassError);
+            labelInput.textContent = labelInput.textContent + " - " + message;
+
+            inputWrapper.classList.remove(inputWrapperClassError);
+            inputWrapper.classList.add(inputWrapperClassSuccess);
+        },
         setError: function (message) {
-            if (labelInput.classList.contains(labelClassError)) return;
+            if (inputWrapper.classList.contains(inputWrapperClassError)) return;
 
             this.error = true;
+
             labelInput.classList.add(labelClassError);
-            inputWrapper.classList.add(inputWrapperClassError);
             labelInput.textContent = labelInput.textContent + " - " + message;
+
+            inputWrapper.classList.remove(inputWrapperClassSuccess);
+            inputWrapper.classList.add(inputWrapperClassError);
         }
     }
 
@@ -99,7 +116,7 @@ export default function AuthField({ config: userConfig }) {
         usePassword && initShowPass(input);
 
         input.oninput = e => {
-            api.clearError();
+            api.clear();
             onInput(e.target.value, api);
         };
 

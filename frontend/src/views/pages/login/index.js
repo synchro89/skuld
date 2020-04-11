@@ -25,13 +25,13 @@ export default function LoginPage() {
         if (!value.length || !isValidName(value))
             return api.setError("Invalid username");
         else
-            api.clearError();
+            api.clear();
     }
     function onPasswordChange(value, api) {
         if (!value.length || value.length < 5)
             return api.setError("Password must have 5 letters or more");
         else
-            api.clearError();
+            api.clear();
     }
 
     return {
@@ -126,8 +126,8 @@ export default function LoginPage() {
             });
 
             async function onSubmit({ login_name: name, login_password: password }) {
-                nameApi.clearError();
-                passwordApi.clearError();
+                nameApi.clear();
+                passwordApi.clear();
 
                 if (!name.length || !isValidName(name)) {
                     nameApi.setError("Invalid username");
@@ -185,13 +185,8 @@ export default function LoginPage() {
             }
         },
         unMount: async function (props) {
-            const {
-                buttonSubmit
-            } = props.lifeCycle.willRender;
-
-            buttonSubmit.unMount();
-
             props.lifeCycle.didRender.removeRain();
+            props.lifeCycle.willRender.buttonSubmit.unMount();
         }
     }
 }

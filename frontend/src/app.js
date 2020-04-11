@@ -6,31 +6,30 @@ import Auth from "./app/auth";
 
 import LoginPage from "./views/pages/login";
 import SignupPage from "./views/pages/signup";
+import HomePage from "./views/pages/home";
 
 document.addEventListener("DOMContentLoaded", async () => {
 
     const Login = LoginPage();
     const Signup = SignupPage();
+    const Home = HomePage();
 
-    Router.get("/", privateR(() => console.log("estou na pagina home")));
+    Router.get("/", {
+        ...Home,
+        access: access_types.PRIVATE_ONLY
+    });
 
     Router.get("/login", {
-        willRender: Login.willRender,
-        render: Login.render,
-        didRender: Login.didRender,
-        unMount: Login.unMount,
+        ...Login,
         access: access_types.PUBLIC_ONLY
     });
     Router.get("/register", {
-        willRender: Signup.willRender,
-        render: Signup.render,
-        didRender: Signup.didRender,
-        unMount: Signup.unMount,
+        ...Signup,
         access: access_types.PUBLIC_ONLY
     });
 
     Router.get("*", () => {
-        console.log("agora to aqui");
+        console.log("404 page");
     });
 
     Router.configure({

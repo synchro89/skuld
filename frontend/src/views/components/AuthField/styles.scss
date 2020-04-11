@@ -29,6 +29,10 @@
     color: $danger;
     font-weight: 900;
 }
+.auth-wrapper__label--success{
+    display: inline-block;
+    color: $success;
+}
 
 
 .auth-input-wrapper{
