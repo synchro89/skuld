@@ -6,6 +6,8 @@ import { AnimesApi } from "../../../app/services/sdk/api";
 
 import root from "../../root";
 
+import Ripple from "../../../scripts/ripple";
+
 import Drawer from "../../components/Drawer";
 import ButtonRipple from "../../components/AuthSubmitButton";
 
@@ -38,10 +40,25 @@ export default function HomePage() {
 
             const trending = AnimesApi.paginate({
                 limit: 5,
-                fields: ["slug", "titles"],
+                fields: ["slug", "titles", "posterImage"],
                 status: AnimesApi.status_types.TRENDING
             });
-            await trending.initialData();
+
+            let initialData = null;
+            initialData = await trending.getOnly(5);
+
+            initialData.forEach(({ attributes: { posterImage: { medium }, slug } }) => {
+                const item = `<div style="width: 100px">
+                    <img width="100" src="${medium}" alt="${slug}">
+                </div>`.toHtml();
+
+                item.style.opacity = 0.5;
+                root.appendChild(item);
+                new Ripple(item, {
+                    color: "var(--tap)",
+                    size: 5
+                });
+            });
 
 
             const current = AnimesApi.paginate({

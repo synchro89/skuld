@@ -37,11 +37,7 @@ function interpolate(xInterval, yInterval) {
 }
 
 function calcSkip(page, limit = 10) {
-    const skip = (page - 1) * limit;
-    return {
-        limit,
-        skip
-    }
+    return (page - 1) * limit;
 }
 
 const getById = document.getElementById.bind(document);

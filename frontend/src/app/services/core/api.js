@@ -14,8 +14,11 @@ const getDefaultConfig = {
 
 const api = {
     baseURL: process.env.API_URL,
+    customBaseURL: null,
     _getEndpoint: function (endpoint) {
-        return this.baseURL + endpoint
+        const baseURL = this.customBaseURL || this.baseURL;
+        console.log(baseURL);
+        return baseURL + endpoint;
     },
     _mergeConfig: function (configs) {
         return Object.assign({}, ...configs);
@@ -33,7 +36,14 @@ const api = {
 
         return data;
     },
-    get: function (endpoint, userConfig) {
+    get: function (endpoint, userConfig = {}) {
+        if (userConfig.hasOwnProperty("baseURL")) {
+            this.customBaseURL = userConfig.baseURL;
+            delete userConfig.baseURL;
+        } else {
+            this.customBaseURL = null;
+        }
+
         return this._sendRequestWith(endpoint, getDefaultConfig, userConfig);
     }
 }

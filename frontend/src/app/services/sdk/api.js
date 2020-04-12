@@ -20,15 +20,10 @@ const AnimesApi = {
         TRENDING: "trending",
         POPULAR: "popular",
         UPCOMING: "upcoming",
-        RATED: "rated"
+        RATED: "rated",
+        ALL: "all"
     },
     paginate: function (userConfig) {
-        function normalizeColumn(column) {
-            return column
-                .replace(/\[/g, "%5B")
-                .replace(/\]/g, "%5D")
-        }
-
         const status_types = this.status_types;
 
         const defaultConfig = {
@@ -37,7 +32,7 @@ const AnimesApi = {
             order: {
                 createdAt: "desc"
             },
-            status: "all",
+            status: status_types.ALL,
             status_types,
             _normalize: function () {
                 switch (status) {
@@ -67,6 +62,11 @@ const AnimesApi = {
                             user_count: "desc"
                         });
                         break;
+                    case status_types.TRENDING:
+                        this.filters = {};
+                        this.order = {};
+                        this.fields = {};
+                        break;
                 }
             }
         }
@@ -78,7 +78,7 @@ const AnimesApi = {
 
         // Add filters to URL params
         Object.keys(config.filters).forEach(key => {
-            const filterColumn = normalizeColumn(`filter[${key}]`);
+            const filterColumn = `filter[${key}]`;
 
             const filterValue = config.filters[key];
 
@@ -93,34 +93,85 @@ const AnimesApi = {
 
         // Add sparse fields
         const fieldsString = config.fields.join(",");
-        if (fieldsString.length) params.set(normalizeColumn(`fields[anime]`), fieldsString);
-
+        if (fieldsString.length) params.set(`fields[anime]`, fieldsString);
 
         const initialState = {
-            data: null,
+            data: [],
             loading: true,
             error: null,
             hasMore: null,
             page: 1,
-            limit: 10,
+            limit: 5,
         }
+
+        if (config.status === status_types.TRENDING) {
+            const trendingPagination = {
+                ...config,
+                ...initialState,
+                baseURL: "https://kitsu.io/api/edge/trending/anime",
+                _update_limit: function () {
+                    params.set("limit", this.limit);
+                },
+                _get: async function () {
+                    this._update_limit();
+
+                    this.loading = true;
+
+                    try {
+                        const response = await api_core.get(`/?${params.toString()}`, {
+                            baseURL: this.baseURL
+                        });
+
+                        const { data } = response;
+
+                        this.data = [...this.data, ...data];
+
+                        this.hasMore = data.length < 20;
+
+                        return this.data;
+                    } catch (error) {
+                        this.error = error;
+                        throw error;
+                    } finally {
+                        this.loading = false;
+                    }
+                },
+                getAll: async function () {
+                    this.limit = 20;
+                    return await this._get();
+                },
+                getOnly: async function (limit) {
+                    this.limit = limit;
+                    return await this._get();
+                }
+            }
+            return trendingPagination;
+        }
+
+
         const pagination = {
             ...config,
             ...initialState,
+            request: null,
+            _setRequest: function (newParams) {
+                this.request = api_core.baseURL + "/?" + newParams.toString();
+            },
             _initPage: function () {
-                params.set(normalizeColumn(`page[limit]`), this.limit);
-                params.set(normalizeColumn(`page[offset]`), calcSkip(1, this.limit));
+                params.set(`page[limit]`, this.limit);
+                params.set(`page[offset]`, calcSkip(1, this.limit));
+                this._setRequest(params);
             },
             _nextPage: function () {
                 this.page++;
-                params.set(normalizeColumn(`page[limit]`), this.limit);
-                params.set(normalizeColumn(`page[offset]`), calcSkip(1, this.limit));
+                params.set(`page[limit]`, this.limit);
+                params.set(`page[offset]`, calcSkip(1, this.limit));
+                this._setRequest(params);
             },
             _prevPage: function () {
-
                 this.page--;
-                params.set(normalizeColumn(`page[limit]`), this.limit);
-                params.set(normalizeColumn(`page[offset]`), calcSkip(1, this.limit));
+                params.set(`page[limit]`, this.limit);
+                params.set(`page[offset]`, calcSkip(1, this.limit));
+                this._setRequest(params);
             },
             initialData: async function () {
                 this._initPage();
@@ -153,7 +204,7 @@ const AnimesApi = {
                     const response = await api_core.get(`/?${params.toString()}`);
 
                     const { data, meta: { count } } = await response.json();
-                    this.data = data;
+                    this.data = [...this.data, ...data];
 
                     this.hasMore = count > this.data.length;
 
@@ -176,11 +227,10 @@ const AnimesApi = {
                     const response = await api_core.get(`/?${params.toString()}`);
 
                     const { data, meta: { count } } = await response.json();
-                    this.data = data;
 
                     this.hasMore = count > this.data.length;
 
-                    return this.data;
+                    return data;
                 } catch (error) {
                     this.error = error;
                     throw error;
