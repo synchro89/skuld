@@ -2,6 +2,8 @@ import "./styles.scss";
 
 import Auth from "../../../app/auth";
 
+import { AnimesApi } from "../../../app/services/sdk/api";
+
 import root from "../../root";
 
 import Drawer from "../../components/Drawer";
@@ -31,7 +33,70 @@ export default function HomePage() {
                 ${await drawer.render()}
                 ${await btn.render()}
             `
+
             root.innerHTML = HTML;
+
+            const trending = AnimesApi.paginate({
+                limit: 5,
+                fields: ["slug", "titles"],
+                status: AnimesApi.status_types.TRENDING
+            });
+            await trending.initialData();
+
+
+            const current = AnimesApi.paginate({
+                limit: 5,
+                fields: ["slug", "titles"],
+                status: AnimesApi.status_types.CURRENT
+            });
+            await current.initialData();
+
+
+            const upcoming = AnimesApi.paginate({
+                limit: 5,
+                fields: ["slug", "titles"],
+                status: AnimesApi.status_types.UPCOMING
+            });
+            await upcoming.initialData();
+
+
+            const rated = AnimesApi.paginate({
+                limit: 5,
+                fields: ["slug", "titles"],
+                status: AnimesApi.status_types.RATED
+            });
+            await rated.initialData();
+
+
+            const popular = AnimesApi.paginate({
+                limit: 5,
+                fields: ["slug", "titles"],
+                status: AnimesApi.status_types.POPULAR
+            });
+            await popular.initialData();
+
+
+            const all = AnimesApi.paginate({
+                limit: 5,
+                fields: ["slug", "titles"],
+                status: AnimesApi.status_types.ALL
+            });
+            await all.initialData();
+
+            const data = {
+                trending,
+                current,
+                upcoming,
+                rated,
+                popular,
+                all
+            }
+
+            console.log(data);
+
+            return {
+                data
+            }
         },
         didRender: async function (props) {
             props.lifeCycle.willRender.btn.didRender();

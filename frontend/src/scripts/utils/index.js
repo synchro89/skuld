@@ -36,6 +36,14 @@ function interpolate(xInterval, yInterval) {
     };
 }
 
+function calcSkip(page, limit = 10) {
+    const skip = (page - 1) * limit;
+    return {
+        limit,
+        skip
+    }
+}
+
 const getById = document.getElementById.bind(document);
 const query = document.querySelector.bind(document);
 const queryAll = document.querySelectorAll.bind(document);
@@ -48,5 +56,6 @@ export {
     query,
     queryAll,
     getByClass,
-    interpolate
+    interpolate,
+    calcSkip
 }

@@ -8,7 +8,6 @@ const Users = {
                     authorization: token
                 }
             });
-            console.log(response);
             return response;
         } catch (error) {
             throw error;

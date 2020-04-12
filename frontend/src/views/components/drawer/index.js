@@ -1,10 +1,8 @@
 import "./styles.scss";
 
-import _ from "lodash";
-
 import Hammer from "hammerjs";
 
-import { getById, getByClass, queryAll, query, interpolate } from "../../../scripts/utils";
+import { getById, interpolate } from "../../../scripts/utils";
 
 export default function DrawerNavigator() {
 
@@ -23,6 +21,7 @@ export default function DrawerNavigator() {
     let drawerOpened = false;
 
     const velocityToTransition = interpolate([0.3, 2], [0.3, 0.1]);
+
     function openDrawer(e) {
         if (drawerOpened) return;
 
@@ -48,7 +47,12 @@ export default function DrawerNavigator() {
             closeDrawer();
         else
             openDrawer();
+    }
 
+    const api = {
+        openDrawer,
+        closeDrawer,
+        toggleDrawer
     }
 
     async function init() {
@@ -61,10 +65,13 @@ export default function DrawerNavigator() {
 
         drawerSpanTouch.on("swiperight", openDrawer);
         docTouch.on("swipeleft", closeDrawer);
+
+        return api;
     }
 
     async function remove() {
-
+        drawerSpanTouch.off("swiperight", openDrawer);
+        docTouch.off("swipeleft", closeDrawer);
     }
 
     const lifeCycle = {
@@ -73,5 +80,6 @@ export default function DrawerNavigator() {
         didRender: init,
         unMount: remove
     }
+
     return lifeCycle;
 }
