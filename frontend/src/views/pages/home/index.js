@@ -6,12 +6,17 @@ import { AnimesApi } from "../../../app/services/sdk/api";
 
 import root from "../../root";
 
-import Ripple from "../../../scripts/ripple";
-
 import Drawer from "../../components/Drawer";
+import ScrollViewAnime from "../../components/ScrollViewAnime";
+
+// temp
+import Ripple from "../../../scripts/ripple";
 import ButtonRipple from "../../components/AuthSubmitButton";
 
 export default function HomePage() {
+
+    const ScrollViews = [];
+
     return {
         willRender: async function () {
             const btn = ButtonRipple({
