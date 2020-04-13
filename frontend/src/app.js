@@ -10,9 +10,9 @@ import HomePage from "./views/pages/home";
 
 document.addEventListener("DOMContentLoaded", async () => {
 
-    const Login = LoginPage();
-    const Signup = SignupPage();
-    const Home = HomePage();
+    const Login = await LoginPage();
+    const Signup = await SignupPage();
+    const Home = await HomePage();
 
     Router.get("/", {
         ...Home,

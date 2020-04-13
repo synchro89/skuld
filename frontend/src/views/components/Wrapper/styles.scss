@@ -4,6 +4,11 @@
 
     display: flex;
     justify-content: center;
-    
+}
+.wrapper__container{
+    width: 100%;
+    max-width: 950px;
+    display: flex;
+    justify-content: center;
     padding: 1rem;
 }

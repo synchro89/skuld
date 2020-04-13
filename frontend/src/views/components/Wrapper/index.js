@@ -1,6 +1,6 @@
 import "./styles.scss";
 
-export default function Wrapper(Component) {
+export default async function Wrapper(Component) {
 
     const {
         willRender,
@@ -11,7 +11,9 @@ export default function Wrapper(Component) {
 
     const HTML = `
         <div class="wrapper">
-            ${render()}
+            <div class="wrapper__container">
+                ${await render()}
+            </div>
         </div>
     `;
 

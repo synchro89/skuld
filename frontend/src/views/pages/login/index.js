@@ -19,7 +19,7 @@ import ButtonSubmit from "../../components/AuthSubmitButton";
 
 import root from "../../root";
 
-export default function LoginPage() {
+export default async function LoginPage() {
 
     function onNameChange(value, api) {
         if (!value.length || !isValidName(value))

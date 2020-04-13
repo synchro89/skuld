@@ -4,7 +4,7 @@ import Ripple from "../../../scripts/ripple";
 
 import root from "../../root";
 
-export default function SignupPage() {
+export default async function SignupPage() {
     return {
         willRender: async function () {
             console.log("bah");

@@ -40,6 +40,15 @@ function calcSkip(page, limit = 10) {
     return (page - 1) * limit;
 }
 
+function isTouchDevice() {
+    try {
+        document.createEvent("TouchEvent");
+        return true;
+    } catch (e) {
+        return false;
+    }
+}
+
 const getById = document.getElementById.bind(document);
 const query = document.querySelector.bind(document);
 const queryAll = document.querySelectorAll.bind(document);
@@ -53,5 +62,6 @@ export {
     queryAll,
     getByClass,
     interpolate,
-    calcSkip
+    calcSkip,
+    isTouchDevice
 }

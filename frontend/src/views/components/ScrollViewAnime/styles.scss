@@ -1,8 +1,11 @@
 .scroll-view-a{
     width: 100%;
-    max-width: 950px;
 
-    overflow-x: scroll;
     display: flex;
     justify-content: center;
+}
+.scroll-view-a__container{
+    max-width: 100%;
+    overflow-x: scroll;
+    display: flex;
 }

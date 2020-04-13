@@ -25,7 +25,7 @@
     transition: $transition;
     background: $primary;
   }
-  &:hover{
+  &:hover, &:focus, &:active{
     &::after{
       width: 100%;
     }

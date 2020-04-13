@@ -63,8 +63,8 @@ export default function DrawerNavigator() {
         drawerSpanTouch = new Hammer(drawerSpan);
         docTouch = new Hammer(doc);
 
-        drawerSpanTouch.on("swiperight", openDrawer);
-        docTouch.on("swipeleft", closeDrawer);
+        drawerSpanTouch.on("panright", openDrawer);
+        docTouch.on("panleft", closeDrawer);
 
         return api;
     }
