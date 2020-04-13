@@ -1,13 +1,8 @@
-import {
-  all,
-  // takeLatest,
-} from 'redux-saga/effects';
+import { all, takeLatest } from 'redux-saga/effects';
 
-// import { SessionTypes } from '../ducks/session';
-// import { getSessionRequest } from './session';
+import { UserTypes } from '../ducks/user';
+import { getUserRequest } from './user';
 
 export default function* rootSaga() {
-  yield all([
-    // takeLatest(SessionTypes.GET_SESSION_REQUEST, getSessionRequest),
-  ]);
+  yield all([takeLatest(UserTypes.GET_USER_REQUEST, getUserRequest)]);
 }

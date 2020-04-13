@@ -18,27 +18,31 @@ export const INITIAL_STATE = Immutable({
   loading: null,
   data: null,
   error: null,
-  isAuth: null
+  isAuth: null,
 });
 
 /* Reducers */
 
-const getUserRequest = (state) => state.merge({
-  ...state,
-  loading: true,
-});
+const getUserRequest = (state) =>
+  state.merge({
+    ...state,
+    loading: true,
+  });
 
-const getUserSuccess = (state, { data }) => state.merge({
-  data,
-  loading: false,
-  error: false,
-});
+const getUserSuccess = (state, { data }) =>
+  state.merge({
+    data,
+    loading: false,
+    error: false,
+    isAuth: data !== null,
+  });
 
-const getUserFailure = (state) => state.merge({
-  ...state,
-  error: true,
-  loading: false,
-});
+const getUserFailure = (state) =>
+  state.merge({
+    ...state,
+    error: true,
+    loading: false,
+  });
 
 /* Reducers to types */
 

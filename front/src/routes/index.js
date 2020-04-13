@@ -12,8 +12,8 @@ import history from './history';
 const Routes = () => (
   <ConnectedRouter history={history}>
     <Switch>
-      <PrivateRoute path="/" component={Home} />
-      <PublicRoute path="/login" component={Home} />
+      <PrivateRoute path="/" exact component={Home} />
+      <PublicRoute path="/login" exact component={Home} />
     </Switch>
   </ConnectedRouter>
 );

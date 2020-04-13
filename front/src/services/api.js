@@ -1,8 +1,12 @@
 import axios from 'axios';
 import storage from '@/utils/storage';
 
+const kitsu = axios.create({
+  baseURL: 'https://kitsu.io/api/edge/anime',
+});
+
 const api = axios.create({
-  baseURL: 'https://api.github.com',
+  baseURL: 'http://localhost:3000',
 });
 
 api.interceptors.request.use((config) => {
@@ -10,11 +14,11 @@ api.interceptors.request.use((config) => {
 
   const headers = { ...config.headers };
 
-  if (token) {
-    headers.Authorization = `Bearer ${token}`;
-  }
+  headers['Access-Control-Allow-Origin'] = '*';
+
+  if (token) headers.authorization = `Bearer ${token}`;
 
   return { ...config, headers };
 });
 
-export default api;
+export { api, kitsu };
