@@ -7,6 +7,7 @@ const { Types, Creators } = createActions({
   getUserRequest: [],
   getUserSuccess: ['data'],
   getUserFailure: [],
+  setUser: ['data'],
 });
 
 export const UserTypes = Types;
@@ -25,7 +26,6 @@ export const INITIAL_STATE = Immutable({
 
 const getUserRequest = (state) =>
   state.merge({
-    ...state,
     loading: true,
   });
 
@@ -39,9 +39,15 @@ const getUserSuccess = (state, { data }) =>
 
 const getUserFailure = (state) =>
   state.merge({
-    ...state,
     error: true,
     loading: false,
+  });
+
+const setUser = (state, { data }) =>
+  state.merge({
+    error: true,
+    loading: false,
+    isAuth: data !== null,
   });
 
 /* Reducers to types */
@@ -50,4 +56,5 @@ export const reducer = createReducer(INITIAL_STATE, {
   [Types.GET_USER_REQUEST]: getUserRequest,
   [Types.GET_USER_SUCCESS]: getUserSuccess,
   [Types.GET_USER_FAILURE]: getUserFailure,
+  [Types.SET_USER]: setUser,
 });

@@ -5,9 +5,16 @@ import UserActions from '@/store/ducks/user';
 
 export function* getUserRequest() {
   try {
-    const endpoint = '/users';
-    const { data } = yield call(api.get, endpoint);
+    yield put(UserActions.getUserRequest());
+
+    let endpoint = '/users';
+
+    let {
+      data: { data },
+    } = yield call(api.get, endpoint);
+
     console.log(data);
+
     yield put(UserActions.getUserSuccess(data));
   } catch (error) {
     console.log(error);

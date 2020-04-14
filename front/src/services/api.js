@@ -7,14 +7,15 @@ const kitsu = axios.create({
 
 const api = axios.create({
   baseURL: 'http://localhost:3000',
+  headers: {
+    'Access-Control-Allow-Origin': '*',
+  },
 });
 
 api.interceptors.request.use((config) => {
   const token = storage.getToken();
 
   const headers = { ...config.headers };
-
-  headers['Access-Control-Allow-Origin'] = '*';
 
   if (token) headers.authorization = `Bearer ${token}`;
 

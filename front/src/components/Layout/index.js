@@ -1,10 +1,14 @@
 import React from 'react';
-import { StyledContainer } from './styles';
 
-export default function Layout() {
+import Drawer from '../Drawer';
+
+function Layout({ children }) {
   return (
-    <StyledContainer>
-      <h1>Layout component!</h1>
-    </StyledContainer>
+    <>
+      <Drawer />
+      {children}
+    </>
   );
 }
+
+export default Layout;
