@@ -1,8 +1,19 @@
 import "./scss/app.scss";
+
+// Package.json data
 import packageData from "../package.json";
+
+// Router Factory
 import RouterFactory, { IRouterConfig } from "./scripts/router";
 
+// Pages Factories
+import HomePageFactory from "./pages/Home";
+import SavedPageFactory from "./pages/saved";
+
 (async () => {
+  const HomePage = HomePageFactory.create();
+  const SavedPage = SavedPageFactory.create();
+
   const routerConfig: IRouterConfig = {
     basePath: new URL(packageData.homepage).pathname,
   };
@@ -11,20 +22,12 @@ import RouterFactory, { IRouterConfig } from "./scripts/router";
 
   Router.get({
     path: "/",
-    component: {
-      render: () => "To na página /",
-      afterRender: () => {},
-      destroy: () => {},
-    },
+    component: HomePage,
   });
 
   Router.get({
     path: "/saved",
-    component: {
-      render: () => "To na página /saved",
-      afterRender: () => {},
-      destroy: () => {},
-    },
+    component: SavedPage,
   });
 
   Router.initialize();
