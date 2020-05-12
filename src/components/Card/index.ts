@@ -3,7 +3,7 @@ import { IComponent as ICard } from "../../types";
 
 const Card: ICard = {
   create: () => {
-    const render = () => {
+    const render = async () => {
       const html = `
           <main class="wrapper">
             <div class="wrapper__container"></div>
@@ -12,9 +12,9 @@ const Card: ICard = {
       return html;
     };
 
-    const afterRender = () => {};
+    const afterRender = async () => {};
 
-    const destroy = () => {};
+    const destroy = async () => {};
 
     const self = {
       render,

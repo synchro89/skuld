@@ -3,7 +3,7 @@ import { IComponent as IWrapper } from "../../types";
 
 const Wrapper: IWrapper = {
   create: () => {
-    const render = () => {
+    const render = async () => {
       const html = `
           <main class="wrapper">
             <div class="wrapper__container"></div>
@@ -12,9 +12,9 @@ const Wrapper: IWrapper = {
       return html;
     };
 
-    const afterRender = () => {};
+    const afterRender = async () => {};
 
-    const destroy = () => {};
+    const destroy = async () => {};
 
     const self = {
       render,

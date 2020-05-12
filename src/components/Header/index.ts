@@ -3,7 +3,7 @@ import { IComponent as IHeader } from "../../types";
 
 const Header: IHeader = {
   create: () => {
-    const render = () => {
+    const render = async () => {
       const html = `
           <main class="wrapper">
             <div class="wrapper__container"></div>
@@ -12,9 +12,9 @@ const Header: IHeader = {
       return html;
     };
 
-    const afterRender = () => {};
+    const afterRender = async () => {};
 
-    const destroy = () => {};
+    const destroy = async () => {};
 
     const self = {
       render,

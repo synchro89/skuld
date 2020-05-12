@@ -5,9 +5,9 @@ export interface IFactory {
 
 // Interface for HTML Components that works as Factory
 export interface IComponentMethods {
-  render: (props?: object) => string;
-  afterRender: () => any;
-  destroy: () => void;
+  render: (props?: object) => Promise<string>;
+  afterRender: () => Promise<any>;
+  destroy: () => Promise<void>;
 }
 
 export interface IComponent extends IFactory {

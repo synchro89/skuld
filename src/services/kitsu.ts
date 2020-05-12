@@ -26,10 +26,12 @@ const Kitsu: IKitsu = {
 
     const baseURL: string = "https://kitsu.io/api/edge/anime/";
 
-    const fetchAnime = async (): Promise<object> => {
+    const fetchAnime = async (): Promise<any> => {
       try {
         const response = await axios.get(baseURL + getRandomNumber());
-        console.log(response);
+
+        if (response.status === 404) return await fetchAnime();
+
         return response;
       } catch (error) {
         throw error;
@@ -37,12 +39,20 @@ const Kitsu: IKitsu = {
     };
 
     const getSingle = async () => {
-      const anime = await fetchAnime();
+      const {
+        data: {
+          attributes: {
+            posterImage: { original: imageURL },
+            slug,
+            canonicalTitle: name,
+          },
+        },
+      } = await fetchAnime();
 
       return {
-        name: "",
-        url: "",
-        imageURL: "",
+        name,
+        imageURL,
+        url: `https://kitsu.io/anime/${slug}`,
       };
     };
     const getMany = async () => {
