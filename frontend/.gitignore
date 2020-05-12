@@ -1,9 +1,0 @@
-/node_modules
-/build
-/dist
-/.vscode
-/haters
-.DS_Store
-
-.env*
-!.env.example*
