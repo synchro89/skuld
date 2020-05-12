@@ -1,7 +1,7 @@
 {
-  "name": "vanilla-parcel-boilerplate",
+  "name": "skuld",
   "version": "1.0.0",
-  "description": "Simple workflow starter for building vanilla JS apps",
+  "description": "Simple UI, to explore and find your next favorite Anime",
   "main": "index.js",
   "scripts": {
     "dev": "parcel public/index.html --out-dir development -p 3000",
@@ -19,12 +19,15 @@
   "bugs": {
     "url": "https://github.com/LaksCastro/skuld"
   },
-  "homepage": "https://lakscastro.github.io/skuld/",
+  "homepage": "https://lakscastro.github.io/skuld",
   "devDependencies": {
-    "@babel/core": "^7.9.0",
+    "@babel/core": "^7.9.6",
     "@babel/plugin-transform-runtime": "^7.9.0",
+    "@babel/preset-env": "^7.9.6",
     "@babel/runtime-corejs2": "^7.9.2",
+    "babel-jest": "^26.0.1",
     "jest": "^26.0.1",
+    "parcel": "^1.12.4",
     "parcel-bundler": "^1.12.4",
     "sass": "^1.26.3"
   },
