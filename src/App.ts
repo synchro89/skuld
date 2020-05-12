@@ -17,6 +17,7 @@ import RouterFactory, { IRouterConfig } from "./scripts/router";
       destroy: () => {},
     },
   });
+
   Router.get({
     path: "/saved",
     component: {
@@ -25,4 +26,6 @@ import RouterFactory, { IRouterConfig } from "./scripts/router";
       destroy: () => {},
     },
   });
+
+  Router.initialize();
 })();

@@ -11,7 +11,7 @@ export interface IRouterProps {
 }
 
 export interface IRouterMethods {
-  initialize: (userConfig: IRouterConfig) => void;
+  initialize: () => void;
   get: (userProps: IRouterProps) => void;
   navigateTo: (path: string) => void;
 }
@@ -53,10 +53,11 @@ const Router: IRouter = {
       await component.afterRender();
     };
 
-    const initialize = () => {
+    const initialize = async () => {
       const initialRoute = matchRoute(window.location.pathname);
-      renderRoute(initialRoute);
-      window.onpopstate = () => setCurrentRoute(window.location.pathname);
+      await renderRoute(initialRoute);
+      window.onpopstate = async () =>
+        await setCurrentRoute(window.location.pathname);
     };
 
     const get = (routeProps: IRouterProps) => {
@@ -66,7 +67,7 @@ const Router: IRouter = {
       });
     };
 
-    const navigateTo = (path) => {
+    const navigateTo = (path: string) => {
       setCurrentRoute(basePath + path);
     };
 
