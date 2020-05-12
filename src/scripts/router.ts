@@ -17,7 +17,7 @@ export interface IRouterMethods {
 }
 
 export interface IRouter extends IFactory {
-  create: (userConfig: IRouterConfig) => Readonly<IRouterMethods>;
+  create: (userConfig?: IRouterConfig) => Readonly<IRouterMethods>;
 }
 
 const Router: IRouter = {
