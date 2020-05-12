@@ -36,7 +36,16 @@ const Router: IRouter = {
 
     let currentRoute: IRouterProps | null = null;
 
+    const getWindowPath = () => {
+      const path = window.location.pathname;
+
+      const endsWithLetter = /[a-z]$/i.test(path);
+
+      return path + (endsWithLetter ? "/" : "");
+    };
+
     const matchRoute = (path: string) => {
+      console.log(routes);
       return routes.filter((route) => route.path === path)[0];
     };
 
@@ -54,16 +63,19 @@ const Router: IRouter = {
     };
 
     const initialize = async () => {
-      const initialRoute = matchRoute(window.location.pathname);
+      const initialRoute = matchRoute(getWindowPath());
+      console.log(initialRoute);
       await renderRoute(initialRoute);
-      window.onpopstate = async () =>
-        await setCurrentRoute(window.location.pathname);
+      window.onpopstate = async () => await setCurrentRoute(getWindowPath());
     };
 
     const get = (routeProps: IRouterProps) => {
+      const path =
+        basePath + routeProps.path + (routeProps.path === "/" ? "" : "/");
+
       routes.push({
         ...routeProps,
-        path: basePath + routeProps.path,
+        path,
       });
     };
 
