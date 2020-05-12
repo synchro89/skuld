@@ -4,16 +4,25 @@ import RouterFactory, { IRouterConfig } from "./scripts/router";
 
 (async () => {
   const routerConfig: IRouterConfig = {
-    baseName: new URL(packageData.homepage).pathname,
+    basePath: new URL(packageData.homepage).pathname,
   };
 
   const Router = RouterFactory.create(routerConfig);
 
-  Router.get("/", () => {
-    console.log("Página Home");
+  Router.get({
+    path: "/",
+    component: {
+      render: () => "To na página /",
+      afterRender: () => {},
+      destroy: () => {},
+    },
   });
-
-  Router.get("/saved", () => {
-    console.log("Página de animes salvos");
+  Router.get({
+    path: "/saved",
+    component: {
+      render: () => "To na página /saved",
+      afterRender: () => {},
+      destroy: () => {},
+    },
   });
 })();
