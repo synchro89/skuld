@@ -1,0 +1,10 @@
+.wrapper {
+  display: flex;
+  justify-content: center;
+  width: 100%;
+}
+.wrapper__container {
+  column-count: 3;
+  width: 100%;
+  max-width: 950px;
+}

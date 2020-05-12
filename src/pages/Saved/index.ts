@@ -9,9 +9,10 @@ interface ISavedPage extends IComponent {
 const SavedPage: ISavedPage = {
   create: () => {
     const render = () => {
-      const html = ``;
+      const html = `<h1>Page Saved</h1>`;
       return html;
     };
+
     const afterRender = () => {};
 
     const destroy = () => {};

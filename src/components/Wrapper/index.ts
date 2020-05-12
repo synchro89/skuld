@@ -1,11 +1,14 @@
-import { IComponent } from "../../types";
+import "./styles.scss";
+import { IComponent as IWrapper } from "../../types";
 
-const Wrapper: IComponent = {
+const Wrapper: IWrapper = {
   create: () => {
     const render = () => {
       const html = `
-            <main class="wrapper"></main>
-        `;
+          <main class="wrapper">
+            <div class="wrapper__container"></div>
+          </main>
+      `;
       return html;
     };
 

@@ -45,8 +45,10 @@ const Router: IRouter = {
     };
 
     const matchRoute = (path: string) => {
-      console.log(routes);
-      return routes.filter((route) => route.path === path)[0];
+      return (
+        routes.filter((route) => route.path === path)[0] ||
+        routes.filter((route) => route.path === basePath + "/*/")[0]
+      );
     };
 
     const setCurrentRoute = async (path: string) => {
@@ -64,7 +66,6 @@ const Router: IRouter = {
 
     const initialize = async () => {
       const initialRoute = matchRoute(getWindowPath());
-      console.log(initialRoute);
       await renderRoute(initialRoute);
       window.onpopstate = async () => await setCurrentRoute(getWindowPath());
     };
@@ -80,7 +81,9 @@ const Router: IRouter = {
     };
 
     const navigateTo = (path: string) => {
-      setCurrentRoute(basePath + path);
+      path = basePath + path;
+      history.pushState({}, path, path);
+      setCurrentRoute(path);
     };
 
     const self = {

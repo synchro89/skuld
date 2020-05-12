@@ -1,9 +1,9 @@
-import { IComponent as IHomePage } from "../../types";
+import { IComponent as I404Page } from "../../types";
 
-const HomePage: IHomePage = {
+const Page404: I404Page = {
   create: () => {
     const render = () => {
-      const html = ``;
+      const html = `<h1>Error, not found :(</h1>`;
       return html;
     };
     const afterRender = () => {};
@@ -20,4 +20,4 @@ const HomePage: IHomePage = {
   },
 };
 
-export default HomePage;
+export default Page404;
