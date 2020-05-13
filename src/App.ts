@@ -8,7 +8,7 @@ import RouterFactory, { IRouterConfig } from "./scripts/router";
 
 // Pages Factories
 import HomePageFactory from "./pages/Home";
-import SavedPageFactory from "./pages/saved";
+import SavedPageFactory from "./pages/Saved";
 import Page404Factory from "./pages/404";
 
 (async () => {
