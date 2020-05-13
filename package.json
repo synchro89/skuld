@@ -1,7 +1,7 @@
 {
   "name": "skuld",
   "version": "1.0.0",
-  "description": "Simple UI, to explore and find your next favorite Anime",
+  "description": "Simple UI, to explore and find your next favorite Anime.",
   "main": "index.js",
   "scripts": {
     "dev": "parcel public/index.html --out-dir development -p 3000",
