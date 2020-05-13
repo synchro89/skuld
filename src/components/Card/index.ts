@@ -8,20 +8,21 @@ interface ICard extends IComponent {
 }
 
 const Card: ICard = {
-  create: ({ images: { original, small }, name, url }: IKitsuAnime) => {
-    const id = getId();
-
+  create: ({ images: { original, small }, name, url, id }: IKitsuAnime) => {
     const render = async () => {
       const html = `
           <div role="link" id="${id}" class="card">
             <img 
               data-href="${url}"
+              data-id="${id}"
               class="card__image" 
               src="${original}" 
               data-src="${small}" 
               data-srcset="${original} 2x, ${small} 1x" 
               alt="${name}" 
+              draggable="false"
             >
+            <div class="card__loading"></div>
           </div>
       `;
       return html;

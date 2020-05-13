@@ -1,9 +1,12 @@
 import "./styles.scss";
+import Touch from "hammerjs";
 import { IComponent, IComponentMethods } from "../../types";
 import { getId } from "../../utils";
+import Storage from "../../services/storage";
+import { IKitsuAnime } from "../../services/kitsu";
 
 interface IWrapperAPI {
-  node: HTMLElement;
+  Node: HTMLElement;
   add: (html: string) => void;
 }
 
@@ -18,6 +21,35 @@ interface IWrapper extends IComponent {
 const Wrapper: IWrapper = {
   create: () => {
     const id = getId();
+    const storage = Storage.create();
+    let NodeTouch = null;
+
+    const getNode: () => HTMLElement = () =>
+      document.querySelector(`#${id} .wrapper__container`);
+
+    const onClick = (e: Event) => {
+      const Card: any = e.target;
+
+      window.open(Card.getAttribute("data-href"), "_blank");
+    };
+
+    const onPress = (e: Event) => {
+      const Card: any = e.target;
+
+      const anime: IKitsuAnime = {
+        images: {
+          original: Card.getAttribute("src"),
+          small: Card.getAttribute("data-src"),
+        },
+        name: Card.getAttribute("alt"),
+        url: Card.getAttribute("data-href"),
+        id: Card.getAttribute("data-id"),
+      };
+
+      storage.addSingle(anime);
+
+      alert("added");
+    };
 
     const render = async () => {
       const html = `
@@ -34,28 +66,29 @@ const Wrapper: IWrapper = {
     };
 
     const afterRender = async () => {
-      const node: HTMLElement = document.querySelector(
-        `#${id} .wrapper__container`
-      );
+      const Node: HTMLElement = getNode();
 
       const add = (html: string) => {
-        node.innerHTML += html;
+        Node.innerHTML += html;
       };
 
-      node.addEventListener("click", (e) => {
-        const Card: any = e.target;
+      NodeTouch = new Touch(Node);
 
-        window.open(Card.getAttribute("data-href"), "_blank");
-      });
+      NodeTouch.on("tap", onClick);
+      NodeTouch.on("press", onPress);
+
       const API: IWrapperAPI = {
-        node,
+        Node,
         add,
       };
 
       return API;
     };
 
-    const destroy = async () => {};
+    const destroy = async () => {
+      NodeTouch.off("tap", onClick);
+      NodeTouch.off("press", onPress);
+    };
 
     const self = {
       render,

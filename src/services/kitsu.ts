@@ -5,6 +5,7 @@ import { IFactory } from "../types";
 export interface IKitsuAnime {
   name: string;
   url: string;
+  id: string;
   images: {
     small: string;
     original: string;
@@ -22,10 +23,12 @@ interface IKitsu extends IFactory {
 
 const Kitsu: IKitsu = {
   create: () => {
-    const distincRandom = DistincRandomFactory.create();
+    const distincRandom = DistincRandomFactory.create({
+      min: 0,
+      max: 14305,
+    });
 
-    const getRandomNumber: () => number = () =>
-      distincRandom.generate(0, 14305);
+    const getRandomNumber: () => number = () => distincRandom.generate();
 
     const baseURL: string = "https://kitsu.io/api/edge/anime/";
 
@@ -47,6 +50,7 @@ const Kitsu: IKitsu = {
       let anime = {
         name: null,
         url: null,
+        id: null,
         images: {
           small: null,
           original: null,
@@ -57,6 +61,7 @@ const Kitsu: IKitsu = {
         ...anime,
         name: response.data.attributes.canonicalTitle,
         url: `https://kitsu.io/anime/${response.data.attributes.slug}`,
+        id: response.data.id.toString(),
       };
 
       try {
@@ -73,9 +78,7 @@ const Kitsu: IKitsu = {
     };
     const getMany: () => Promise<Array<IKitsuAnime>> = async () => {
       const animes = await Promise.all(
-        Array.from({ length: 5 }).map(async () => {
-          return getSingle();
-        })
+        Array.from({ length: 10 }).map(() => getSingle())
       );
       return animes;
     };

@@ -2,25 +2,28 @@ import { IFactory } from "../types";
 import { random } from "../utils";
 
 interface IDistincRandomMethods {
-  generate: (min: number, max: number) => number;
+  generate: () => number;
 }
 
 interface IDistincRandom extends IFactory {
-  create: () => Readonly<IDistincRandomMethods>;
+  create: (range: {
+    min: number;
+    max: number;
+  }) => Readonly<IDistincRandomMethods>;
 }
 
 const DistinctRandom: IDistincRandom = {
-  create: () => {
+  create: ({ min, max }) => {
     let unavailableNumbers: Array<number> = [];
 
-    const generate = (min: number, max: number) => {
+    const generate = () => {
       if (unavailableNumbers.length === max)
         throw new Error("No more numbers available in this range");
 
       const num = random(min, max);
 
       while (unavailableNumbers.includes(num)) {
-        return generate(min, max);
+        return generate();
       }
 
       unavailableNumbers.push(num);
