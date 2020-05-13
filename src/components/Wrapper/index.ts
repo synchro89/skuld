@@ -2,7 +2,7 @@ import "./styles.scss";
 import Touch from "hammerjs";
 import { IComponent, IComponentMethods } from "../../types";
 import { getId } from "../../utils";
-import Storage from "../../services/storage";
+import StorageFactory from "../../services/storage";
 import { IKitsuAnime } from "../../services/kitsu";
 
 interface IWrapperAPI {
@@ -21,7 +21,7 @@ interface IWrapper extends IComponent {
 const Wrapper: IWrapper = {
   create: () => {
     const id = getId();
-    const storage = Storage.create();
+    const storage = StorageFactory.create();
     let NodeTouch = null;
 
     const getNode: () => HTMLElement = () =>
@@ -46,9 +46,12 @@ const Wrapper: IWrapper = {
         id: Card.getAttribute("data-id"),
       };
 
-      storage.addSingle(anime);
+      const exists = storage.exists(anime);
 
-      alert("added");
+      storage.toggleSingle(anime);
+
+      if (exists) alert("Removed from list!");
+      else alert("Saved to list!");
     };
 
     const render = async () => {

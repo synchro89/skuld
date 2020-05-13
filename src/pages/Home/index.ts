@@ -14,28 +14,34 @@ const HomePage: IHomePage = {
     const Wrapper = WrapperFactory.create();
     let WrapperAPI = null;
 
-    const render = async () => {
-      const html = `
-        ${await Wrapper.render()}
-      `;
-
-      return html;
-    };
-
     const { body, documentElement: doc } = document;
 
     const hasScroll = () => body.scrollHeight > body.clientHeight;
 
+    let hasMore = true;
+
     const loadMore = async () => {
       const animes = await kitsu.getMany();
-      animes.forEach(async (anime) => {
-        const Card = await CardFactory.create(anime);
+      if (animes.length === 0) {
+        hasMore = false;
+        return;
+      }
+      if (animes.length < 10) {
+        hasMore = false;
+      }
 
-        const CardHTML = await Card.render();
+      await new Promise((resolve) => {
+        animes.forEach(async (anime, i) => {
+          const Card = await CardFactory.create(anime);
 
-        WrapperAPI.add(CardHTML);
+          const CardHTML = await Card.render();
 
-        await Card.afterRender();
+          WrapperAPI.add(CardHTML);
+
+          await Card.afterRender();
+
+          if (i === animes.length - 1) resolve();
+        });
       });
     };
 
@@ -48,6 +54,13 @@ const HomePage: IHomePage = {
       if (value >= 50) loadMore();
     }, 1000);
 
+    const render = async () => {
+      const html = `
+        ${await Wrapper.render()}
+      `;
+
+      return html;
+    };
     const afterRender = async () => {
       WrapperAPI = await Wrapper.afterRender();
 

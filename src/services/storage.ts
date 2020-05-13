@@ -5,6 +5,9 @@ interface IIStorageMethods {
   getSingle: () => Promise<IKitsuAnime>;
   getMany: () => Promise<Array<IKitsuAnime>>;
   addSingle: (anime: IKitsuAnime) => Promise<void>;
+  removeSingle: (anime: IKitsuAnime) => Promise<void>;
+  toggleSingle: (anime: IKitsuAnime) => Promise<void>;
+  exists: (anime: IKitsuAnime) => boolean;
 }
 
 interface IStorage extends IFactory {
@@ -24,22 +27,44 @@ const Storage: IStorage = {
       return getCurrentAnimes();
     };
 
-    const addSingle: (anime: IKitsuAnime) => Promise<void> = async (anime) => {
+    const exists: (anime: IKitsuAnime) => boolean = (anime) => {
       const currentAnimes = getCurrentAnimes();
-
       const exists = Boolean(
         currentAnimes.filter((existentAnime) => existentAnime.id === anime.id)
           .length
       );
+      return exists;
+    };
+    const addSingle: (anime: IKitsuAnime) => Promise<void> = async (anime) => {
+      if (exists(anime)) return;
 
-      if (exists) return;
+      const currentAnimes = getCurrentAnimes();
 
       const newAnimes = [anime, ...currentAnimes];
       localStorage.setItem(storage_key, JSON.stringify(newAnimes));
     };
+    const removeSingle: (anime: IKitsuAnime) => Promise<void> = async (
+      anime
+    ) => {
+      if (exists(anime)) return;
+
+      const currentAnimes = getCurrentAnimes();
+
+      const newAnimes = currentAnimes.filter(
+        (existentAnime) => existentAnime.id === anime.id
+      );
+
+      localStorage.setItem(storage_key, JSON.stringify(newAnimes));
+    };
+    const toggleSingle: (anime: IKitsuAnime) => Promise<void> = async (
+      anime
+    ) => {
+      if (exists(anime)) removeSingle(anime);
+      else addSingle(anime);
+    };
 
     const getSingle: () => Promise<IKitsuAnime> = async () => {
-      const anime = await fetchAnime()[index];
+      const anime = (await fetchAnime())[index];
 
       index++;
 
@@ -57,6 +82,9 @@ const Storage: IStorage = {
       getSingle,
       getMany,
       addSingle,
+      removeSingle,
+      toggleSingle,
+      exists,
     };
 
     return Object.freeze(self);
