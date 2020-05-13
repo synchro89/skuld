@@ -1,22 +1,28 @@
 import "./styles.scss";
 import { IComponent, IComponentMethods } from "../../types";
 import { IKitsuAnime } from "../../services/kitsu";
-
-interface ICardMethods extends IComponentMethods {
-  render: (anime: IKitsuAnime) => Promise<string>;
-}
+import { getId } from "../../utils";
 
 interface ICard extends IComponent {
-  create: () => Readonly<ICardMethods>;
+  create: (anime: IKitsuAnime) => Readonly<IComponentMethods>;
 }
 
 const Card: ICard = {
-  create: () => {
-    const render = async ({ imageURL, name, url }: IKitsuAnime) => {
+  create: ({ images: { original, small }, name, url }: IKitsuAnime) => {
+    const id = getId();
+
+    const render = async () => {
       const html = `
-          <a href="${url}" target="_blank"  class="card">
-            <img class="card__image" src="${imageURL}" alt="${name}" />
-          </a>
+          <div role="link" id="${id}" class="card">
+            <img 
+              data-href="${url}"
+              class="card__image" 
+              src="${original}" 
+              data-src="${small}" 
+              data-srcset="${original} 2x, ${small} 1x" 
+              alt="${name}" 
+            >
+          </div>
       `;
       return html;
     };

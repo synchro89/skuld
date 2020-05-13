@@ -21,6 +21,7 @@ body {
   --focus-primary: #b082d3;
 }
 body.dark {
+  background: #36393f;
   --header-primary: #fff;
   --header-secondary: #b9bbbe;
   --text-normal: #dcddde;
@@ -68,6 +69,7 @@ body.dark {
 }
 
 body.light {
+  background: #fff;
   --header-primary: #060607;
   --header-secondary: #4f5660;
   --text-normal: #2e3338;

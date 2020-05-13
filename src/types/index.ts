@@ -11,5 +11,5 @@ export interface IComponentMethods {
 }
 
 export interface IComponent extends IFactory {
-  create: () => Readonly<IComponentMethods>;
+  create: (config?: object) => Readonly<IComponentMethods>;
 }

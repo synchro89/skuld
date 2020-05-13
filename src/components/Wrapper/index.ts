@@ -3,7 +3,7 @@ import { IComponent, IComponentMethods } from "../../types";
 import { getId } from "../../utils";
 
 interface IWrapperAPI {
-  getNode: () => HTMLElement;
+  node: HTMLElement;
   add: (html: string) => void;
 }
 
@@ -23,21 +23,32 @@ const Wrapper: IWrapper = {
       const html = `
           <main id="${id}" class="wrapper">
             <div class="wrapper__container"></div>
+            <div class="wrapper__loading-container">
+              <div class="wrapper__loading-dot dot-1"></div>
+              <div class="wrapper__loading-dot dot-2"></div>
+              <div class="wrapper__loading-dot dot-3"></div>
+            </div>
           </main>
       `;
       return html;
     };
 
     const afterRender = async () => {
-      const getNode: () => HTMLElement = () =>
-        document.querySelector(`#${id} .wrapper__container`);
+      const node: HTMLElement = document.querySelector(
+        `#${id} .wrapper__container`
+      );
 
       const add = (html: string) => {
-        getNode().innerHTML += html;
+        node.innerHTML += html;
       };
 
+      node.addEventListener("click", (e) => {
+        const Card: any = e.target;
+
+        window.open(Card.getAttribute("data-href"), "_blank");
+      });
       const API: IWrapperAPI = {
-        getNode,
+        node,
         add,
       };
 

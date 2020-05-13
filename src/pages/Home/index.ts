@@ -1,5 +1,5 @@
 import lodash from "lodash";
-
+import HyperList from "hyperlist";
 import { IComponent as IHomePage } from "../../types";
 
 import WrapperFactory from "../../components/Wrapper";
@@ -29,9 +29,9 @@ const HomePage: IHomePage = {
     const loadMore = async () => {
       const animes = await kitsu.getMany();
       animes.forEach(async (anime) => {
-        const Card = await CardFactory.create();
+        const Card = await CardFactory.create(anime);
 
-        const CardHTML = await Card.render(anime);
+        const CardHTML = await Card.render();
 
         WrapperAPI.add(CardHTML);
 

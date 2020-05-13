@@ -5,7 +5,10 @@ import { IFactory } from "../types";
 export interface IKitsuAnime {
   name: string;
   url: string;
-  imageURL: string;
+  images: {
+    small: string;
+    original: string;
+  };
 }
 
 interface IKitsuMethods {
@@ -19,10 +22,10 @@ interface IKitsu extends IFactory {
 
 const Kitsu: IKitsu = {
   create: () => {
-    const DistincRandom = DistincRandomFactory.create();
+    const distincRandom = DistincRandomFactory.create();
 
     const getRandomNumber: () => number = () =>
-      DistincRandom.generate(0, 14305);
+      distincRandom.generate(0, 14305);
 
     const baseURL: string = "https://kitsu.io/api/edge/anime/";
 
@@ -39,25 +42,34 @@ const Kitsu: IKitsu = {
     };
 
     const getSingle: () => Promise<IKitsuAnime> = async () => {
-      const response = await fetchAnime();
+      const { data: response } = await fetchAnime();
 
-      const {
-        data: {
-          data: {
-            attributes: {
-              posterImage: { original: imageURL },
-              slug,
-              canonicalTitle: name,
-            },
-          },
+      let anime = {
+        name: null,
+        url: null,
+        images: {
+          small: null,
+          original: null,
         },
-      } = response;
-      console.log(response);
-      return {
-        name,
-        imageURL,
-        url: `https://kitsu.io/anime/${slug}`,
       };
+
+      anime = {
+        ...anime,
+        name: response.data.attributes.canonicalTitle,
+        url: `https://kitsu.io/anime/${response.data.attributes.slug}`,
+      };
+
+      try {
+        anime.images.original = response.data.attributes.posterImage.original;
+        anime.images.small = response.data.attributes.posterImage.small;
+      } catch (error) {
+        anime.images.original =
+          "https://kitsu.io/images/default_poster-8b947e02540d2b5053792748d7de269e.jpg";
+        anime.images.small =
+          "https://kitsu.io/images/default_poster-8b947e02540d2b5053792748d7de269e.jpg";
+      }
+
+      return anime;
     };
     const getMany: () => Promise<Array<IKitsuAnime>> = async () => {
       const animes = await Promise.all(
