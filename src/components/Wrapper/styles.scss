@@ -2,9 +2,13 @@
   display: flex;
   justify-content: center;
   width: 100%;
+  padding: max(12px, 2rem);
 }
 .wrapper__container {
-  column-count: 3;
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(150px, auto));
+  grid-gap: 1rem;
+
   width: 100%;
   max-width: 950px;
 }

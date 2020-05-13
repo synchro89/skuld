@@ -1,8 +1,8 @@
 import axios from "axios";
-import DistincRandomFactory from "../scripts/distincRandom";
+import DistincRandomFactory from "../scripts/distinctRandom";
 import { IFactory } from "../types";
 
-interface IKitsuAnime {
+export interface IKitsuAnime {
   name: string;
   url: string;
   imageURL: string;
@@ -30,39 +30,42 @@ const Kitsu: IKitsu = {
       try {
         const response = await axios.get(baseURL + getRandomNumber());
 
-        if (response.status === 404) return await fetchAnime();
-
         return response;
       } catch (error) {
+        if (error.response.status === 404) return await fetchAnime();
+
         throw error;
       }
     };
 
-    const getSingle = async () => {
+    const getSingle: () => Promise<IKitsuAnime> = async () => {
+      const response = await fetchAnime();
+
       const {
         data: {
-          attributes: {
-            posterImage: { original: imageURL },
-            slug,
-            canonicalTitle: name,
+          data: {
+            attributes: {
+              posterImage: { original: imageURL },
+              slug,
+              canonicalTitle: name,
+            },
           },
         },
-      } = await fetchAnime();
-
+      } = response;
+      console.log(response);
       return {
         name,
         imageURL,
         url: `https://kitsu.io/anime/${slug}`,
       };
     };
-    const getMany = async () => {
-      return [
-        {
-          name: "",
-          url: "",
-          imageURL: "",
-        },
-      ];
+    const getMany: () => Promise<Array<IKitsuAnime>> = async () => {
+      const animes = await Promise.all(
+        Array.from({ length: 5 }).map(async () => {
+          return getSingle();
+        })
+      );
+      return animes;
     };
 
     const self = {

@@ -1,13 +1,22 @@
 import "./styles.scss";
-import { IComponent as ICard } from "../../types";
+import { IComponent, IComponentMethods } from "../../types";
+import { IKitsuAnime } from "../../services/kitsu";
+
+interface ICardMethods extends IComponentMethods {
+  render: (anime: IKitsuAnime) => Promise<string>;
+}
+
+interface ICard extends IComponent {
+  create: () => Readonly<ICardMethods>;
+}
 
 const Card: ICard = {
   create: () => {
-    const render = async () => {
+    const render = async ({ imageURL, name, url }: IKitsuAnime) => {
       const html = `
-          <main class="wrapper">
-            <div class="wrapper__container"></div>
-          </main>
+          <a href="${url}" target="_blank"  class="card">
+            <img class="card__image" src="${imageURL}" alt="${name}" />
+          </a>
       `;
       return html;
     };
