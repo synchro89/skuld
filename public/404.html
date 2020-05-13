@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8" />
+    <title>Skuld App</title>
+    <meta name="viewport" content="user-scalable=no, width=device-width, initial-scale=1, maximum-scale=1">
+    <meta name="Description" content="Simple UI, to explore and find your next favorite Anime." />
+    <meta name="keywords"
+        content="laks,castro,github,parcel,javascript,anime,js,html,html5,css,typescript,tests,jest,search,kitsu,api,random,simple,minimal,minimalist">
+    <meta http-equiv="X-UA-Compatible" content="IE=7">
+
+    <link rel="shortcut icon" href="./favicon.png">
+
+    <!-- Open Graph data / Facebook Card data -->
+    <meta property="og:title" content="Skuld App" />
+    <meta property="og:type" content="website" />
+    <meta property="og:url" content="https://lakscastro.github.io/skuld" />
+    <meta property="og:image" content="./favicon.png" />
+    <meta property="og:image:alt" content="The Skuld Logo" />
+    <meta property="og:description"
+        content="Application with simple UI, to explore and find your next favorite Anime" />
+
+    <!-- Twitter Card data -->
+    <meta name="twitter:card" content="summary" />
+    <meta name="twitter:image" content="./favicon.png" />
+    <meta name="twitter:creator" content="@LaksCastro" />
+
+    <!-- Mobile header color for Chrome, Firefox OS and Opera -->
+    <meta name="theme-color" content="#662694" />
+    <!-- Mobile header color Windows Phone -->
+    <meta name="msapplication-navbutton-color" content="#662694" />
+    <!-- Mobile header color for iOS Safari (supports black, black-translucent or default) -->
+    <meta name="apple-mobile-web-app-status-bar-style" content="#662694" />
+</head>
+
+<body>
+    <div id="root"></div>
+    <script src="../src/App.ts"></script>
+    <script>
+        (function () {
+            window.__onThemeChange = function () { };
+            function setTheme(newTheme) {
+                window.__theme = newTheme;
+                preferredTheme = newTheme;
+                document.body.className = newTheme;
+                window.__onThemeChange(newTheme);
+            }
+            var preferredTheme;
+            try {
+                preferredTheme = localStorage.getItem("theme");
+            } catch (err) { }
+            window.__setPreferredTheme = function (newTheme) {
+                setTheme(newTheme);
+                try {
+                    localStorage.setItem("theme", newTheme);
+                } catch (err) { }
+            };
+            setTheme(preferredTheme || "dark");
+        })();
+    </script>
+</body>
+
+</html>
