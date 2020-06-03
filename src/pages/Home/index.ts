@@ -16,7 +16,7 @@ const HomePage: IHomePage = {
 
     const { body, documentElement: doc } = document;
 
-    const hasScroll = () => body.scrollHeight > body.clientHeight;
+    const hasScroll = () => body.scrollHeight > body.clientHeight * 2;
 
     let hasMore = true;
 
