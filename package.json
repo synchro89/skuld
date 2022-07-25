@@ -11,17 +11,17 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/LaksCastro/skuld.git"
+    "url": "git+https://github.com/alexrintt/skuld.git"
   },
   "keywords": [
     "parcel"
   ],
-  "author": "Laks Castro",
+  "author": "Alex Rintt <alexrintt@gmail.com> (https://github.com/alexrintt)",
   "license": "MIT",
   "bugs": {
-    "url": "https://github.com/LaksCastro/skuld"
+    "url": "https://github.com/alexrintt/skuld"
   },
-  "homepage": "https://lakscastro.github.io/skuld",
+  "homepage": "https://alexrintt.github.io/skuld",
   "devDependencies": {
     "@babel/core": "^7.0.0-0",
     "@babel/plugin-transform-runtime": "^7.9.0",
